@@ -30,7 +30,7 @@ function toggleLeftDrawer() {
 
       <q-drawer show-if-above v-model="leftDrawerOpen" side="left" bordered>
         <!-- drawer content -->
-        <q-btn dense flat round icon="menu" @click="toggleLeftDrawer" />
+        <q-btn dense flat round icon="highlight_off" @click="toggleLeftDrawer" />
         hey i am sidebar
       </q-drawer>
 
