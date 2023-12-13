@@ -4538,7 +4538,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@vue/runtime-dom@npm:3.3.11":
+"@vue/runtime-dom@npm:3.3.11, @vue/runtime-dom@npm:^3.3.11":
   version: 3.3.11
   resolution: "@vue/runtime-dom@npm:3.3.11"
   dependencies:
@@ -5432,6 +5432,7 @@ __metadata:
     "@vitejs/plugin-vue-jsx": "npm:^3.1.0"
     "@vue/eslint-config-prettier": "npm:^8.0.0"
     "@vue/eslint-config-typescript": "npm:^12.0.0"
+    "@vue/runtime-dom": "npm:^3.3.11"
     "@vue/test-utils": "npm:^2.4.3"
     "@vue/tsconfig": "npm:^0.4.0"
     eslint: "npm:^8.49.0"

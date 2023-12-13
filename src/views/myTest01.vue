@@ -35,7 +35,6 @@ function toggleLeftDrawer() {
       </q-drawer>
 
       <q-page-container>
-        {{ leftDrawerOpen }}
         <router-view />
       </q-page-container>
     </q-layout>

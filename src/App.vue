@@ -25,7 +25,7 @@ function toggleLeftDrawer() {
         <!-- ヘッダー（タブ設定） -->
         <q-tabs align="left">
           <q-route-tab to="/" label="Page One" />
-          <q-route-tab to="/" label="Page Two" />
+          <q-route-tab to="/test" label="Page Two" />
           <q-route-tab to="/about" label="Page Three" />
         </q-tabs>
       </q-header>
