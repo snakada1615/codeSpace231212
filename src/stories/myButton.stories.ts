@@ -1,14 +1,14 @@
 // Replace vue3 with vue if you are using Storybook for Vue 2
 import type { Meta, StoryObj } from '@storybook/vue3'
+import { action } from '@storybook/addon-actions'
+import myButton from 'src/components/test/myButtons.vue'
 
-import Button from 'src/components/test/myButtons.vue'
-
-const meta: Meta<typeof Button> = {
-  component: Button
+const meta: Meta<typeof myButton> = {
+  component: myButton
 }
 
 export default meta
-type Story = StoryObj<typeof Button>
+type Story = StoryObj<typeof myButton>
 
 /*
  *👇 Render functions are a framework specific feature to allow you control on how the component renders.
@@ -17,18 +17,23 @@ type Story = StoryObj<typeof Button>
  */
 export const Primary: Story = {
   render: () => ({
-    components: { Button },
-    template: '<Button :title="happy"/>'
+    components: { myButton },
+    setup() {
+      return {
+        onClick: action('clicked')
+      }
+    },
+    template: '<myButton @click="onClick" />'
   })
 }
 
 export const Secondary: Story = {
   render: (args) => ({
-    components: { Button },
+    components: { myButton },
     setup() {
       return { args }
     },
-    template: '<Button v-bind="args" />'
+    template: '<myButton v-bind="args" />'
   }),
   args: {
     title: '😄👍😍💯'
