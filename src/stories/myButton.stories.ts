@@ -16,9 +16,21 @@ type Story = StoryObj<typeof Button>
  * to learn how to use render functions.
  */
 export const Primary: Story = {
-  name: 'I am the primary',
   render: () => ({
     components: { Button },
-    template: '<Button />'
+    template: '<Button :title="happy"/>'
   })
+}
+
+export const Secondary: Story = {
+  render: (args) => ({
+    components: { Button },
+    setup() {
+      return { args }
+    },
+    template: '<Button v-bind="args" />'
+  }),
+  args: {
+    title: '😄👍😍💯'
+  }
 }

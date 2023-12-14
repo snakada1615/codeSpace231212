@@ -1,3 +1,9 @@
+<script setup lang="ts">
+const props = defineProps<{
+  title: string
+}>()
+</script>
+
 <template>
   <div class="q-pa-md q-gutter-sm">
     <q-btn color="primary" icon="mail" label="On Left" />
@@ -5,5 +11,6 @@
     <q-btn color="red" icon="mail" icon-right="send" label="On Left and Right" />
     <br />
     <q-btn icon="phone" label="Stacked" stack glossy color="purple" />
+    {{ title }}
   </div>
 </template>
