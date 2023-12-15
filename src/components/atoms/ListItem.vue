@@ -12,7 +12,7 @@ defineProps({
     default: () => []
   }
 })
-const setBgColor = (val: boolean): string => {
+const setBgColor = (val: boolean) => {
   return val ? 'bg-blue-4' : 'bg-red-4'
 }
 </script>
