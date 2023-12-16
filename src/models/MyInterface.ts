@@ -2,6 +2,7 @@ export interface diversityState {
   name: string
   status: boolean
 }
+
 export interface AnswerItem {
   categoryId: string
   questionId: string

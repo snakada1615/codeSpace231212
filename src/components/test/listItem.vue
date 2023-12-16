@@ -1,10 +1,6 @@
 <script setup lang="ts">
 import type { PropType } from 'vue'
-
-interface diversityState {
-  name: string
-  status: boolean
-}
+import { diversityState } from '../../models/MyInterface'
 
 defineProps({
   diversityStatus: {
