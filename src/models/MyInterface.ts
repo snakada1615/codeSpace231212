@@ -22,40 +22,21 @@ export interface CategoryItem {
   categoryText: string
 }
 
-/* export interface AnswerList<AnswerItem> extends Array<AnswerItem> {
-  // input: AnswerItem[]) {
-  //   super(input.length);
-  //   input.forEach((element, index) => {
-  //     this[index] = element;
-  //   });
-  // }
-  // items?: Array<AnswerItem>) {
-  //   if (typeof items === "array") {
-  //     super(...items);
-  //   }
-  //   console.log(typeof items);
-  // }
-
-  add = function (model: AnswerItem) {
-    this.push(model)
-  }
-
-  getItem(index) {
-    return this.find((item) => {
-      return item.questionId === index
-    })
-  }
-
-  get categoryScore() {
-    return this.reduce((accum, current) => {
-      const myIndex = accum.findIndex((item) => item.categoryId === current.categoryId)
-      if (myIndex === -1) {
-        accum[current.categoryId] = current.score
-      } else {
-        accum[current.categoryId] += current.score
-      }
-      return accum
-    }, [])
-  }
+export interface TargetMember {
+  targetId: string
+  count: number
 }
- */
+
+export interface TargetMembers extends Array<TargetMember> {}
+
+export interface DriItem {
+  id: string
+  Name: string
+  max_vol: number
+  En: number
+  Fe: number
+  Pr: number
+  Va: number
+}
+
+export interface DriItems extends Array<DriItem> {}

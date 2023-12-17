@@ -1,6 +1,6 @@
 // Replace vue3 with vue if you are using Storybook for Vue 2
 import type { Meta, StoryObj } from '@storybook/vue3'
-import listItem from 'src/components/test/ListItem.vue'
+import listItem from 'src/components/test/listItem.vue'
 interface diversityState {
   name: string
   status: boolean
