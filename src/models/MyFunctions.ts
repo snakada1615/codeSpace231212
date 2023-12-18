@@ -17,25 +17,27 @@ export function add(x: number, y: number): number {
  * @returns {*}
  */
 export function getNutritionDemand(target: models.TargetMembers, dri: models.DriItems) {
-  const initObj = {
-    En: 0,
-    Pr: 0,
-    Va: 0,
-    Fe: 0
-  }
+  const initObj = [
+    { key: 'En', value: 0 },
+    { key: 'Pr', value: 0 },
+    { key: 'Va', value: 0 },
+    { key: 'Fe', value: 0 }
+  ]
+  console.log(target)
+  console.log(dri)
   if (!target || target.length === 0) {
     return initObj
   }
   return target.reduce((accumulator, currentItem) => {
     const count = Number(currentItem.count)
-    const driValue = dri.find((item) => item.id === currentItem.id)
+    const driValue = dri.find((item) => item.id === currentItem.targetId)
     if (!driValue) {
       throw new Error('targetMember not matching...')
     }
-    accumulator.En += count * Number(driValue.En)
-    accumulator.Pr += count * Number(driValue.Pr)
-    accumulator.Va += count * Number(driValue.Va)
-    accumulator.Fe += count * Number(driValue.Fe)
+    accumulator[0].value += count * Number(driValue.En)
+    accumulator[1].value += count * Number(driValue.Pr)
+    accumulator[2].value += count * Number(driValue.Va)
+    accumulator[3].value += count * Number(driValue.Fe)
     return accumulator
   }, initObj)
 }
