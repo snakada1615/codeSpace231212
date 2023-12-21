@@ -18,6 +18,23 @@ const props = defineProps({
 
 const emits = defineEmits<{ (e: 'update:TargetMember', value?: TargetMembers): void }>()
 
+function updateTarget(index: number, val: number) {
+  // targetの変更内容を親コンポーネントにemit
+  const newTarget = props.targetMembers.map((item) => {
+    let countTemp = item.count
+    if (index === item.targetId) {
+      countTemp = val
+    }
+    return {
+      id: item.id,
+      count: countTemp
+    }
+  })
+
+  this.$emit('update:target', newTarget)
+  this.$emit('update:nutritionDemand', getNutritionDemand(newTarget, vm.driItems))
+}
+
 const targetMembersComputed = computed(() => {
   return props.targetMembers
 })
@@ -45,17 +62,17 @@ const columns: QTableProps['columns'] = [
   }
 ]
 
-const rows2: QTableProps['rows'] = props.driItems.map((item) => {
-  // targetで人数が設定されている場合はそれを利用、それ以外は0を設定
-  const res = targetMembersComputed.value.find(
-    (sameId: TargetMember) => sameId.targetId === item.id
-  )
+const rows2 = computed<QTableProps['rows']>(() => {
+  return props.driItems.map((item) => {
+    // targetで人数が設定されている場合はそれを利用、それ以外は0を設定
+    const res = props.targetMembers.find((sameId: TargetMember) => sameId.targetId === item.id)
 
-  return {
-    id: item.id,
-    Name: item.Name,
-    count: res ? res.count : 0
-  }
+    return {
+      id: item.id,
+      Name: item.Name,
+      count: res ? res.count : 0
+    }
+  })
 })
 
 const columns2: QTableProps['columns'] = [
@@ -76,6 +93,10 @@ const columns2: QTableProps['columns'] = [
     sortable: true
   }
 ]
+function onBlur(row, fieldName) {
+  console.log(`Value updated on row: ${row.id}`)
+  // Implement your update logic here, such as emitting an event or making an API call
+}
 </script>
 
 <template>
@@ -93,7 +114,11 @@ const columns2: QTableProps['columns'] = [
       <q-tr :props="props2">
         <q-td key="item" :props="props2"> {{ props2.row.Name }} </q-td>
         <q-td key="val" :props="props2">
-          <q-input v-model="props2.row.count" />
+          <q-input
+            v-model="props2.row.count"
+            @blur="onBlur(props2.row, props2.cols)"
+            @update:model-value="(newValue) => $emit('update:TargetMember', newValue)"
+          />
         </q-td>
       </q-tr>
     </template>
