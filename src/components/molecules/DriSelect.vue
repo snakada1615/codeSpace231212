@@ -88,10 +88,6 @@ const columns2: QTableProps['columns'] = [
     sortable: true
   }
 ]
-function onBlur(row, fieldName) {
-  console.log(`Value updated on row: ${row.id}`)
-  // Implement your update logic here, such as emitting an event or making an API call
-}
 </script>
 
 <template>
@@ -111,7 +107,6 @@ function onBlur(row, fieldName) {
         <q-td key="val" :props="props2">
           <q-input
             v-model="props2.row.count"
-            @blur="onBlur(props2.row, props2.cols)"
             @update:model-value="(newValue) => updateTarget(props2.row.id, Number(newValue))"
           />
         </q-td>

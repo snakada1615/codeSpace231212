@@ -35,7 +35,24 @@ const driItems: DriItems = [
 const targetMembers: TargetMembers = [{ targetId: '2', count: 2 }]
 
 const meta: Meta<typeof DriSelect> = {
-  component: DriSelect
+  component: DriSelect,
+  argTypes: {
+    // Other args definitions...
+    'update:TargetMember': {
+      action: 'update:TargetMember',
+      description: 'Event emitted when the target member is updated',
+      table: {
+        category: 'Events'
+      }
+    }
+  }
+}
+
+      table: {
+        category: 'Events'
+      }
+    }
+  }
 }
 
 export default meta
