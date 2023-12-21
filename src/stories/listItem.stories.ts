@@ -1,12 +1,9 @@
 // Replace vue3 with vue if you are using Storybook for Vue 2
 import type { Meta, StoryObj } from '@storybook/vue3'
-import listItem from 'src/components/test/listItem.vue'
-interface diversityState {
-  name: string
-  status: boolean
-}
+import listItem from 'src/components/atoms/ListItem.vue'
+import { type DiversityStates } from 'src/models/MyInterface'
 
-const diversityStatus: diversityState[] = [
+const myItem: DiversityStates = [
   {
     name: 'Starchy roots, tubers and their products',
     status: true
@@ -38,6 +35,6 @@ export const Secondary: Story = {
     template: '<listItem v-bind="args" />'
   }),
   args: {
-    diversityStatus
+    diversityStates: myItem
   }
 }

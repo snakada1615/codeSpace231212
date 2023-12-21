@@ -1,7 +1,9 @@
-export interface diversityState {
+export interface DiversityState {
   name: string
   status: boolean
 }
+
+export interface DiversityStates extends Array<DiversityState> {}
 
 export interface AnswerItem {
   categoryId: string

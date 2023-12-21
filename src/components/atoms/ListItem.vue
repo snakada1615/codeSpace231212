@@ -1,17 +1,14 @@
 <script setup lang="ts">
-import { PropType } from 'vue'
-
-interface diversityState {
-  name: string
-  status: boolean
-}
+import { type PropType } from 'vue'
+import { type DiversityStates } from 'src/models/MyInterface'
 
 defineProps({
-  diversityStatus: {
-    type: Array as PropType<diversityState[]>,
-    default: () => []
+  diversityStates: {
+    type: Object as PropType<DiversityStates>,
+    required: true
   }
 })
+
 const setBgColor = (val: boolean) => {
   return val ? 'bg-blue-4' : 'bg-red-4'
 }
@@ -28,7 +25,7 @@ const setBgColor = (val: boolean) => {
           <q-item
             clickable
             v-ripple
-            v-for="diversityState in diversityStatus"
+            v-for="diversityState in diversityStates"
             :key="diversityState.name"
             :class="setBgColor(diversityState.status)"
           >

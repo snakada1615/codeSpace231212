@@ -18,13 +18,11 @@ export function add(x: number, y: number): number {
  */
 export function getNutritionDemand(target: models.TargetMembers, dri: models.DriItems) {
   const initObj = [
-    { key: 'En', value: 0 },
-    { key: 'Pr', value: 0 },
-    { key: 'Va', value: 0 },
-    { key: 'Fe', value: 0 }
+    { key: 'En', value: 0, label: 'Energy' },
+    { key: 'Pr', value: 0, label: 'Protein' },
+    { key: 'Va', value: 0, label: 'Vit-A' },
+    { key: 'Fe', value: 0, label: 'Iron' }
   ]
-  console.log(target)
-  console.log(dri)
   if (!target || target.length === 0) {
     return initObj
   }
