@@ -18,26 +18,21 @@ const props = defineProps({
 
 const emits = defineEmits<{ (e: 'update:TargetMember', value?: TargetMembers): void }>()
 
-function updateTarget(index: number, val: number) {
+function updateTarget(index: string, val: number) {
   // targetの変更内容を親コンポーネントにemit
-  const newTarget = props.targetMembers.map((item) => {
+  const newTarget: TargetMembers = props.targetMembers.map((item) => {
     let countTemp = item.count
     if (index === item.targetId) {
       countTemp = val
     }
     return {
-      id: item.id,
+      targetId: item.targetId,
       count: countTemp
     }
   })
 
-  this.$emit('update:target', newTarget)
-  this.$emit('update:nutritionDemand', getNutritionDemand(newTarget, vm.driItems))
+  emits('update:TargetMember', newTarget)
 }
-
-const targetMembersComputed = computed(() => {
-  return props.targetMembers
-})
 
 const rows = computed<QTableProps['rows']>(() => {
   return calk.getNutritionDemand(props.targetMembers, props.driItems)
@@ -117,7 +112,7 @@ function onBlur(row, fieldName) {
           <q-input
             v-model="props2.row.count"
             @blur="onBlur(props2.row, props2.cols)"
-            @update:model-value="(newValue) => $emit('update:TargetMember', newValue)"
+            @update:model-value="(newValue) => updateTarget(props2.row.id, Number(newValue))"
           />
         </q-td>
       </q-tr>
