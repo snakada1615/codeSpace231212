@@ -48,13 +48,6 @@ const meta: Meta<typeof DriSelect> = {
   }
 }
 
-      table: {
-        category: 'Events'
-      }
-    }
-  }
-}
-
 export default meta
 type Story = StoryObj<typeof DriSelect>
 
