@@ -1,24 +1,24 @@
 // Replace vue3 with vue if you are using Storybook for Vue 2
 import type { Meta, StoryObj } from '@storybook/vue3'
-import test01Vue from '@/components/test/test01.vue'
+import myTest01 from 'src/components/test/myTest01.vue'
 
 const meta: Meta = {
-  component: test01Vue
+  component: myTest01
 }
 
 export default meta
 
-type Story = StoryObj<typeof test01Vue>
+type Story = StoryObj<typeof myTest01>
 
 export const Secondary: Story = {
   render: (args) => ({
-    components: { test01Vue },
+    components: { myTest01 },
     setup() {
       return { args }
     },
-    template: '<test01Vue v-bind="args" />'
+    template: '<myTest01 v-bind="args" />'
   }),
   args: {
-    diversityStates: myItem
+    targetMembers: 'myItem'
   }
 }
