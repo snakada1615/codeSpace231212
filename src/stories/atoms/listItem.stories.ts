@@ -19,6 +19,7 @@ const myItem: DiversityStates = [
 ]
 
 const meta: Meta<typeof listItem> = {
+  title: 'app/atoms/ListItem',
   component: listItem
 }
 

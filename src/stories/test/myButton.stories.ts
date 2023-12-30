@@ -4,6 +4,7 @@ import { action } from '@storybook/addon-actions'
 import myButton from 'src/components/test/myButtons.vue'
 
 const meta: Meta<typeof myButton> = {
+  title: 'test/myButton',
   component: myButton
 }
 

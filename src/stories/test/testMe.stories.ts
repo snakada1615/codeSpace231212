@@ -3,7 +3,7 @@ import type { Meta, StoryObj } from '@storybook/vue3'
 import { action } from '@storybook/addon-actions'
 
 export default {
-  title: 'Example/MyButton',
+  title: 'test/testMe',
   component: testMe,
   argTypes: {
     'button:click': {}

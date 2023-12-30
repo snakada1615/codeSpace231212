@@ -36,7 +36,7 @@ const driItems: DriItems = [
 const targetMembers: TargetMembers = [{ targetId: '2', Name: 'adolescent all', count: 2 }]
 
 const meta: Meta<typeof DriSelect> = {
-  title: 'DriSelect',
+  title: 'app/molecules/DriSelect',
   component: DriSelect,
   argTypes: {
     'update:TargetMember': {}

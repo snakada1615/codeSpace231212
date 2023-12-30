@@ -3,6 +3,7 @@ import type { Meta, StoryObj } from '@storybook/vue3'
 import MyDialogue from 'src/components/test/MyDialogue.vue'
 
 const meta: Meta<typeof MyDialogue> = {
+  title: 'test/MyDialogue',
   component: MyDialogue
 }
 
