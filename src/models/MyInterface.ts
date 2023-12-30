@@ -43,3 +43,18 @@ export interface DriItem {
 }
 
 export interface DriItems extends Array<DriItem> {}
+
+export interface FctItem {
+  Id: string
+  Food_grp_id: string
+  Name: string
+  Food_grp: string
+  Carb: number
+  En: number
+  Fe: number
+  Fat: number
+  Pr: number
+  Va: number
+}
+
+export interface FctItems extends Array<FctItem> {}
