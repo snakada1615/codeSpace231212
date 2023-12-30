@@ -30,13 +30,15 @@ function updateTarget(index: string, val: number) {
 
       return {
         targetId: item.targetId,
+        Name: item.Name,
         count: myCount
       }
     })
   } else {
     newTarget = [
       {
-        targetId: 'children under five',
+        targetId: '0',
+        Name: 'children under five',
         count: 0
       }
     ]
@@ -121,6 +123,7 @@ const columnsFamilyMember: QTableProps['columns'] = [
         <q-td key="val" :props="familyTableRow">
           <q-input
             v-model="familyTableRow.row.count"
+            type="number"
             @update:model-value="
               (newValue) => updateTarget(familyTableRow.row.targetId, Number(newValue))
             "
