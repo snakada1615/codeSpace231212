@@ -33,7 +33,7 @@
     "@storybook/jest": "^0.2.3",
     "@storybook/test": "^7.6.4",
     "@storybook/testing-library": "^0.2.2",
-    "@storybook/vue3": "^7.6.4",
+    "@storybook/vue3": "^7.6.6",
     "@storybook/vue3-vite": "^7.6.4",
     "@tsconfig/node18": "^18.2.2",
     "@types/jsdom": "^21.1.6",

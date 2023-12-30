@@ -18,7 +18,6 @@ const props = defineProps({
 
 const emits = defineEmits<{
   (e: 'update:TargetMember', value?: TargetMembers): void
-  (e: 'dummy', value: string): void
 }>()
 
 function updateTarget(index: string, val: number) {
@@ -33,7 +32,7 @@ function updateTarget(index: string, val: number) {
       count: countTemp
     }
   })
-
+  console.log(newTarget)
   emits('update:TargetMember', newTarget)
 }
 

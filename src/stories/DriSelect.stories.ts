@@ -2,6 +2,7 @@
 import type { Meta, StoryObj } from '@storybook/vue3'
 import DriSelect from 'src/components/molecules/DriSelect.vue'
 import type { DriItems, TargetMembers } from '@/models/MyInterface'
+import { action } from '@storybook/addon-actions'
 
 const driItems: DriItems = [
   {
@@ -38,23 +39,11 @@ const meta: Meta<typeof DriSelect> = {
   title: 'DriSelect',
   component: DriSelect,
   argTypes: {
-    // Other args definitions...
-    'update:TargetMember': {
-      action: 'update:TargetMember',
-      description: 'Event emitted when the target member is updated',
-      control: false,
-      table: {
-        category: 'Events',
-        type: {
-          summary: null
-        },
-        defaultValue: { summary: undefined }
-      }
-    }
+    'update:TargetMember': {}
   }
 }
-
 export default meta
+
 type Story = StoryObj<typeof DriSelect>
 
 /*
@@ -68,10 +57,11 @@ export const Primary: Story = {
     setup() {
       return { args }
     },
-    template: '<DriSelect v-bind="args" />'
+    template: '<DriSelect v-bind="args" @update:TargetMember="args[\'pdate:TargetMember\']"/>'
   }),
   args: {
     driItems,
-    targetMembers
+    targetMembers,
+    'update:TargetMember': action('hit')
   }
 }
