@@ -22,25 +22,35 @@ const emits = defineEmits<{
 
 function updateTarget(index: string, val: number) {
   // targetの変更内容を親コンポーネントにemit
-  const newTarget: TargetMembers = props.targetMembers.map((item) => {
-    let countTemp = item.count
-    if (index === item.targetId) {
-      countTemp = val
-    }
-    return {
-      targetId: item.targetId,
-      count: countTemp
-    }
-  })
+  let newTarget: TargetMembers
+  if (rowsFamilyMember.value) {
+    newTarget = rowsFamilyMember.value.map((item) => {
+      // targetで人数が設定されている場合はそれを利用、それ以外は0を設定
+      const myCount = index === item.targetId ? val : item.count
+
+      return {
+        targetId: item.targetId,
+        count: myCount
+      }
+    })
+  } else {
+    newTarget = [
+      {
+        targetId: 'children under five',
+        count: 0
+      }
+    ]
+  }
+
   console.log(newTarget)
   emits('update:TargetMember', newTarget)
 }
 
-const rows = computed<QTableProps['rows']>(() => {
+const rowsDri = computed<QTableProps['rows']>(() => {
   return calk.getNutritionDemand(props.targetMembers, props.driItems)
 })
 
-const columns: QTableProps['columns'] = [
+const columnsDri: QTableProps['columns'] = [
   {
     name: 'item',
     required: true,
@@ -59,20 +69,22 @@ const columns: QTableProps['columns'] = [
   }
 ]
 
-const rows2 = computed<QTableProps['rows']>(() => {
+const rowsFamilyMember = computed<QTableProps['rows']>(() => {
   return props.driItems.map((item) => {
     // targetで人数が設定されている場合はそれを利用、それ以外は0を設定
     const res = props.targetMembers.find((sameId: TargetMember) => sameId.targetId === item.id)
+    console.log(props.targetMembers)
+    console.log(res)
 
     return {
-      id: item.id,
+      targetId: item.id,
       Name: item.Name,
       count: res ? res.count : 0
     }
   })
 })
 
-const columns2: QTableProps['columns'] = [
+const columnsFamilyMember: QTableProps['columns'] = [
   {
     name: 'item',
     required: true,
@@ -99,17 +111,19 @@ const columns2: QTableProps['columns'] = [
     flat
     bordered
     dense
-    :rows="rows2"
-    :columns="columns2"
+    :rows="rowsFamilyMember"
+    :columns="columnsFamilyMember"
     row-key="name"
   >
-    <template v-slot:body="props2">
-      <q-tr :props="props2">
-        <q-td key="item" :props="props2"> {{ props2.row.Name }} </q-td>
-        <q-td key="val" :props="props2">
+    <template v-slot:body="familyTableRow">
+      <q-tr :props="familyTableRow">
+        <q-td key="item" :props="familyTableRow"> {{ familyTableRow.row.Name }} </q-td>
+        <q-td key="val" :props="familyTableRow">
           <q-input
-            v-model="props2.row.count"
-            @update:model-value="(newValue) => updateTarget(props2.row.id, Number(newValue))"
+            v-model="familyTableRow.row.count"
+            @update:model-value="
+              (newValue) => updateTarget(familyTableRow.row.targetId, Number(newValue))
+            "
           />
         </q-td>
       </q-tr>
@@ -122,8 +136,8 @@ const columns2: QTableProps['columns'] = [
     flat
     bordered
     dense
-    :rows="rows"
-    :columns="columns"
+    :rows="rowsDri"
+    :columns="columnsDri"
     row-key="name"
   />
 </template>

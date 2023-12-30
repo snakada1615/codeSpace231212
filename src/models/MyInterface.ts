@@ -26,6 +26,7 @@ export interface CategoryItem {
 
 export interface TargetMember {
   targetId: string
+  Name: string
   count: number
 }
 

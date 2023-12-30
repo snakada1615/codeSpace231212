@@ -33,7 +33,7 @@ const driItems: DriItems = [
     id: '2'
   }
 ]
-const targetMembers: TargetMembers = [{ targetId: '2', count: 2 }]
+const targetMembers: TargetMembers = [{ targetId: '2', Name: 'adolescent all', count: 2 }]
 
 const meta: Meta<typeof DriSelect> = {
   title: 'DriSelect',
