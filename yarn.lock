@@ -1820,6 +1820,13 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@faker-js/faker@npm:^8.3.1":
+  version: 8.3.1
+  resolution: "@faker-js/faker@npm:8.3.1"
+  checksum: ed50c27a5674a8c755574ccc0c79c29fa70cd17d524b701269f584d2f78720c690da219f6111b0e743a4f6570fb08685d826b2d9e80ca9c1484b8c26047864c6
+  languageName: node
+  linkType: hard
+
 "@fal-works/esbuild-plugin-global-externals@npm:^2.1.2":
   version: 2.1.2
   resolution: "@fal-works/esbuild-plugin-global-externals@npm:2.1.2"
@@ -5612,6 +5619,7 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "codespace231212@workspace:."
   dependencies:
+    "@faker-js/faker": "npm:^8.3.1"
     "@quasar/extras": "npm:^1.16.9"
     "@quasar/vite-plugin": "npm:^1.6.0"
     "@rushstack/eslint-patch": "npm:^1.3.3"
