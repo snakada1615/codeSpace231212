@@ -57,7 +57,7 @@ export const Primary: Story = {
     setup() {
       return { args }
     },
-    template: '<DriSelect v-bind="args" @update:TargetMember="args[\'pdate:TargetMember\']"/>'
+    template: '<DriSelect v-bind="args" @update:TargetMember="args[\'update:TargetMember\']"/>'
   }),
   args: {
     driItems,
