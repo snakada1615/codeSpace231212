@@ -3,7 +3,7 @@ import { ref } from 'vue'
 import { faker } from '@faker-js/faker'
 import type { SexType } from '@faker-js/faker'
 
-type SubscriptionTier = 'free' | 'basic' | 'business'
+type favoriteFood = 'cereal' | 'meat' | 'vegetable'
 
 interface User {
   _id: string
@@ -13,7 +13,8 @@ interface User {
   firstName: string
   lastName: string
   sex: SexType
-  subscriptionTier: SubscriptionTier
+  favoriteFood: favoriteFood
+  BMI: number
 }
 
 function createRandomUser(): User {
@@ -25,7 +26,8 @@ function createRandomUser(): User {
     firstName: faker.person.firstName(),
     lastName: faker.person.lastName(),
     sex: faker.person.sexType(),
-    subscriptionTier: faker.helpers.arrayElement(['free', 'basic', 'business'])
+    favoriteFood: faker.helpers.arrayElement(['cereal', 'meat', 'vegetable']),
+    BMI: faker.number.float({ min: 10, max: 50, precision: 0.1 })
   }
 }
 
@@ -38,7 +40,8 @@ const userOrg: User = {
   firstName: 'Sylvan',
   lastName: 'Price',
   sex: 'female',
-  subscriptionTier: 'free'
+  favoriteFood: 'vegetable',
+  BMI: 15.6
 }
 
 const randomUser = ref(userOrg)
@@ -49,9 +52,13 @@ function updateName() {
 </script>
 
 <template>
-  <div class="bg-grey-4">
-    halo
-    <q-btn label="push me!" @click="updateName" />
-    <div>{{ randomUser }}</div>
-  </div>
+  <q-card class="bg-grey-2 q-pa-sm">
+    <q-btn label="here comes new user!" @click="updateName" class="q-my-sm" color="secondary" />
+    <div>First Name: {{ randomUser.firstName }}</div>
+    <div>Last Name: {{ randomUser.lastName }}</div>
+    <div>sex: {{ randomUser.sex }}</div>
+    <div>Birthday: {{ randomUser.birthday }}</div>
+    <div>BMI: {{ randomUser.BMI }}</div>
+    <div>Favorite food: {{ randomUser.favoriteFood }}</div>
+  </q-card>
 </template>
