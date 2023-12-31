@@ -2,6 +2,8 @@
 import { ref } from 'vue'
 import { faker } from '@faker-js/faker'
 import type { SexType } from '@faker-js/faker'
+import FakerFunk from 'src/models/fakerFunc'
+import * as models from 'src/models/MyInterface'
 
 type favoriteFood = 'cereal' | 'meat' | 'vegetable'
 
@@ -43,11 +45,28 @@ const userOrg: User = {
   favoriteFood: 'vegetable',
   BMI: 15.6
 }
+const fctOrg: models.FctItem = {
+  Id: '152',
+  FoodGroupId: 'oyatus',
+  Name: 'garigari-kun',
+  FoodGroup: 'desert',
+  Carb: 8,
+  En: 3,
+  Fe: 4,
+  Fat: 6,
+  Pr: 2,
+  Va: 7
+}
 
 const randomUser = ref(userOrg)
+const randomFct = ref(fctOrg)
 
 function updateName() {
   randomUser.value = createRandomUser()
+}
+
+function updateFct() {
+  randomFct.value = FakerFunk.createFct(models.sampleFood)
 }
 </script>
 
@@ -60,5 +79,10 @@ function updateName() {
     <div>Birthday: {{ randomUser.birthday }}</div>
     <div>BMI: {{ randomUser.BMI }}</div>
     <div>Favorite food: {{ randomUser.favoriteFood }}</div>
+  </q-card>
+  <q-card class="bg-grey-2 q-pa-sm q-my-md">
+    <div>hi</div>
+    <q-btn label="here comes new food!" @click="updateFct" class="q-my-sm" color="secondary" />
+    <div>{{ randomFct }}</div>
   </q-card>
 </template>
