@@ -35,7 +35,6 @@ export interface TargetMembers extends Array<TargetMember> {}
 export interface DriItem {
   id: string
   Name: string
-  max_vol: number
   En: number
   Fe: number
   Pr: number
@@ -104,3 +103,5 @@ export const sampleFood = [
   { Id: '031', FoodGroupId: '9', FoodGroup: 'oil/fat', Name: 'Palm oil' },
   { Id: '031', FoodGroupId: '9', FoodGroup: 'oil/fat', Name: 'Maize oil' }
 ]
+
+export const sampleDri = [{}]

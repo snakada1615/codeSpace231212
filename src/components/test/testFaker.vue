@@ -45,6 +45,7 @@ const userOrg: User = {
   favoriteFood: 'vegetable',
   BMI: 15.6
 }
+
 const fctOrg: models.FctItem = {
   Id: '152',
   FoodGroupId: 'oyatus',
@@ -58,8 +59,18 @@ const fctOrg: models.FctItem = {
   Va: 7
 }
 
+const driOrg: models.DriItem = {
+  id: 'id001',
+  Name: 'adult',
+  En: 20,
+  Fe: 45,
+  Pr: 62,
+  Va: 121
+}
+
 const randomUser = ref(userOrg)
 const randomFct = ref(fctOrg)
+const randomDri = ref(driOrg)
 
 function updateName() {
   randomUser.value = createRandomUser()
@@ -67,6 +78,10 @@ function updateName() {
 
 function updateFct() {
   randomFct.value = FakerFunk.createFct(models.sampleFood)
+}
+
+function updateDri() {
+  randomDri.value = FakerFunk.createDri()
 }
 </script>
 
@@ -84,5 +99,10 @@ function updateFct() {
     <div>hi</div>
     <q-btn label="here comes new food!" @click="updateFct" class="q-my-sm" color="secondary" />
     <div>{{ randomFct }}</div>
+  </q-card>
+  <q-card class="bg-grey-2 q-pa-sm q-my-md">
+    <div>hi</div>
+    <q-btn label="here comes new Dri!" @click="updateDri" class="q-my-sm" color="secondary" />
+    <div>{{ randomDri }}</div>
   </q-card>
 </template>

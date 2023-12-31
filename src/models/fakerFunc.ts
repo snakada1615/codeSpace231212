@@ -18,4 +18,22 @@ export default class FakerFunc {
       Va: faker.number.float({ min: 0, max: 500, precision: 0.1 })
     }
   }
+
+  static createDri(): models.DriItem {
+    return {
+      id: faker.string.uuid(),
+      Name: faker.helpers.arrayElement([
+        'child under 6 month',
+        'child 6-23 month',
+        'lactating',
+        'adult',
+        'pregnant',
+        'adolescent all'
+      ]),
+      En: faker.number.float({ min: 0, max: 4000, precision: 0.1 }),
+      Fe: faker.number.float({ min: 0, max: 50, precision: 0.1 }),
+      Pr: faker.number.float({ min: 0, max: 200, precision: 0.1 }),
+      Va: faker.number.float({ min: 0, max: 500, precision: 0.1 })
+    }
+  }
 }
