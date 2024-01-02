@@ -2,7 +2,7 @@
 import { ref } from 'vue'
 import { faker } from '@faker-js/faker'
 import type { SexType } from '@faker-js/faker'
-import FakerFunk from 'src/models/fakerFunc'
+import FakerFunc from 'src/models/fakerFunc'
 import * as models from 'src/models/MyInterface'
 
 type favoriteFood = 'cereal' | 'meat' | 'vegetable'
@@ -77,12 +77,14 @@ function updateName() {
 }
 
 function updateFct() {
-  randomFct.value = FakerFunk.createFct(models.sampleFood)
+  randomFct.value = FakerFunc.createFct(models.sampleFood)
 }
 
 function updateDri() {
-  randomDri.value = FakerFunk.createDri()
+  randomDri.value = FakerFunc.createDri()
 }
+
+const temp = FakerFunc.createDris()
 </script>
 
 <template>
@@ -104,5 +106,10 @@ function updateDri() {
     <div>hi</div>
     <q-btn label="here comes new Dri!" @click="updateDri" class="q-my-sm" color="secondary" />
     <div>{{ randomDri }}</div>
+  </q-card>
+  <q-card class="bg-grey-2 q-pa-sm q-my-md">
+    <div>hi</div>
+
+    <div>{{ temp }}</div>
   </q-card>
 </template>

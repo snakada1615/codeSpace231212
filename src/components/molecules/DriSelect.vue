@@ -1,8 +1,8 @@
 <script setup lang="ts">
-import type { DriItems, TargetMembers, TargetMember } from 'src/models/MyInterface'
+import type { DriItems, TargetMembers, TargetMember, DriItem } from 'src/models/MyInterface'
 import { computed, type PropType } from 'vue'
 import type { QTableProps } from 'quasar'
-import * as calk from 'src/models/MyFunctions'
+import myFunk from 'src/models/MyFunctions'
 
 const props = defineProps({
   targetMembers: {
@@ -49,7 +49,7 @@ function updateTarget(index: string, val: number) {
 }
 
 const rowsDri = computed<QTableProps['rows']>(() => {
-  return calk.getNutritionDemand(props.targetMembers, props.driItems)
+  return myFunk.getNutritionDemand(props.targetMembers, props.driItems)
 })
 
 const columnsDri: QTableProps['columns'] = [
@@ -72,16 +72,17 @@ const columnsDri: QTableProps['columns'] = [
 ]
 
 const rowsFamilyMember = computed<QTableProps['rows']>(() => {
-  return props.driItems.map((item) => {
+  return props.targetMembers.map((item) => {
     // targetで人数が設定されている場合はそれを利用、それ以外は0を設定
-    const res = props.targetMembers.find((sameId: TargetMember) => sameId.targetId === item.id)
-    console.log(props.targetMembers)
-    console.log(res)
+    const res = props.driItems.find((sameId: DriItem) => sameId.id === item.targetId)
+    if (!res) {
+      throw new Error('targetMembers does not cover all item in driItems')
+    }
 
     return {
-      targetId: item.id,
+      targetId: item.targetId,
       Name: item.Name,
-      count: res ? res.count : 0
+      count: item.count
     }
   })
 })
@@ -107,40 +108,43 @@ const columnsFamilyMember: QTableProps['columns'] = [
 </script>
 
 <template>
-  <q-table
-    class="my-sticky-header-table q-my-md"
-    :table-header-style="{ backgroundColor: 'DarkSeaGreen' }"
-    flat
-    bordered
-    dense
-    :rows="rowsFamilyMember"
-    :columns="columnsFamilyMember"
-    row-key="name"
-  >
-    <template v-slot:body="familyTableRow">
-      <q-tr :props="familyTableRow">
-        <q-td key="item" :props="familyTableRow"> {{ familyTableRow.row.Name }} </q-td>
-        <q-td key="val" :props="familyTableRow">
-          <q-input
-            v-model="familyTableRow.row.count"
-            type="number"
-            @update:model-value="
-              (newValue) => updateTarget(familyTableRow.row.targetId, Number(newValue))
-            "
-          />
-        </q-td>
-      </q-tr>
-    </template>
-  </q-table>
+  <q-card class="bg-grey-2 q-pa-sm">
+    <q-table
+      class="my-sticky-header-table q-my-md"
+      :table-header-style="{ backgroundColor: 'DarkSeaGreen' }"
+      flat
+      bordered
+      dense
+      :rows="rowsFamilyMember"
+      :columns="columnsFamilyMember"
+      row-key="name"
+    >
+      <template v-slot:body="familyTableRow">
+        <q-tr :props="familyTableRow">
+          <q-td key="item" :props="familyTableRow"> {{ familyTableRow.row.Name }} </q-td>
+          <q-td key="val" :props="familyTableRow">
+            <q-input
+              v-model="familyTableRow.row.count"
+              type="number"
+              @update:model-value="
+                (newValue) => updateTarget(familyTableRow.row.targetId, Number(newValue))
+              "
+              :rules="[(val) => typeof val === 'number' || 'only number is allowed']"
+            />
+          </q-td>
+        </q-tr>
+      </template>
+    </q-table>
 
-  <q-table
-    class="my-sticky-header-table"
-    :table-header-style="{ backgroundColor: 'DarkSeaGreen' }"
-    flat
-    bordered
-    dense
-    :rows="rowsDri"
-    :columns="columnsDri"
-    row-key="name"
-  />
+    <q-table
+      class="my-sticky-header-table"
+      :table-header-style="{ backgroundColor: 'DarkSeaGreen' }"
+      flat
+      bordered
+      dense
+      :rows="rowsDri"
+      :columns="columnsDri"
+      row-key="name"
+    />
+  </q-card>
 </template>

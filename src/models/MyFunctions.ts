@@ -10,14 +10,14 @@ export function add(x: number, y: number): number {
   return x + y
 }
 
-export class myFunc {
+export default class myFunc {
   /*
    * ターゲットグループの構成とdri一蘭から栄養需要を計算する
    * @param target ターゲット構成[id, count]
    * @param dri
    * @returns {*}
    */
-  getNutritionDemand(target: models.TargetMembers, dri: models.DriItems) {
+  static getNutritionDemand(target: models.TargetMembers, dri: models.DriItems) {
     const initObj = [
       { key: 'En', value: 0, label: 'Energy' },
       { key: 'Pr', value: 0, label: 'Protein' },
