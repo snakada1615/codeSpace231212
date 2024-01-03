@@ -21,4 +21,15 @@ app.use(Quasar, {
   plugins: {} // import Quasar plugins and add here
 })
 
+// Global error handler
+app.config.errorHandler = (err, instance, info) => {
+  // Handle the error globally
+  console.error('Global error:', err)
+  console.log('Vue instance:', instance)
+  console.log('Error info:', info)
+
+  // Add code for UI notifications, reporting or other error handling logic
+  router.push({ name: 'ErrorPage', state: { myError: JSON.stringify((err as Error).message) } })
+}
+
 app.mount('#app')
