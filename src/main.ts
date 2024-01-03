@@ -27,7 +27,6 @@ app.config.errorHandler = (err, instance, info) => {
   console.error('Global error:', err)
   console.log('Vue instance:', instance)
   console.log('Error info:', info)
-  console.log(JSON.stringify(err.message))
 
   // Add code for UI notifications, reporting or other error handling logic
   router.push({ name: 'ErrorPage', state: { myError: JSON.stringify((err as Error).message) } })
