@@ -72,13 +72,28 @@ const columnsDri: QTableProps['columns'] = [
 ]
 
 const rowsFamilyMember = computed<QTableProps['rows']>(() => {
-  return props.targetMembers.map((item) => {
-    // targetで人数が設定されている場合はそれを利用、それ以外は0を設定
-    const res = props.driItems.find((sameId: DriItem) => sameId.id === item.targetId)
-    if (!res) {
-      throw new Error('targetMembers does not cover all item in driItems')
-    }
+  // targetMembersとdriItemsの行数が異なる場合にエラー
+  const targetMembersId = myFunk
+    .uniq(
+      props.targetMembers.map((item) => {
+        return item.targetId
+      })
+    )
+    .sort()
+    .toString()
+  const driItemsId = props.driItems
+    .map((item) => {
+      return item.id
+    })
+    .sort()
+    .toString()
+  if (targetMembersId !== driItemsId) {
+    // console.log('targetMembers does not match with familyType in driItems')
+    throw new Error('targetMembers does not match with familyType in driItems')
+  }
 
+  // 上記で問題なければ以下を返す
+  return props.targetMembers.map((item) => {
     return {
       targetId: item.targetId,
       Name: item.Name,

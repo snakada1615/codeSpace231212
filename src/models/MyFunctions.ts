@@ -40,4 +40,9 @@ export default class myFunc {
       return accumulator
     }, initObj)
   }
+
+  // 配列から一意の値を抽出
+  static uniq<T>(array: Array<T>): Array<T> {
+    return Array.from(new Set(array))
+  }
 }
