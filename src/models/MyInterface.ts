@@ -112,3 +112,16 @@ export const sampleFood = [
 ]
 
 export const sampleDri = [{}]
+
+export interface nutrientLabel {
+  label: string
+  value: keyof FctItem
+}
+
+export const nutrientLabels: nutrientLabel[] = [
+  { value: 'Carb', label: 'Carbohydrate' },
+  { value: 'En', label: 'Energy' },
+  { value: 'Pr', label: 'Protein' },
+  { value: 'Va', label: 'Vit-A' },
+  { value: 'Fat', label: 'Fat' }
+]
