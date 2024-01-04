@@ -50,8 +50,6 @@ const meta: Meta<typeof DriSelect> = {
 }
 export default meta
 
-console.log(FakerFunc.createDris())
-
 type Story = StoryObj<typeof DriSelect>
 
 /*

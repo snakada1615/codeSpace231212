@@ -46,7 +46,6 @@ function updateTarget(index: string, val: number) {
     ]
   }
 
-  console.log(newTarget)
   emits('update:TargetMember', newTarget)
 }
 
@@ -69,8 +68,6 @@ const rowsDri = computed<QTableProps['rows']>(() => {
       default:
         index = -1
     }
-    console.error(index)
-    console.log(item)
     return {
       key: item.key,
       value: myFunc.setDigit(item.value, index),
