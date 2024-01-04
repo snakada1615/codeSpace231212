@@ -1,8 +1,10 @@
 <script setup lang="ts">
-import type { DriItems, TargetMembers, TargetMember, DriItem } from 'src/models/MyInterface'
+import type { DriItems, TargetMembers } from 'src/models/MyInterface'
 import { computed, type PropType } from 'vue'
 import type { QTableProps } from 'quasar'
-import myFunk from 'src/models/MyFunctions'
+import myFunc from 'src/models/MyFunctions'
+// 全てのintefaceを読み込む
+import * as myVal from 'src/models/MyInterface'
 
 const props = defineProps({
   targetMembers: {
@@ -49,7 +51,32 @@ function updateTarget(index: string, val: number) {
 }
 
 const rowsDri = computed<QTableProps['rows']>(() => {
-  return myFunk.getNutritionDemand(props.targetMembers, props.driItems)
+  return myFunc.getNutritionDemand(props.targetMembers, props.driItems).map((item) => {
+    let index: number
+    switch (item.label) {
+      case 'Energy':
+        index = 0
+        break
+      case 'Protein':
+        index = 1
+        break
+      case 'Vit-A':
+        index = 2
+        break
+      case 'Iron':
+        index = 3
+        break
+      default:
+        index = -1
+    }
+    console.error(index)
+    console.log(item)
+    return {
+      key: item.key,
+      value: myFunc.setDigit(item.value, index),
+      label: item.label
+    }
+  })
 })
 
 const columnsDri: QTableProps['columns'] = [
@@ -73,7 +100,7 @@ const columnsDri: QTableProps['columns'] = [
 
 const rowsFamilyMember = computed<QTableProps['rows']>(() => {
   // targetMembersとdriItemsの行数が異なる場合にエラー
-  const targetMembersId = myFunk
+  const targetMembersId = myFunc
     .uniq(
       props.targetMembers.map((item) => {
         return item.targetId
@@ -81,7 +108,7 @@ const rowsFamilyMember = computed<QTableProps['rows']>(() => {
     )
     .sort()
     .toString()
-  const driItemsId = myFunk
+  const driItemsId = myFunc
     .uniq(
       props.driItems.map((item) => {
         return item.id
@@ -126,6 +153,7 @@ const columnsFamilyMember: QTableProps['columns'] = [
 </script>
 
 <template>
+  <!-- TargetMemberの構成決定 -->
   <q-card class="bg-grey-2 q-pa-sm">
     <q-table
       class="my-sticky-header-table q-my-md"
@@ -156,6 +184,7 @@ const columnsFamilyMember: QTableProps['columns'] = [
       </template>
     </q-table>
 
+    <!-- 家族合計での栄養必要量 -->
     <q-table
       class="my-sticky-header-table"
       :table-header-style="{ backgroundColor: 'DarkSeaGreen' }"
@@ -166,5 +195,6 @@ const columnsFamilyMember: QTableProps['columns'] = [
       :columns="columnsDri"
       row-key="name"
     />
+    <div class="q-ml-md">KC: KiloCalorie, MC: MegaCalorie, GC: GigaCalorie</div>
   </q-card>
 </template>

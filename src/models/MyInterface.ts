@@ -58,6 +58,13 @@ export interface FctItem {
 
 export interface FctItems extends Array<FctItem> {}
 
+export enum setDigitKey {
+  energy,
+  protein,
+  vitA,
+  iron
+}
+
 export const sampleFood = [
   { Id: '001', FoodGroupId: '1', FoodGroup: 'Grains, roots and tubers', Name: 'Rice' },
   { Id: '002', FoodGroupId: '1', FoodGroup: 'Grains, roots and tubers', Name: 'Maize' },
