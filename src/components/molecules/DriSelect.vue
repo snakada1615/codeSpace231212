@@ -81,14 +81,17 @@ const rowsFamilyMember = computed<QTableProps['rows']>(() => {
     )
     .sort()
     .toString()
-  const driItemsId = props.driItems
-    .map((item) => {
-      return item.id
-    })
+  const driItemsId = myFunk
+    .uniq(
+      props.driItems.map((item) => {
+        return item.id
+      })
+    )
     .sort()
     .toString()
   if (targetMembersId !== driItemsId) {
-    // console.log('targetMembers does not match with familyType in driItems')
+    console.log(targetMembersId)
+    console.log(driItemsId)
     throw new Error('targetMembers does not match with familyType in driItems')
   }
 
@@ -141,6 +144,8 @@ const columnsFamilyMember: QTableProps['columns'] = [
             <q-input
               v-model="familyTableRow.row.count"
               type="number"
+              class="q-py-xs"
+              dense
               @update:model-value="
                 (newValue) => updateTarget(familyTableRow.row.targetId, Number(newValue))
               "

@@ -32,7 +32,14 @@ const driItems: DriItems = [
   }
 ]
 
-const targetMembers: TargetMembers = [{ targetId: '2', Name: 'adolescent all', count: 2 }]
+const targetMembers: TargetMembers = [
+  { targetId: '0', Name: 'child under 6 month', count: 0 },
+  { targetId: '1', Name: 'child 6-23 month', count: 2 },
+  { targetId: '2', Name: 'lactating', count: 1 },
+  { targetId: '3', Name: 'adult', count: 3 },
+  { targetId: '4', Name: 'pregnant', count: 0 },
+  { targetId: '5', Name: 'adolescent all', count: 1 }
+]
 
 const meta: Meta<typeof DriSelect> = {
   title: 'app/molecules/DriSelect',
@@ -42,6 +49,8 @@ const meta: Meta<typeof DriSelect> = {
   }
 }
 export default meta
+
+console.log(FakerFunc.createDris())
 
 type Story = StoryObj<typeof DriSelect>
 
