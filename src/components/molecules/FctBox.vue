@@ -113,7 +113,7 @@ type RowItem = {
   Star: boolean
 }
 
-const selectedRow = ref<RowItem>({ key: '', value: 0, label: '', FoodGroup: '' })
+const selectedRow = ref<RowItem>({ key: '', value: 0, label: '', FoodGroup: '', Star: false })
 
 const onRowClick = (event: Event, row: RowItem): void => {
   selectedRow.value = row
@@ -183,6 +183,16 @@ const onRowClick = (event: Event, row: RowItem): void => {
         <div class="col">{{ selectedRow.value }}</div>
         <div class="col"></div>
         <div class="col"></div>
+      </div>
+      <div class="row">
+        <q-checkbox
+          dense
+          size="sm"
+          v-model="selectedRow.Star"
+          label="mark as favorite"
+          color="teal"
+          class="q-mt-md q-ml-md"
+        />
       </div>
     </q-card>
   </q-card>

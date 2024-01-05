@@ -45,7 +45,6 @@ export interface DriItems extends Array<DriItem> {}
 
 export interface FctItem {
   Id: string
-  Star: boolean
   FoodGroupId: string
   Name: string
   FoodGroup: string
