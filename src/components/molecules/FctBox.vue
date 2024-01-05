@@ -3,6 +3,7 @@ import * as myVal from 'src/models/MyInterface'
 import { type Ref, ref, computed, type PropType } from 'vue'
 import type { QTableProps } from 'quasar'
 import myFunc from 'src/models/MyFunctions'
+import { laBell } from '@quasar/extras/line-awesome'
 
 const props = defineProps({
   fct: {
@@ -83,6 +84,21 @@ const rowsFct = computed(() => {
 
   return filteredList2
 })
+
+type RowItem = {
+  key: string
+  value: number
+  label: string
+  FoodGroup: string
+}
+
+const selectedRow = ref<RowItem>({ key: '', value: 0, label: '', FoodGroup: '' })
+
+const onRowClick = (event: Event, row: RowItem): void => {
+  selectedRow.value = row
+  // You can handle the row click event here.
+  // For example, navigate to a different page or display details about the row.
+}
 </script>
 
 <template>
@@ -122,6 +138,21 @@ const rowsFct = computed(() => {
       :rows="rowsFct"
       :columns="columnsFct"
       row-key="name"
+      @row-click="onRowClick"
     />
+    <q-card class="bg-grey-4 q-pa-sm q-my-md">
+      <div class="row">
+        <div class="col">Commodity</div>
+        <div class="col">Nutrient value</div>
+        <div class="col">Food name</div>
+        <div class="col">Weight</div>
+      </div>
+      <div class="row">
+        <div class="col">{{ selectedRow.label }}</div>
+        <div class="col">{{ selectedRow.value }}</div>
+        <div class="col"></div>
+        <div class="col"></div>
+      </div>
+    </q-card>
   </q-card>
 </template>
