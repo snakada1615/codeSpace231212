@@ -7,6 +7,7 @@ export default class FakerFunc {
     const myFood = faker.helpers.arrayElement(foodGroups)
     return {
       Id: myFood.Id,
+      Star: false,
       FoodGroupId: myFood.FoodGroupId,
       Name: myFood.Name,
       FoodGroup: myFood.FoodGroup,
@@ -23,6 +24,7 @@ export default class FakerFunc {
     return models.sampleFood.map((item) => {
       return {
         Id: item.Id,
+        Star: false,
         FoodGroupId: item.FoodGroupId,
         Name: item.Name,
         FoodGroup: item.FoodGroup,

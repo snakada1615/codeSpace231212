@@ -45,6 +45,7 @@ export interface DriItems extends Array<DriItem> {}
 
 export interface FctItem {
   Id: string
+  Star: boolean
   FoodGroupId: string
   Name: string
   FoodGroup: string
@@ -57,6 +58,11 @@ export interface FctItem {
 }
 
 export interface FctItems extends Array<FctItem> {}
+
+export interface FctStar {
+  Id: string
+  Star: boolean
+}
 
 export enum setDigitKey {
   energy,

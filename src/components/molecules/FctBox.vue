@@ -3,11 +3,14 @@ import * as myVal from 'src/models/MyInterface'
 import { type Ref, ref, computed, type PropType } from 'vue'
 import type { QTableProps } from 'quasar'
 import myFunc from 'src/models/MyFunctions'
-import { laBell } from '@quasar/extras/line-awesome'
 
 const props = defineProps({
   fct: {
     type: Object as PropType<myVal.FctItems>,
+    required: true
+  },
+  fctFavoriteList: {
+    type: Object as PropType<myVal.FctStar[]>,
     required: true
   }
 })
@@ -39,6 +42,14 @@ const filterOption2: Ref<string> = ref('all')
 
 const columnsFct: QTableProps['columns'] = [
   {
+    name: 'star',
+    required: true,
+    label: '☆',
+    align: 'left',
+    field: 'Star',
+    sortable: true
+  },
+  {
     name: 'commodity',
     required: true,
     label: 'Commodity',
@@ -62,34 +73,44 @@ const rowsFct = computed(() => {
       key: item.Id,
       value: item[targetNutrient.value],
       label: item.Name,
-      FoodGroup: item.FoodGroup
+      FoodGroup: item.FoodGroup,
+      Star: props.fctFavoriteList.find((item2) => item2.Id === item.Id)?.Star || false
     }
   })
-  let filteredList1 = []
+
+  // ユーザー入力に基づいて抽出
+  let filteredList1 = orgList
   if (filterOption.value) {
     filteredList1 = orgList.filter(
       (v) => v.label.toLowerCase().indexOf(filterOption.value.toLowerCase()) > -1
     )
-  } else {
-    filteredList1 = orgList
   }
-  let filteredList2 = []
+
+  // 食品群で抽出
+  let filteredList2 = filteredList1
   if (filterOption2.value && filterOption2.value !== 'all') {
     filteredList2 = filteredList1.filter(
       (v) => v.FoodGroup.toLowerCase().indexOf(filterOption2.value.toLowerCase()) > -1
     )
-  } else {
-    filteredList2 = filteredList1
   }
 
-  return filteredList2
+  // お気に入り「starred」のみ抽出
+  let fileredList3 = filteredList2
+  if (showFavorite.value) {
+    fileredList3 = filteredList2.filter((v) => v.Star === true)
+  }
+
+  return fileredList3
 })
+
+const showFavorite = ref(false)
 
 type RowItem = {
   key: string
   value: number
   label: string
   FoodGroup: string
+  Star: boolean
 }
 
 const selectedRow = ref<RowItem>({ key: '', value: 0, label: '', FoodGroup: '' })
@@ -128,6 +149,8 @@ const onRowClick = (event: Event, row: RowItem): void => {
         <q-select v-model="nutrientLabel" :options="nutrientLabels" label="Target Nutrient" dense />
       </div>
     </div>
+    <q-checkbox dense size="sm" v-model="showFavorite" label="show favorite only" color="teal" />
+
     <!-- FCT -->
     <q-table
       class="my-sticky-header-table"
@@ -139,7 +162,15 @@ const onRowClick = (event: Event, row: RowItem): void => {
       :columns="columnsFct"
       row-key="name"
       @row-click="onRowClick"
-    />
+    >
+      <template v-slot:body-cell-star="props">
+        <q-td :props="props">
+          <div>
+            <q-icon :name="props.row.Star ? 'star' : 'star_border'" :color="'primary'"></q-icon>
+          </div>
+        </q-td>
+      </template>
+    </q-table>
     <q-card class="bg-grey-4 q-pa-sm q-my-md">
       <div class="row">
         <div class="col">Commodity</div>

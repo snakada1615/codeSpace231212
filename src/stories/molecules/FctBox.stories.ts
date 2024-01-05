@@ -5,6 +5,14 @@ import FakerFunc from '@/models/fakerFunc'
 
 const myFct: myVal.FctItems = FakerFunc.createFcts()
 
+const fctFavoriteList: myVal.FctStar[] = myFct.map((item, index) => {
+  const res = index % 2 ? true : false
+  return {
+    Id: item.Id,
+    Star: res
+  }
+})
+
 const meta: Meta<typeof FctBoxVue> = {
   title: 'app/molecules/FctBox',
   component: FctBoxVue
@@ -22,6 +30,7 @@ export const Second: Story = {
     template: '<FctBoxVue v-bind="args" />'
   }),
   args: {
-    fct: myFct
+    fct: myFct,
+    fctFavoriteList
   }
 }
