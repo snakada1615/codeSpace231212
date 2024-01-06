@@ -19,10 +19,10 @@ const props = defineProps({
 })
 
 const emits = defineEmits<{
-  (e: 'update:TargetMember', value?: TargetMembers): void
+  (e: 'update:TargetMember', value: TargetMembers): void
 }>()
 
-function updateTarget(index: string, val: number) {
+const updateTarget = (index: string, val: number): void => {
   // targetの変更内容を親コンポーネントにemit
   let newTarget: TargetMembers
   if (rowsFamilyMember.value) {

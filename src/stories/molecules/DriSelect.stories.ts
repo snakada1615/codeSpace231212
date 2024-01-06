@@ -68,7 +68,7 @@ export const Primary: Story = {
   args: {
     driItems,
     targetMembers,
-    'update:TargetMember': action('hit')
+    'update:TargetMember': {}
   }
 }
 

@@ -63,6 +63,8 @@ export interface FctStar {
   Star: boolean
 }
 
+export interface FctStars extends Array<FctStar> {}
+
 export enum setDigitKey {
   energy,
   protein,

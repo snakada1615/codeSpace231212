@@ -10,10 +10,25 @@ const props = defineProps({
     required: true
   },
   fctFavoriteList: {
-    type: Object as PropType<myVal.FctStar[]>,
+    type: Object as PropType<myVal.FctStars>,
     required: true
   }
 })
+
+const emits = defineEmits<{ (e: 'update:model-value', value?: myVal.FctStars): void }>()
+const onChange = (value: boolean): void => {
+  const res = props.fctFavoriteList.map((item) => {
+    if (item.Id === selectedRow.value.key) {
+      return {
+        Id: item.Id,
+        Star: value
+      }
+    } else {
+      return item
+    }
+  })
+  emits('update:model-value', res)
+}
 
 // 対象となる栄養素の一覧
 const nutrientLabels = myVal.nutrientLabels
@@ -188,10 +203,14 @@ const onRowClick = (event: Event, row: RowItem): void => {
         <q-checkbox
           dense
           size="sm"
-          v-model="selectedRow.Star"
+          :model-value="selectedRow.Star"
           label="mark as favorite"
           color="teal"
           class="q-mt-md q-ml-md"
+          checked-icon="star"
+          unchecked-icon="star_border"
+          indeterminate-icon="help"
+          @update:model-value="onChange"
         />
       </div>
     </q-card>

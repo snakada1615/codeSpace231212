@@ -1,11 +1,12 @@
 import type { Meta, StoryObj } from '@storybook/vue3'
+import { action } from '@storybook/addon-actions'
 import FctBoxVue from '@/components/molecules/FctBox.vue'
 import * as myVal from '@/models/MyInterface'
 import FakerFunc from '@/models/fakerFunc'
 
 const myFct: myVal.FctItems = FakerFunc.createFcts()
 
-const fctFavoriteList: myVal.FctStar[] = myFct.map((item, index) => {
+const fctFavoriteList: myVal.FctStars = myFct.map((item, index) => {
   const res = index % 2 ? true : false
   return {
     Id: item.Id,
@@ -15,7 +16,10 @@ const fctFavoriteList: myVal.FctStar[] = myFct.map((item, index) => {
 
 const meta: Meta<typeof FctBoxVue> = {
   title: 'app/molecules/FctBox',
-  component: FctBoxVue
+  component: FctBoxVue,
+  argTypes: {
+    'update:model-value': {}
+  }
 }
 export default meta
 
@@ -27,10 +31,11 @@ export const Second: Story = {
     setup() {
       return { args }
     },
-    template: '<FctBoxVue v-bind="args" />'
+    template: '<FctBoxVue v-bind="args" @update:model-value="args[\'update:model-value\']"/>'
   }),
   args: {
     fct: myFct,
-    fctFavoriteList
+    fctFavoriteList,
+    'update:model-value': action('emit')
   }
 }
