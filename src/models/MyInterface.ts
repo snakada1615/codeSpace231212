@@ -72,6 +72,14 @@ export enum setDigitKey {
   iron
 }
 
+export interface FctRowItem {
+  key: string
+  value: number
+  label: string
+  FoodGroup: string
+  Star: boolean
+}
+
 export const sampleFood = [
   { Id: '001', FoodGroupId: '1', FoodGroup: 'Grains, roots and tubers', Name: 'Rice' },
   { Id: '002', FoodGroupId: '1', FoodGroup: 'Grains, roots and tubers', Name: 'Maize' },
@@ -131,4 +139,24 @@ export const nutrientLabels: nutrientLabel[] = [
   { value: 'Pr', label: 'Protein' },
   { value: 'Va', label: 'Vit-A' },
   { value: 'Fat', label: 'Fat' }
+]
+
+export interface MenuItem {
+  key: string
+  value: number
+  label: string
+  FoodGroup: string
+  Weight: number
+  MenuName: string
+  Star: boolean
+}
+
+export const commonMenus: string[] = [
+  '1st meal',
+  '2nd meal',
+  '3rd meal',
+  '4th meal',
+  '1st snack',
+  '2nd snack',
+  '3rd snack'
 ]

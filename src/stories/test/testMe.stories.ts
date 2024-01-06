@@ -1,26 +1,20 @@
-import testMe from 'src/components/test/testMe.vue'
+import dropdownTest from 'src/components/test/dropdownTest.vue'
 import type { Meta, StoryObj } from '@storybook/vue3'
-import { action } from '@storybook/addon-actions'
 
 export default {
-  title: 'test/testMe',
-  component: testMe,
-  argTypes: {
-    'button:click': {}
-  }
-} as Meta<typeof testMe>
+  title: 'test/dropdownTest',
+  component: dropdownTest
+} as Meta<typeof dropdownTest>
 
-type Story = StoryObj<typeof testMe>
+type Story = StoryObj<typeof dropdownTest>
 
 export const Primary: Story = {
   render: (args) => ({
-    components: { testMe },
+    components: { dropdownTest },
     setup() {
       return { args }
     },
-    template: '<testMe @button:click="args[\'button:click\']" />'
+    template: '<dropdownTest v-bind="args" />'
   }),
-  args: {
-    'button:click': action('button-click') // Registers an action for the "button:click" event
-  }
+  args: {}
 }
