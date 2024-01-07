@@ -1,4 +1,4 @@
-import type { Meta, StoryObj } from '@storybook/vue3'
+import type { Meta, StoryObj, ArgTypes } from '@storybook/vue3'
 import { action } from '@storybook/addon-actions'
 import FctBoxVue from '@/components/molecules/FctBox.vue'
 import * as myVal from '@/models/MyInterface'
@@ -14,12 +14,23 @@ const fctFavoriteList: myVal.FctStars = myFct.map((item, index) => {
   }
 })
 
+// Define the ArgTypes for the storybook without using the generic
+const myArgTypes: ArgTypes = {
+  'update:model-value': {
+    control: 'object', // Adjust this control as needed, e.g., 'text' if you want a string input
+    action: 'update:model-value',
+    table: {
+      category: 'Events' // Optional: Use categories to organize your argTypes
+    },
+    description: 'Event for FctBox update' // Provide a helpful description
+  }
+  // ... define other arg types as necessary ...
+}
+
 const meta: Meta<typeof FctBoxVue> = {
   title: 'app/molecules/FctBox',
   component: FctBoxVue,
-  argTypes: {
-    'update:model-value': {}
-  }
+  argTypes: myArgTypes
 }
 export default meta
 
@@ -31,11 +42,13 @@ export const Second: Story = {
     setup() {
       return { args }
     },
-    template: '<FctBoxVue v-bind="args" @update:model-value="args[\'update:model-value\']"/>'
+    template: '<FctBoxVue v-bind="args" @update:model-value="onUpdateFctBox"/>',
+    methods: {
+      onUpdateFctBox: action('onUpdateFctBox')
+    }
   }),
   args: {
     fct: myFct,
-    fctFavoriteList,
-    'update:model-value': action('emit')
+    fctFavoriteList
   }
 }

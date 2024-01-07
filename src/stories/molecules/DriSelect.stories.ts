@@ -1,5 +1,5 @@
 // Replace vue3 with vue if you are using Storybook for Vue 2
-import type { Meta, StoryObj } from '@storybook/vue3'
+import type { Meta, StoryObj, ArgTypes } from '@storybook/vue3'
 import DriSelect from 'src/components/molecules/DriSelect.vue'
 import type { DriItems, TargetMembers } from '@/models/MyInterface'
 import { action } from '@storybook/addon-actions'
@@ -41,12 +41,23 @@ const targetMembers: TargetMembers = [
   { targetId: '5', Name: 'adolescent all', count: 1 }
 ]
 
+// Define the ArgTypes for the storybook without using the generic
+const myArgTypes: ArgTypes = {
+  'update:TargetMember': {
+    control: 'object', // Adjust this control as needed, e.g., 'text' if you want a string input
+    action: 'update:TargetMember',
+    table: {
+      category: 'Events' // Optional: Use categories to organize your argTypes
+    },
+    description: 'Event for TargetMember update' // Provide a helpful description
+  }
+  // ... define other arg types as necessary ...
+}
+
 const meta: Meta<typeof DriSelect> = {
   title: 'app/molecules/DriSelect',
   component: DriSelect,
-  argTypes: {
-    'update:TargetMember': {}
-  }
+  argTypes: myArgTypes
 }
 export default meta
 
@@ -63,12 +74,14 @@ export const Primary: Story = {
     setup() {
       return { args }
     },
-    template: '<DriSelect v-bind="args" @update:TargetMember="args[\'update:TargetMember\']"/>'
+    template: '<DriSelect v-bind="args" @update:TargetMember="onUpdateTargetMember"/>',
+    methods: {
+      onUpdateTargetMember: action('onUpdateTargetMember')
+    }
   }),
   args: {
     driItems,
-    targetMembers,
-    'update:TargetMember': {}
+    targetMembers
   }
 }
 
@@ -78,11 +91,13 @@ export const Second: Story = {
     setup() {
       return { args }
     },
-    template: '<DriSelect v-bind="args" @update:TargetMember="args[\'update:TargetMember\']"/>'
+    template: '<DriSelect v-bind="args" @update:TargetMember="onUpdateTargetMember"/>',
+    methods: {
+      onUpdateTargetMember: action('onUpdateTargetMember')
+    }
   }),
   args: {
     driItems: FakerFunc.createDris(),
-    targetMembers,
-    'update:TargetMember': action('hit')
+    targetMembers
   }
 }
