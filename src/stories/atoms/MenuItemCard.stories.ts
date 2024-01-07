@@ -10,7 +10,11 @@ const menuItem: myVal.MenuItem = {
   FoodGroup: 'Fruits',
   Weight: 152,
   MenuName: 'breakfast',
-  Star: false
+  Star: false,
+  En: 0,
+  Pr: 0,
+  Va: 0,
+  Fe: 0
 }
 
 const commonMenus = myVal.commonMenus
