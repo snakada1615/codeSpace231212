@@ -149,9 +149,15 @@ export interface MenuItem {
   Weight: number
   MenuName: string
   Star: boolean
+  En: number
+  Fe: number
+  Pr: number
+  Va: number
 }
 
 export interface MenuItemPlus extends MenuItem {
+  Id: string
+  KeyFamily: string
   Date: Date
 }
 

@@ -73,4 +73,31 @@ export default class FakerFunc {
       }
     })
   }
+
+  static createMenuPlusItem(): models.MenuItemPlus {
+    const food = faker.helpers.arrayElement(models.sampleFood)
+    const menu = faker.helpers.arrayElement(models.commonMenus)
+    return {
+      Id: faker.string.uuid(),
+      KeyFamily: faker.person.firstName(),
+      Date: faker.date.recent(),
+      keyFct: faker.string.uuid(),
+      NutritionValue: faker.number.float({ min: 0, max: 200, precision: 0.1 }),
+      FctName: food.Name,
+      FoodGroup: food.FoodGroup,
+      Weight: faker.number.float({ min: 0, max: 400, precision: 0.1 }),
+      MenuName: menu,
+      Star: faker.datatype.boolean(),
+      En: faker.number.float({ min: 0, max: 4000, precision: 0.1 }),
+      Fe: faker.number.float({ min: 0, max: 50, precision: 0.1 }),
+      Pr: faker.number.float({ min: 0, max: 200, precision: 0.1 }),
+      Va: faker.number.float({ min: 0, max: 500, precision: 0.1 })
+    }
+  }
+
+  static createMenuItems(): models.MenuItems {
+    return [...Array(10)].map(() => {
+      return this.createMenuPlusItem()
+    })
+  }
 }
