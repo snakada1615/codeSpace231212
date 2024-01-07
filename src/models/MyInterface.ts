@@ -142,7 +142,7 @@ export const nutrientLabels: nutrientLabel[] = [
 ]
 
 export interface MenuItem {
-  key: string
+  keyFct: string
   NutritionValue: number
   FctName: string
   FoodGroup: string
@@ -150,6 +150,12 @@ export interface MenuItem {
   MenuName: string
   Star: boolean
 }
+
+export interface MenuItemPlus extends MenuItem {
+  Date: Date
+}
+
+export interface MenuItems extends Array<MenuItemPlus> {}
 
 export const commonMenus: string[] = [
   '1st meal',

@@ -122,6 +122,7 @@ const selectedRow = ref<myVal.FctRowItem>({
 // 選択された行をemit
 const onRowClick = (event: Event, row: myVal.FctRowItem): void => {
   selectedRow.value = row
+  console.log(row)
   emits('rowSelected', row)
 
   // You can handle the row click event here.

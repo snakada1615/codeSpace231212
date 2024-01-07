@@ -20,29 +20,30 @@ const emits = defineEmits<{
 
 // menuItem.Star更新
 const onChangeStar = (value: boolean): void => {
-  emits('update:menuItem', {
-    key: props.menuItem.key,
+  const res: myVal.MenuItem = {
+    keyFct: props.menuItem.keyFct,
     NutritionValue: 52,
     FctName: props.menuItem.FctName,
     FoodGroup: props.menuItem.FoodGroup,
     Weight: props.menuItem.Weight,
     MenuName: props.menuItem.MenuName,
     Star: value
-  })
+  }
+  emits('update:menuItem', res)
 }
 
 // menuItem.MenuNameの更新
 const updateMenuName = (value: string): void => {
-  console.log(value)
-  emits('update:menuItem', {
-    key: props.menuItem.key,
+  const res: myVal.MenuItem = {
+    keyFct: props.menuItem.keyFct,
     NutritionValue: 52,
     FctName: props.menuItem.FctName,
     FoodGroup: props.menuItem.FoodGroup,
     Weight: props.menuItem.Weight,
     MenuName: value,
     Star: props.menuItem.Star
-  })
+  }
+  emits('update:menuItem', res)
 }
 
 // menuItem.Weight の更新
@@ -51,16 +52,17 @@ const updateWeight = (value: string | number | null): void => {
   if (isNaN(numericValue)) {
     return
   }
-  emits('update:menuItem', {
-    key: props.menuItem.key,
+  const res: myVal.MenuItem = {
+    keyFct: props.menuItem.keyFct,
     NutritionValue: 52,
     FctName: props.menuItem.FctName,
     FoodGroup: props.menuItem.FoodGroup,
     Weight: numericValue,
     MenuName: props.menuItem.MenuName,
     Star: props.menuItem.Star
-  })
-  console.log('value')
+  }
+
+  emits('update:menuItem', res)
 }
 
 const stringOptions = myVal.commonMenus

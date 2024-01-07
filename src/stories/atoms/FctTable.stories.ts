@@ -1,4 +1,4 @@
-import type { Meta, StoryObj } from '@storybook/vue3'
+import type { Meta, StoryObj, ArgTypes } from '@storybook/vue3'
 import { action } from '@storybook/addon-actions'
 import FctTableVue from '@/components/atoms/FctTable.vue'
 import * as myVal from '@/models/MyInterface'
@@ -14,12 +14,23 @@ const fctFavoriteList: myVal.FctStars = myFct.map((item, index) => {
   }
 })
 
+// Define the ArgTypes for the storybook without using the generic
+const myArgTypes: ArgTypes = {
+  rowSelected: {
+    control: 'object', // Adjust this control as needed, e.g., 'text' if you want a string input
+    action: 'rowSelected',
+    table: {
+      category: 'Events' // Optional: Use categories to organize your argTypes
+    },
+    description: 'Event for rowSelected' // Provide a helpful description
+  }
+  // ... define other arg types as necessary ...
+}
+
 const meta: Meta<typeof FctTableVue> = {
   title: 'app/atoms/FctTable',
   component: FctTableVue,
-  argTypes: {
-    rowSelected: {}
-  }
+  argTypes: myArgTypes
 }
 export default meta
 
@@ -31,11 +42,11 @@ export const Second: Story = {
     setup() {
       return { args }
     },
-    template: '<FctTableVue v-bind="args" @rowSelected="args[\'rowSelected\']"/>'
+    template: '<FctTableVue v-bind="args" @rowSelected="onRowSelected"/>',
+    methods: { onRowSelected: action('onRowSelected') }
   }),
   args: {
     fct: myFct,
-    fctFavoriteList,
-    rowSelected: action('emit')
+    fctFavoriteList
   }
 }

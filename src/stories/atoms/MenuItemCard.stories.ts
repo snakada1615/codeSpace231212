@@ -1,10 +1,10 @@
-import type { Meta, StoryObj } from '@storybook/vue3'
+import type { Meta, StoryObj, ArgTypes } from '@storybook/vue3'
 import { action } from '@storybook/addon-actions'
 import MenuItemCard from '@/components/atoms/MenuItemCard.vue'
 import * as myVal from '@/models/MyInterface'
 
 const menuItem: myVal.MenuItem = {
-  key: '04',
+  keyFct: '04',
   NutritionValue: 52,
   FctName: 'Apple',
   FoodGroup: 'Fruits',
@@ -15,12 +15,23 @@ const menuItem: myVal.MenuItem = {
 
 const commonMenus = myVal.commonMenus
 
+// Define the ArgTypes for the storybook without using the generic
+const myArgTypes: ArgTypes = {
+  'update:menuItem': {
+    control: 'object', // Adjust this control as needed, e.g., 'text' if you want a string input
+    action: 'update:menuItem',
+    table: {
+      category: 'Events' // Optional: Use categories to organize your argTypes
+    },
+    description: 'Event for menuItem update' // Provide a helpful description
+  }
+  // ... define other arg types as necessary ...
+}
+
 const meta: Meta<typeof MenuItemCard> = {
   title: 'app/atoms/MenuItemCard',
   component: MenuItemCard,
-  argTypes: {
-    'update:menuItem': {}
-  }
+  argTypes: myArgTypes
 }
 export default meta
 
@@ -32,11 +43,13 @@ export const Second: Story = {
     setup() {
       return { args }
     },
-    template: '<MenuItemCard v-bind="args"  @update:menuItem="args[\'update:menuItem\']" />'
+    template: '<MenuItemCard v-bind="args"  @update:menuItem="onUpdateMenuItem" />',
+    methods: {
+      onUpdateMenuItem: action('update:menuItem')
+    }
   }),
   args: {
     menuItem: menuItem,
-    commonMenus: commonMenus,
-    'update:menuItem': action('emitMenuItem')
+    commonMenus: commonMenus
   }
 }
