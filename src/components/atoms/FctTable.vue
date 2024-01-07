@@ -113,8 +113,8 @@ const rowsFct = computed(() => {
 // 行の選択
 const selectedRow = ref<myVal.FctRowItem>({
   key: '',
-  value: 0,
-  label: '',
+  NutrientValue: 0,
+  FctName: '',
   FoodGroup: '',
   Star: false
 })

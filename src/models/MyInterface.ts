@@ -74,8 +74,8 @@ export enum setDigitKey {
 
 export interface FctRowItem {
   key: string
-  value: number
-  label: string
+  NutrientValue: number
+  FctName: string
   FoodGroup: string
   Star: boolean
 }
@@ -143,8 +143,8 @@ export const nutrientLabels: nutrientLabel[] = [
 
 export interface MenuItem {
   key: string
-  value: number
-  label: string
+  NutritionValue: number
+  FctName: string
   FoodGroup: string
   Weight: number
   MenuName: string

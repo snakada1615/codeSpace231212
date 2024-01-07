@@ -5,8 +5,8 @@ import * as myVal from '@/models/MyInterface'
 
 const menuItem: myVal.MenuItem = {
   key: '04',
-  value: 52,
-  label: 'Apple',
+  NutritionValue: 52,
+  FctName: 'Apple',
   FoodGroup: 'Fruits',
   Weight: 152,
   MenuName: 'breakfast',
@@ -19,8 +19,7 @@ const meta: Meta<typeof MenuItemCard> = {
   title: 'app/atoms/MenuItemCard',
   component: MenuItemCard,
   argTypes: {
-    'update:Star': {},
-    'update:menuName': {}
+    'update:menuItem': {}
   }
 }
 export default meta
@@ -33,13 +32,11 @@ export const Second: Story = {
     setup() {
       return { args }
     },
-    template:
-      '<MenuItemCard v-bind="args" @update:Star="args[\'update:Star\']" @update:menuName="args[\'update:menuName\']" />'
+    template: '<MenuItemCard v-bind="args"  @update:menuItem="args[\'update:menuItem\']" />'
   }),
   args: {
     menuItem: menuItem,
     commonMenus: commonMenus,
-    'update:Star': action('emitStar'),
-    'update:menuName': action('emitMenuName')
+    'update:menuItem': action('emitMenuItem')
   }
 }

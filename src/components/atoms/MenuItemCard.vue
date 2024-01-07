@@ -13,22 +13,58 @@ const props = defineProps({
   }
 })
 
+// emit設定
 const emits = defineEmits<{
-  (e: 'update:Star', value: boolean): void
-  (e: 'update:menuName', value: string): void
+  (e: 'update:menuItem', value: typeof props.menuItem): void
 }>()
 
+// menuItem.Star更新
 const onChangeStar = (value: boolean): void => {
-  emits('update:Star', value)
+  emits('update:menuItem', {
+    key: props.menuItem.key,
+    NutritionValue: 52,
+    FctName: props.menuItem.FctName,
+    FoodGroup: props.menuItem.FoodGroup,
+    Weight: props.menuItem.Weight,
+    MenuName: props.menuItem.MenuName,
+    Star: value
+  })
+}
+
+// menuItem.MenuNameの更新
+const updateMenuName = (value: string): void => {
+  console.log(value)
+  emits('update:menuItem', {
+    key: props.menuItem.key,
+    NutritionValue: 52,
+    FctName: props.menuItem.FctName,
+    FoodGroup: props.menuItem.FoodGroup,
+    Weight: props.menuItem.Weight,
+    MenuName: value,
+    Star: props.menuItem.Star
+  })
+}
+
+// menuItem.Weight の更新
+const updateWeight = (value: string | number | null): void => {
+  const numericValue = Number(value)
+  if (isNaN(numericValue)) {
+    return
+  }
+  emits('update:menuItem', {
+    key: props.menuItem.key,
+    NutritionValue: 52,
+    FctName: props.menuItem.FctName,
+    FoodGroup: props.menuItem.FoodGroup,
+    Weight: numericValue,
+    MenuName: props.menuItem.MenuName,
+    Star: props.menuItem.Star
+  })
+  console.log('value')
 }
 
 const stringOptions = myVal.commonMenus
-const menuName = ref(null)
 const menuNames = ref(stringOptions)
-
-const menuItemComputed = computed(() => {
-  return props.menuItem
-})
 
 // リストにないメニュー名を追加する
 function addNewMenuName(
@@ -42,12 +78,6 @@ function addNewMenuName(
       doneFn(inputValue as any, 'toggle') // Cast inputValue to `any` since `doneFn` expects item?: any
     }
   }
-}
-
-// メニュー名の変更をemit
-function updateMenuName(value: string) {
-  console.log(value)
-  emits('update:menuName', value)
 }
 
 // メニュー名のフィルタリング
@@ -73,13 +103,13 @@ function filterMenu(val: string, update: (cb: () => void) => void) {
         <div class="col">Weight</div>
       </div>
       <div class="row">
-        <div class="col">{{ menuItemComputed.label }}</div>
-        <div class="col">{{ menuItemComputed.value }}</div>
+        <div class="col">{{ props.menuItem.FctName }}</div>
+        <div class="col">{{ props.menuItem.NutritionValue }}</div>
         <div class="col">
           <q-select
             filled
             dense
-            :model-value="menuItemComputed.MenuName"
+            :model-value="props.menuItem.MenuName"
             use-input
             use-chips
             @new-value="addNewMenuName"
@@ -88,13 +118,22 @@ function filterMenu(val: string, update: (cb: () => void) => void) {
             @update:model-value="updateMenuName"
           />
         </div>
-        <div class="col">{{ menuItemComputed.Weight }}</div>
+        <div class="col">
+          <q-input
+            type="number"
+            dense
+            filled
+            :model-value="props.menuItem.Weight"
+            :rules="[(val) => typeof val === 'number' || 'only number is allowed']"
+            @update:model-value="updateWeight"
+          ></q-input>
+        </div>
       </div>
       <div class="row">
         <q-checkbox
           dense
           size="sm"
-          :model-value="menuItemComputed.Star"
+          :model-value="props.menuItem.Star"
           label="mark as favorite"
           color="teal"
           class="q-mt-md q-ml-md"
