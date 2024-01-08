@@ -9,7 +9,7 @@ const myFct: myVal.FctItems = FakerFunc.createFcts()
 const fctFavoriteList: myVal.FctStars = myFct.map((item, index) => {
   const res = index % 2 ? true : false
   return {
-    Id: item.Id,
+    Id: item.keyFct,
     Star: res
   }
 })

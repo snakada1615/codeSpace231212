@@ -20,29 +20,15 @@ const emits = defineEmits<{
 
 // menuItem.Star更新
 const onChangeStar = (value: boolean): void => {
-  const res: myVal.MenuItem = {
-    keyFct: props.menuItem.keyFct,
-    NutritionValue: 52,
-    FctName: props.menuItem.FctName,
-    FoodGroup: props.menuItem.FoodGroup,
-    Weight: props.menuItem.Weight,
-    MenuName: props.menuItem.MenuName,
-    Star: value
-  }
+  const res = JSON.parse(JSON.stringify(props.menuItem))
+  res.Star = value
   emits('update:menuItem', res)
 }
 
 // menuItem.MenuNameの更新
 const updateMenuName = (value: string): void => {
-  const res: myVal.MenuItem = {
-    keyFct: props.menuItem.keyFct,
-    NutritionValue: 52,
-    FctName: props.menuItem.FctName,
-    FoodGroup: props.menuItem.FoodGroup,
-    Weight: props.menuItem.Weight,
-    MenuName: value,
-    Star: props.menuItem.Star
-  }
+  const res = JSON.parse(JSON.stringify(props.menuItem))
+  res.MenuName = value
   emits('update:menuItem', res)
 }
 
@@ -52,16 +38,8 @@ const updateWeight = (value: string | number | null): void => {
   if (isNaN(numericValue)) {
     return
   }
-  const res: myVal.MenuItem = {
-    keyFct: props.menuItem.keyFct,
-    NutritionValue: 52,
-    FctName: props.menuItem.FctName,
-    FoodGroup: props.menuItem.FoodGroup,
-    Weight: numericValue,
-    MenuName: props.menuItem.MenuName,
-    Star: props.menuItem.Star
-  }
-
+  const res = JSON.parse(JSON.stringify(props.menuItem))
+  res.Weight = numericValue
   emits('update:menuItem', res)
 }
 
@@ -106,7 +84,7 @@ function filterMenu(val: string, update: (cb: () => void) => void) {
       </div>
       <div class="row">
         <div class="col">{{ props.menuItem.FctName }}</div>
-        <div class="col">{{ props.menuItem.NutritionValue }}</div>
+        <div class="col">{{ props.menuItem.NutrientValue }}</div>
         <div class="col">
           <q-select
             filled

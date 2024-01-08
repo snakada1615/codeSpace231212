@@ -44,9 +44,9 @@ export interface DriItem {
 export interface DriItems extends Array<DriItem> {}
 
 export interface FctItem {
-  Id: string
+  keyFct: string
   FoodGroupId: string
-  Name: string
+  FctName: string
   FoodGroup: string
   Carb: number
   En: number
@@ -72,58 +72,67 @@ export enum setDigitKey {
   iron
 }
 
-export interface FctRowItem {
-  key: string
+export interface FctRowItem extends FctItem {
   NutrientValue: number
-  FctName: string
-  FoodGroup: string
   Star: boolean
+  Weight: number
+  MenuName: string
 }
 
 export const sampleFood = [
-  { Id: '001', FoodGroupId: '1', FoodGroup: 'Grains, roots and tubers', Name: 'Rice' },
-  { Id: '002', FoodGroupId: '1', FoodGroup: 'Grains, roots and tubers', Name: 'Maize' },
-  { Id: '003', FoodGroupId: '1', FoodGroup: 'Grains, roots and tubers', Name: 'Wheat' },
-  { Id: '004', FoodGroupId: '1', FoodGroup: 'Grains, roots and tubers', Name: 'Cassava' },
+  { keyFct: '001', FoodGroupId: '1', FoodGroup: 'Grains, roots and tubers', Name: 'Rice' },
+  { keyFct: '002', FoodGroupId: '1', FoodGroup: 'Grains, roots and tubers', Name: 'Maize' },
+  { keyFct: '003', FoodGroupId: '1', FoodGroup: 'Grains, roots and tubers', Name: 'Wheat' },
+  { keyFct: '004', FoodGroupId: '1', FoodGroup: 'Grains, roots and tubers', Name: 'Cassava' },
   {
-    Id: '005',
+    keyFct: '005',
     FoodGroupId: '2',
     FoodGroup: 'Vitamin A rich fruits and Vegetable',
     Name: 'Pumpkin'
   },
   {
-    Id: '006',
+    keyFct: '006',
     FoodGroupId: '2',
     FoodGroup: 'Vitamin A rich fruits and Vegetable',
     Name: 'Sweet potato'
   },
-  { Id: '007', FoodGroupId: '2', FoodGroup: 'Vitamin A rich fruits and Vegetable', Name: 'Carrot' },
-  { Id: '008', FoodGroupId: '2', FoodGroup: 'Vitamin A rich fruits and Vegetable', Name: 'Mango' },
-  { Id: '009', FoodGroupId: '3', FoodGroup: 'other fruits and Vegetable', Name: 'Apple' },
-  { Id: '010', FoodGroupId: '3', FoodGroup: 'other fruits and Vegetable', Name: 'Orange' },
-  { Id: '011', FoodGroupId: '3', FoodGroup: 'other fruits and Vegetable', Name: 'Watermelon' },
-  { Id: '012', FoodGroupId: '3', FoodGroup: 'other fruits and Vegetable', Name: 'Peach' },
-  { Id: '013', FoodGroupId: '4', FoodGroup: 'Legumes and nuts', Name: 'Soybean' },
-  { Id: '014', FoodGroupId: '4', FoodGroup: 'Legumes and nuts', Name: 'Cowpea' },
-  { Id: '015', FoodGroupId: '4', FoodGroup: 'Legumes and nuts', Name: 'Lentil' },
-  { Id: '016', FoodGroupId: '4', FoodGroup: 'Legumes and nuts', Name: 'Groundnut' },
-  { Id: '018', FoodGroupId: '5', FoodGroup: 'meat', Name: 'Beef' },
-  { Id: '019', FoodGroupId: '5', FoodGroup: 'meat', Name: 'Port' },
-  { Id: '020', FoodGroupId: '5', FoodGroup: 'meat', Name: 'Chicken' },
-  { Id: '021', FoodGroupId: '5', FoodGroup: 'meat', Name: 'Goat' },
-  { Id: '022', FoodGroupId: '6', FoodGroup: 'dairy', Name: 'Milk' },
-  { Id: '023', FoodGroupId: '6', FoodGroup: 'dairy', Name: 'Cheeze' },
-  { Id: '024', FoodGroupId: '6', FoodGroup: 'dairy', Name: 'Butter' },
-  { Id: '025', FoodGroupId: '6', FoodGroup: 'dairy', Name: 'Yogult' },
-  { Id: '026', FoodGroupId: '7', FoodGroup: 'egg', Name: 'egg' },
-  { Id: '027', FoodGroupId: '8', FoodGroup: 'fish', Name: 'Salmon' },
-  { Id: '028', FoodGroupId: '8', FoodGroup: 'fish', Name: 'Tilapia' },
-  { Id: '029', FoodGroupId: '8', FoodGroup: 'fish', Name: 'Tuna' },
-  { Id: '030', FoodGroupId: '8', FoodGroup: 'fish', Name: 'Skipjack' },
-  { Id: '031', FoodGroupId: '9', FoodGroup: 'oil/fat', Name: 'Sunflower oil' },
-  { Id: '031', FoodGroupId: '9', FoodGroup: 'oil/fat', Name: 'Rapeseed oil' },
-  { Id: '031', FoodGroupId: '9', FoodGroup: 'oil/fat', Name: 'Palm oil' },
-  { Id: '031', FoodGroupId: '9', FoodGroup: 'oil/fat', Name: 'Maize oil' }
+  {
+    keyFct: '007',
+    FoodGroupId: '2',
+    FoodGroup: 'Vitamin A rich fruits and Vegetable',
+    Name: 'Carrot'
+  },
+  {
+    keyFct: '008',
+    FoodGroupId: '2',
+    FoodGroup: 'Vitamin A rich fruits and Vegetable',
+    Name: 'Mango'
+  },
+  { keyFct: '009', FoodGroupId: '3', FoodGroup: 'other fruits and Vegetable', Name: 'Apple' },
+  { keyFct: '010', FoodGroupId: '3', FoodGroup: 'other fruits and Vegetable', Name: 'Orange' },
+  { keyFct: '011', FoodGroupId: '3', FoodGroup: 'other fruits and Vegetable', Name: 'Watermelon' },
+  { keyFct: '012', FoodGroupId: '3', FoodGroup: 'other fruits and Vegetable', Name: 'Peach' },
+  { keyFct: '013', FoodGroupId: '4', FoodGroup: 'Legumes and nuts', Name: 'Soybean' },
+  { keyFct: '014', FoodGroupId: '4', FoodGroup: 'Legumes and nuts', Name: 'Cowpea' },
+  { keyFct: '015', FoodGroupId: '4', FoodGroup: 'Legumes and nuts', Name: 'Lentil' },
+  { keyFct: '016', FoodGroupId: '4', FoodGroup: 'Legumes and nuts', Name: 'Groundnut' },
+  { keyFct: '018', FoodGroupId: '5', FoodGroup: 'meat', Name: 'Beef' },
+  { keyFct: '019', FoodGroupId: '5', FoodGroup: 'meat', Name: 'Port' },
+  { keyFct: '020', FoodGroupId: '5', FoodGroup: 'meat', Name: 'Chicken' },
+  { keyFct: '021', FoodGroupId: '5', FoodGroup: 'meat', Name: 'Goat' },
+  { keyFct: '022', FoodGroupId: '6', FoodGroup: 'dairy', Name: 'Milk' },
+  { keyFct: '023', FoodGroupId: '6', FoodGroup: 'dairy', Name: 'Cheeze' },
+  { keyFct: '024', FoodGroupId: '6', FoodGroup: 'dairy', Name: 'Butter' },
+  { keyFct: '025', FoodGroupId: '6', FoodGroup: 'dairy', Name: 'Yogult' },
+  { keyFct: '026', FoodGroupId: '7', FoodGroup: 'egg', Name: 'egg' },
+  { keyFct: '027', FoodGroupId: '8', FoodGroup: 'fish', Name: 'Salmon' },
+  { keyFct: '028', FoodGroupId: '8', FoodGroup: 'fish', Name: 'Tilapia' },
+  { keyFct: '029', FoodGroupId: '8', FoodGroup: 'fish', Name: 'Tuna' },
+  { keyFct: '030', FoodGroupId: '8', FoodGroup: 'fish', Name: 'Skipjack' },
+  { keyFct: '031', FoodGroupId: '9', FoodGroup: 'oil/fat', Name: 'Sunflower oil' },
+  { keyFct: '031', FoodGroupId: '9', FoodGroup: 'oil/fat', Name: 'Rapeseed oil' },
+  { keyFct: '031', FoodGroupId: '9', FoodGroup: 'oil/fat', Name: 'Palm oil' },
+  { keyFct: '031', FoodGroupId: '9', FoodGroup: 'oil/fat', Name: 'Maize oil' }
 ]
 
 export const sampleDri = [{}]
@@ -141,27 +150,13 @@ export const nutrientLabels: nutrientLabel[] = [
   { value: 'Fat', label: 'Fat' }
 ]
 
-export interface MenuItem {
-  keyFct: string
-  NutritionValue: number
-  FctName: string
-  FoodGroup: string
-  Weight: number
-  MenuName: string
-  Star: boolean
-  En: number
-  Fe: number
-  Pr: number
-  Va: number
-}
-
-export interface MenuItemPlus extends MenuItem {
-  Id: string
+export interface MenuItem extends FctRowItem {
+  IdMenuItem: string
   KeyFamily: string
   Date: Date
 }
 
-export interface MenuItems extends Array<MenuItemPlus> {}
+export interface MenuItems extends Array<MenuItem> {}
 
 export const commonMenus: string[] = [
   '1st meal',

@@ -47,9 +47,9 @@ const userOrg: User = {
 }
 
 const fctOrg: models.FctItem = {
-  Id: '152',
+  keyFct: '152',
   FoodGroupId: 'oyatus',
-  Name: 'garigari-kun',
+  FctName: 'garigari-kun',
   FoodGroup: 'desert',
   Carb: 8,
   En: 3,

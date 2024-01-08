@@ -1,6 +1,6 @@
 import type { Meta, StoryObj, ArgTypes } from '@storybook/vue3'
 import { action } from '@storybook/addon-actions'
-import FctTableVue from '@/components/atoms/FctTable.vue'
+import FctTableVue from '@/components/atoms/FctTableSingleNutrient.vue'
 import * as myVal from '@/models/MyInterface'
 import FakerFunc from '@/models/fakerFunc'
 
@@ -9,7 +9,7 @@ const myFct: myVal.FctItems = FakerFunc.createFcts()
 const fctFavoriteList: myVal.FctStars = myFct.map((item, index) => {
   const res = index % 2 ? true : false
   return {
-    Id: item.Id,
+    Id: item.keyFct,
     Star: res
   }
 })
@@ -18,7 +18,7 @@ const fctFavoriteList: myVal.FctStars = myFct.map((item, index) => {
 const myArgTypes: ArgTypes = {
   rowSelected: {
     control: 'object', // Adjust this control as needed, e.g., 'text' if you want a string input
-    action: 'rowSelected',
+    action: 'row-click',
     table: {
       category: 'Events' // Optional: Use categories to organize your argTypes
     },
@@ -42,7 +42,7 @@ export const Second: Story = {
     setup() {
       return { args }
     },
-    template: '<FctTableVue v-bind="args" @rowSelected="onRowSelected"/>',
+    template: '<FctTableVue v-bind="args" @row-click="onRowSelected"/>',
     methods: { onRowSelected: action('onRowSelected') }
   }),
   args: {

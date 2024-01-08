@@ -3,6 +3,7 @@ import * as myVal from 'src/models/MyInterface'
 import { type Ref, ref, computed, type PropType } from 'vue'
 import type { QTableProps } from 'quasar'
 import myFunc from 'src/models/MyFunctions'
+import fakerFunc from 'src/models/fakerFunc'
 
 const props = defineProps({
   fct: {
@@ -15,7 +16,7 @@ const props = defineProps({
   }
 })
 
-const emits = defineEmits<{ (e: 'rowSelected', value: myVal.FctRowItem): void }>()
+const emits = defineEmits<{ (e: 'row-click', value: myVal.FctRowItem): void }>()
 
 // 対象となる栄養素の一覧
 const nutrientLabels = myVal.nutrientLabels
@@ -60,7 +61,7 @@ const columnsFct: QTableProps['columns'] = [
     required: true,
     label: 'Commodity',
     align: 'left',
-    field: 'label',
+    field: 'FctName',
     sortable: true
   },
   {
@@ -68,7 +69,7 @@ const columnsFct: QTableProps['columns'] = [
     required: true,
     label: 'Value',
     align: 'left',
-    field: 'value',
+    field: 'NutrientValue',
     sortable: true
   }
 ]
@@ -77,11 +78,10 @@ const columnsFct: QTableProps['columns'] = [
 const rowsFct = computed(() => {
   const orgList = props.fct.map((item) => {
     return {
-      key: item.Id,
-      value: item[targetNutrient.value],
-      label: item.Name,
-      FoodGroup: item.FoodGroup,
-      Star: props.fctFavoriteList.find((item2) => item2.Id === item.Id)?.Star || false
+      ...item,
+      NutrientValue: 200,
+      Weight: 0,
+      Star: props.fctFavoriteList.find((item2) => item2.Id === item.keyFct)?.Star || false
     }
   })
 
@@ -89,7 +89,7 @@ const rowsFct = computed(() => {
   let filteredList1 = orgList
   if (filterOption.value) {
     filteredList1 = orgList.filter(
-      (v) => v.label.toLowerCase().indexOf(filterOption.value.toLowerCase()) > -1
+      (v) => v.FctName.toLowerCase().indexOf(filterOption.value.toLowerCase()) > -1
     )
   }
 
@@ -111,18 +111,21 @@ const rowsFct = computed(() => {
 })
 
 // 行の選択
-const selectedRow = ref<myVal.FctRowItem>({
-  key: '',
-  NutrientValue: 0,
-  FctName: '',
-  FoodGroup: '',
-  Star: false
-})
+const tempFctItem = fakerFunc.createFct(myVal.sampleFood)
+
+const rowItemOrg = {
+  ...tempFctItem,
+  NutrientValue: 200,
+  Star: true,
+  Weight: 234
+}
+
+const selectedRow = ref(rowItemOrg)
 
 // 選択された行をemit
 const onRowClick = (event: Event, row: myVal.FctRowItem): void => {
   selectedRow.value = row
-  emits('rowSelected', row)
+  emits('row-click', row)
 
   // You can handle the row click event here.
   // For example, navigate to a different page or display details about the row.

@@ -3,7 +3,6 @@ import * as myVal from 'src/models/MyInterface'
 import { type Ref, ref, computed, type PropType } from 'vue'
 import type { QTableProps } from 'quasar'
 import myFunc from 'src/models/MyFunctions'
-import fakerFunc from '@/models/fakerFunc'
 
 const props = defineProps({
   fct: {
@@ -16,46 +15,7 @@ const props = defineProps({
   }
 })
 
-const emits = defineEmits<{
-  (e: 'update:model-value', value: myVal.FctStars): void
-  (e: 'row-selected', value: RowItem): void
-}>()
-
-const onChange = (value: boolean): void => {
-  if (!selectedRow.value.keyFct) {
-    return
-  }
-  const res = props.fctFavoriteList.map((item) => {
-    if (item.Id === selectedRow.value.keyFct) {
-      return {
-        Id: item.Id,
-        Star: value
-      }
-    } else {
-      return item
-    }
-  })
-  emits('update:model-value', res)
-}
-
-const tempFctItem = fakerFunc.createFct(myVal.sampleFood)
-
-const rowItemOrg: RowItem = {
-  ...tempFctItem,
-  NutrientValue: 200,
-  Star: true,
-  Weight: 234
-}
-
-const selectedRow = ref(rowItemOrg)
-
-const onRowClick = (event: Event, row: RowItem): void => {
-  selectedRow.value = row
-  // You can handle the row click event here.
-  // For example, navigate to a different page or display details about the row.
-  console.log(row)
-  emits('row-selected', row)
-}
+const emits = defineEmits<{ (e: 'row-click', value: myVal.FctRowItem): void }>()
 
 // 対象となる栄養素の一覧
 const nutrientLabels = myVal.nutrientLabels
@@ -82,6 +42,10 @@ const filterOption: Ref<string> = ref('')
 // 作物リスト用のフィルター（作物群）
 const filterOption2: Ref<string> = ref('all')
 
+// star付きの作物のみ表示
+const showFavorite = ref(false)
+
+// 列の定義
 const columnsFct: QTableProps['columns'] = [
   {
     name: 'star',
@@ -104,19 +68,20 @@ const columnsFct: QTableProps['columns'] = [
     required: true,
     label: 'Value',
     align: 'left',
-    field: 'value',
+    field: 'NutrientValue',
     sortable: true
   }
 ]
 
+// FCT表示用の行設定。追ってフィルタリング
 const rowsFct = computed(() => {
   const orgList = props.fct.map((item) => {
     return {
-      key: item.keyFct,
-      value: item[targetNutrient.value],
+      key: item.Id,
+      NutrientValue: item[targetNutrient.value],
       FctName: item.FctName,
       FoodGroup: item.FoodGroup,
-      Star: props.fctFavoriteList.find((item2) => item2.Id === item.keyFct)?.Star || false
+      Star: props.fctFavoriteList.find((item2) => item2.Id === item.Id)?.Star || false
     }
   })
 
@@ -145,12 +110,23 @@ const rowsFct = computed(() => {
   return fileredList3
 })
 
-const showFavorite = ref(false)
+// 行の選択
+const selectedRow = ref<myVal.FctRowItem>({
+  key: '',
+  NutrientValue: 0,
+  FctName: '',
+  FoodGroup: '',
+  Star: false
+})
 
-interface RowItem extends myVal.FctItem {
-  NutrientValue: number
-  Star: boolean
-  Weight: number
+// 選択された行をemit
+const onRowClick = (event: Event, row: myVal.FctRowItem): void => {
+  selectedRow.value = row
+  console.log(row)
+  emits('row-click', row)
+
+  // You can handle the row click event here.
+  // For example, navigate to a different page or display details about the row.
 }
 </script>
 
@@ -192,7 +168,7 @@ interface RowItem extends myVal.FctItem {
       dense
       :rows="rowsFct"
       :columns="columnsFct"
-      row-key="FctName"
+      row-key="name"
       @row-click="onRowClick"
     >
       <template v-slot:body-cell-star="props">
@@ -203,34 +179,5 @@ interface RowItem extends myVal.FctItem {
         </q-td>
       </template>
     </q-table>
-
-    <q-card class="bg-grey-4 q-pa-sm q-my-md">
-      <div class="row">
-        <div class="col">Commodity</div>
-        <div class="col">Nutrient value</div>
-        <div class="col">Food name</div>
-        <div class="col">Weight</div>
-      </div>
-      <div class="row">
-        <div class="col">{{ selectedRow.FctName }}</div>
-        <div class="col">{{ selectedRow.NutrientValue }}</div>
-        <div class="col"></div>
-        <div class="col"></div>
-      </div>
-      <div class="row">
-        <q-checkbox
-          dense
-          size="sm"
-          :model-value="selectedRow.Star"
-          label="mark as favorite"
-          color="teal"
-          class="q-mt-md q-ml-md"
-          checked-icon="star"
-          unchecked-icon="star_border"
-          indeterminate-icon="help"
-          @update:model-value="onChange"
-        />
-      </div>
-    </q-card>
   </q-card>
 </template>

@@ -6,9 +6,9 @@ export default class FakerFunc {
   static createFct(foodGroups: typeof models.sampleFood): models.FctItem {
     const myFood = faker.helpers.arrayElement(foodGroups)
     return {
-      Id: myFood.Id,
+      keyFct: myFood.keyFct,
       FoodGroupId: myFood.FoodGroupId,
-      Name: myFood.Name,
+      FctName: myFood.Name,
       FoodGroup: myFood.FoodGroup,
       Carb: faker.number.float({ min: 0, max: 500, precision: 0.1 }),
       En: faker.number.float({ min: 0, max: 4000, precision: 0.1 }),
@@ -22,9 +22,9 @@ export default class FakerFunc {
   static createFcts() {
     return models.sampleFood.map((item) => {
       return {
-        Id: item.Id,
+        keyFct: item.keyFct,
         FoodGroupId: item.FoodGroupId,
-        Name: item.Name,
+        FctName: item.Name,
         FoodGroup: item.FoodGroup,
         Carb: faker.number.float({ min: 0, max: 500, precision: 0.1 }),
         En: faker.number.float({ min: 0, max: 4000, precision: 0.1 }),
@@ -74,30 +74,24 @@ export default class FakerFunc {
     })
   }
 
-  static createMenuPlusItem(): models.MenuItemPlus {
-    const food = faker.helpers.arrayElement(models.sampleFood)
+  static createMenuItem(): models.MenuItem {
+    const food = this.createFct(models.sampleFood)
     const menu = faker.helpers.arrayElement(models.commonMenus)
     return {
-      Id: faker.string.uuid(),
+      ...food,
+      IdMenuItem: faker.string.uuid(),
       KeyFamily: faker.person.firstName(),
-      Date: faker.date.recent(),
-      keyFct: faker.string.uuid(),
-      NutritionValue: faker.number.float({ min: 0, max: 200, precision: 0.1 }),
-      FctName: food.Name,
-      FoodGroup: food.FoodGroup,
-      Weight: faker.number.float({ min: 0, max: 400, precision: 0.1 }),
+      Date: faker.date.past(),
       MenuName: menu,
+      NutrientValue: faker.number.float({ min: 0, max: 200, precision: 0.1 }),
       Star: faker.datatype.boolean(),
-      En: faker.number.float({ min: 0, max: 4000, precision: 0.1 }),
-      Fe: faker.number.float({ min: 0, max: 50, precision: 0.1 }),
-      Pr: faker.number.float({ min: 0, max: 200, precision: 0.1 }),
-      Va: faker.number.float({ min: 0, max: 500, precision: 0.1 })
+      Weight: faker.number.float({ min: 0, max: 50, precision: 0.1 })
     }
   }
 
   static createMenuItems(): models.MenuItems {
     return [...Array(10)].map(() => {
-      return this.createMenuPlusItem()
+      return this.createMenuItem()
     })
   }
 }
