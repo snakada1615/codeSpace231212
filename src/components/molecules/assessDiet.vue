@@ -31,6 +31,7 @@ const props = defineProps({
 
 const emits = defineEmits<{
   (e: 'update:fctFavoriteList', value: myVal.FctStars): void
+  (e: 'update:fctRowItem', value: myVal.FctRowItem): void
   (e: 'update:menuItems', value: myVal.MenuItems): void
 }>()
 
@@ -46,6 +47,11 @@ let selectedFct = ref<myVal.FctItem>({
   Pr: 0,
   Va: 0
 })
+
+function onFctSelected(val: myVal.FctRowItem) {
+  // menuItem.value = val
+  selectedFct.value = val
+}
 
 const fctRowItemComputed = computed<myVal.FctRowItem>(() => {
   return {
@@ -66,29 +72,24 @@ const myMenu = computed<myVal.MenuItems>(() => {
 
 const commonMenus = myVal.commonMenus
 
-function onFctSelected(val: myVal.FctRowItem) {
-  // menuItem.value = val
-  selectedFct.value = val
-}
-
 function onUpdateFctRowItem(val: { value: myVal.FctRowItem; index: string }) {
   // menuItem.value = val
   switch (val.index) {
-    case 'star':
-      const res = props.fctFavoriteList.map((item) => {
-        if (item.Id === val.value.keyFct) {
-          return val.value
-        } else {
-          return item
+    case 'star': {
+      const res: myVal.FctStars = props.fctFavoriteList.map((item) => {
+        return {
+          Id: item.Id,
+          Star: item.Id === val.value.keyFct ? val.value.Star : item.Star
         }
       })
       emits('update:fctFavoriteList', res)
       break
+    }
     case 'menu':
-      console.log('hi')
+      emits('update:fctRowItem', val.value)
       break
     case 'weight':
-      console.log('hi')
+      emits('update:fctRowItem', val.value)
       break
     default:
       break

@@ -1,16 +1,27 @@
 import assessDietVue from '@/components/molecules/assessDiet.vue'
 import type { Meta, StoryObj, ArgTypes } from '@storybook/vue3'
 import { action } from '@storybook/addon-actions'
+import * as myVal from 'src/models/MyInterface'
+import FakerFunc from '@/models/fakerFunc'
+import { faker } from '@faker-js/faker'
 
 // Define the ArgTypes for the storybook without using the generic
 const myArgTypes: ArgTypes = {
-  'update:menuItem': {
+  'update:fctFavoriteList': {
     control: 'object', // Adjust this control as needed, e.g., 'text' if you want a string input
-    action: 'update:menuItem',
+    action: 'update:fctFavoriteList',
     table: {
       category: 'Events' // Optional: Use categories to organize your argTypes
     },
-    description: 'Event for MenuItem update' // Provide a helpful description
+    description: 'Event for fctFavoriteList update' // Provide a helpful description
+  },
+  'update:fctRowItem': {
+    control: 'object', // Adjust this control as needed, e.g., 'text' if you want a string input
+    action: 'update:fctFavoriteList',
+    table: {
+      category: 'Events' // Optional: Use categories to organize your argTypes
+    },
+    description: 'Event for fctRowItem update' // Provide a helpful description
   }
   // ... define other arg types as necessary ...
 }
@@ -25,16 +36,31 @@ export default meta
 
 type Story = StoryObj<typeof assessDietVue>
 
+const myFct: myVal.FctItems = FakerFunc.createFcts()
+const myFctFavoriteList: myVal.FctStars = myFct.map((item) => {
+  return {
+    Id: item.keyFct,
+    Star: faker.datatype.boolean()
+  }
+})
+const myMenuItems: myVal.MenuItems = FakerFunc.createMenuItems()
+
 export const Primary: Story = {
   render: (args) => ({
     components: { assessDietVue },
     setup() {
       return { args }
     },
-    template: '<assessDietVue v-bind="args" @update:menuItem = "onUpdateMenuItem "/>',
+    template:
+      '<assessDietVue v-bind="args" @update:fctRowItem = "onUpdateFctRowItem" @update:fctFavoriteList = "onUpdateFctFavoriteList" />',
     methods: {
-      onUpdateMenuItem: action('onUpdateMenuItem')
+      onUpdateFctRowItem: action('onUpdateFctRowItem'),
+      onUpdateFctFavoriteList: action('onUpdateFctFavoriteList')
     }
   }),
-  args: {}
+  args: {
+    fct: myFct,
+    fctFavoriteList: myFctFavoriteList,
+    menuItems: myMenuItems
+  }
 }
