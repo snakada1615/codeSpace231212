@@ -2,42 +2,35 @@
 import * as myVal from 'src/models/MyInterface'
 import { computed, type PropType, ref } from 'vue'
 
-interface menuItemType {
-  Weight: number
-  MenuName: string
-}
-
 const props = defineProps({
-  menuItem: {
-    type: Object as PropType<menuItemType>,
+  fctRowItem: {
+    type: Object as PropType<myVal.FctRowItem>,
     required: true
   },
   commonMenus: {
     type: Object,
     required: true
-  },
-  star: {
-    type: Boolean,
-    required: true
   }
 })
 
 const emits = defineEmits<{
-  (e: 'update:menuItem', value: typeof props.menuItem): void
+  (e: 'update:fctRowItem', value: { value: typeof props.fctRowItem; index: string }): void
 }>()
 
 // menuItem.Star更新
 const onChangeStar = (value: boolean): void => {
-  const res = JSON.parse(JSON.stringify(props.menuItem))
+  const res = JSON.parse(JSON.stringify(props.fctRowItem))
   res.Star = value
-  emits('update:menuItem', res)
+  const res2 = { value: res, index: 'star' }
+  emits('update:fctRowItem', res2)
 }
 
 // menuItem.MenuNameの更新
 const updateMenuName = (value: string): void => {
-  const res = JSON.parse(JSON.stringify(props.menuItem))
+  const res = JSON.parse(JSON.stringify(props.fctRowItem))
   res.MenuName = value
-  emits('update:menuItem', res)
+  const res2 = { value: res, index: 'menu' }
+  emits('update:fctRowItem', res2)
 }
 
 // menuItem.Weight の更新
@@ -46,9 +39,10 @@ const updateWeight = (value: string | number | null): void => {
   if (isNaN(numericValue)) {
     return
   }
-  const res = JSON.parse(JSON.stringify(props.menuItem))
+  const res = JSON.parse(JSON.stringify(props.fctRowItem))
   res.Weight = numericValue
-  emits('update:menuItem', res)
+  const res2 = { value: res, index: 'weight' }
+  emits('update:fctRowItem', res2)
 }
 
 const stringOptions = myVal.commonMenus
@@ -91,13 +85,13 @@ function filterMenu(val: string, update: (cb: () => void) => void) {
         <div class="col">Weight</div>
       </div>
       <div class="row">
-        <div class="col">{{ props.menuItem.FctName }}</div>
-        <div class="col">{{ props.menuItem.NutrientValue }}</div>
+        <div class="col">{{ props.fctRowItem.FctName }}</div>
+        <div class="col">{{ props.fctRowItem.NutrientValue }}</div>
         <div class="col">
           <q-select
             filled
             dense
-            :model-value="props.menuItem.MenuName"
+            :model-value="props.fctRowItem.MenuName"
             use-input
             use-chips
             @new-value="addNewMenuName"
@@ -111,7 +105,7 @@ function filterMenu(val: string, update: (cb: () => void) => void) {
             type="number"
             dense
             filled
-            :model-value="props.menuItem.Weight"
+            :model-value="props.fctRowItem.Weight"
             :rules="[(val) => typeof val === 'number' || 'only number is allowed']"
             @update:model-value="updateWeight"
           ></q-input>
@@ -121,7 +115,7 @@ function filterMenu(val: string, update: (cb: () => void) => void) {
         <q-checkbox
           dense
           size="sm"
-          :model-value="props.menuItem.Star"
+          :model-value="props.fctRowItem.Star"
           label="mark as favorite"
           color="teal"
           class="q-mt-md q-ml-md"

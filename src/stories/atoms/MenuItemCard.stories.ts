@@ -2,20 +2,9 @@ import type { Meta, StoryObj, ArgTypes } from '@storybook/vue3'
 import { action } from '@storybook/addon-actions'
 import MenuItemCard from '@/components/atoms/MenuItemCard.vue'
 import * as myVal from '@/models/MyInterface'
+import FakerFunc from '@/models/fakerFunc'
 
-const menuItem: myVal.MenuItem = {
-  keyFct: '04',
-  NutritionValue: 52,
-  FctName: 'Apple',
-  FoodGroup: 'Fruits',
-  Weight: 152,
-  MenuName: 'breakfast',
-  Star: false,
-  En: 0,
-  Pr: 0,
-  Va: 0,
-  Fe: 0
-}
+const fctRowItem: myVal.FctRowItem = FakerFunc.createFctRowItem()
 
 const commonMenus = myVal.commonMenus
 
@@ -47,13 +36,13 @@ export const Second: Story = {
     setup() {
       return { args }
     },
-    template: '<MenuItemCard v-bind="args"  @update:menuItem="onUpdateMenuItem" />',
+    template: '<MenuItemCard v-bind="args"  @update:fctRowItem="onUpdateFctRowItem" />',
     methods: {
-      onUpdateMenuItem: action('update:menuItem')
+      onUpdateFctRowItem: action('update:fctRowItem')
     }
   }),
   args: {
-    menuItem: menuItem,
+    fctRowItem: fctRowItem,
     commonMenus: commonMenus
   }
 }

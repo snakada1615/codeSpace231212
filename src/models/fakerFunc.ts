@@ -36,6 +36,16 @@ export default class FakerFunc {
     })
   }
 
+  static createFctRowItem(): models.FctRowItem {
+    return {
+      ...this.createFct(models.sampleFood),
+      NutrientValue: faker.number.float({ min: 0, max: 200, precision: 0.1 }),
+      Star: faker.datatype.boolean(),
+      Weight: faker.number.float({ min: 0, max: 200, precision: 0.1 }),
+      MenuName: faker.helpers.arrayElement(models.commonMenus)
+    }
+  }
+
   static createDri(): models.DriItem {
     return {
       id: faker.string.uuid(),

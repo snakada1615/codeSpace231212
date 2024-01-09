@@ -18,10 +18,10 @@ const props = defineProps({
     required: true
   },
 
-  menuItem: {
-    type: Object as PropType<myVal.MenuItem>,
-    required: true
-  },
+  // menuItem: {
+  //   type: Object as PropType<myVal.MenuItem>,
+  //   required: true
+  // },
 
   menuItems: {
     type: Object as PropType<myVal.MenuItems>,
@@ -30,42 +30,22 @@ const props = defineProps({
 })
 
 const emits = defineEmits<{
-  (e: 'update:fct', value: myVal.FctItems): void
-  (e: 'update:menuItem', value: myVal.MenuItem): void
+  (e: 'update:fctFavoriteList', value: myVal.FctStars): void
   (e: 'update:menuItems', value: myVal.MenuItems): void
 }>()
 
-// const myFct: myVal.FctItems = FakerFunc.createFcts()
+const fctIndex = ref(0)
 
-// const fctFavoriteList: myVal.FctStars = myFct.map((item, index) => {
-//   const res = index % 2 ? true : false
-//   return {
-//     Id: item.keyFct,
-//     Star: res
-//   }
-// })
-
-// const menuItemOrg: myVal.MenuItem = {
-//   keyFct: '04',
-//   NutrientValue: 52,
-//   FctName: 'Apple',
-//   FoodGroup: 'Fruits',
-//   Weight: 152,
-//   MenuName: 'breakfast',
-//   Star: false,
-//   En: 0,
-//   Pr: 0,
-//   Va: 0,
-//   Fe: 0,
-//   Carb: 0,
-//   Fat: 0,
-//   IdMenuItem: '00',
-//   KeyFamily: 'John',
-//   Date: new Date(),
-//   FoodGroupId: 'string'
-// }
-
-const menuItem = ref(props.menuItem)
+const fctRowItemComputed = computed<myVal.FctRowItem>({
+  get: () => ({
+    ...props.fct[fctIndex.value],
+    NutrientValue: 0,
+    Star: props.fctFavoriteList[fctIndex.value].Star,
+    Weight: 0,
+    MenuName: ''
+  }),
+  set: (value) => emits('changeItem', value)
+})
 
 const myMenu: myVal.MenuItems = FakerFunc.createMenuItems()
 
@@ -73,15 +53,12 @@ const commonMenus = myVal.commonMenus
 
 function onFctSelected(val: myVal.FctRowItem) {
   // menuItem.value = val
-  menuItem.value = {
+  fctRowItemComputed.value = {
     ...val,
     NutrientValue: 0,
     Star: false,
     Weight: 0,
-    MenuName: '',
-    IdMenuItem: '00',
-    KeyFamily: '',
-    Date: new Date()
+    MenuName: ''
   }
 }
 </script>
@@ -93,7 +70,7 @@ function onFctSelected(val: myVal.FctRowItem) {
       :fctFavoriteList="props.fctFavoriteList"
       @row-click="onFctSelected"
     />
-    <MenuItemCard :commonMenus="commonMenus" v-model:menu-item="menuItem" />
+    <MenuItemCard :commonMenus="commonMenus" :fct-row-item="fctRowItemComputed" />
     <menuTable :menuItems="props.menuItems" />
   </q-card>
 </template>
