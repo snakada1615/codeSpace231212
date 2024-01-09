@@ -18,11 +18,6 @@ const props = defineProps({
     required: true
   },
 
-  // menuItem: {
-  //   type: Object as PropType<myVal.MenuItem>,
-  //   required: true
-  // },
-
   menuItems: {
     type: Object as PropType<myVal.MenuItems>,
     required: true
@@ -109,6 +104,7 @@ function onUpdateFctRowItem(val: { value: myVal.FctRowItem; index: string }) {
       :fct-row-item="fctRowItemComputed"
       @update:fctRowItem="onUpdateFctRowItem"
     />
+    <q-btn label="add" />
     <menuTable :menuItems="myMenu" />
   </q-card>
 </template>

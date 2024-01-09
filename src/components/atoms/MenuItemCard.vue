@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import * as myVal from 'src/models/MyInterface'
-import { computed, type PropType, ref } from 'vue'
+import { computed, type ComputedRef, type PropType, ref } from 'vue'
+import type { QTableProps } from 'quasar'
 
 const props = defineProps({
   fctRowItem: {
@@ -19,7 +20,7 @@ const emits = defineEmits<{
 
 // menuItem.Star更新
 const onChangeStar = (value: boolean): void => {
-  const res:typeof props.fctRowItem = JSON.parse(JSON.stringify(props.fctRowItem))
+  const res: typeof props.fctRowItem = JSON.parse(JSON.stringify(props.fctRowItem))
   res.Star = value
   const res2 = { value: res, index: 'star' }
   emits('update:fctRowItem', res2)
@@ -73,45 +74,105 @@ function filterMenu(val: string, update: (cb: () => void) => void) {
     }
   })
 }
+
+// table col定義
+// 列の定義
+const columnsMenuItem: QTableProps['columns'] = [
+  {
+    name: 'commodity',
+    required: true,
+    label: 'Commodity',
+    align: 'left',
+    field: 'FctName',
+    sortable: true
+  },
+  {
+    name: 'Wt',
+    required: true,
+    label: 'Wt',
+    align: 'left',
+    field: 'Weight',
+    sortable: true
+  },
+  {
+    name: 'En',
+    required: true,
+    label: 'En',
+    align: 'left',
+    field: 'En',
+    sortable: true
+  },
+  {
+    name: 'Pr',
+    required: true,
+    label: 'Pr',
+    align: 'left',
+    field: 'Pr',
+    sortable: true
+  },
+  {
+    name: 'Va',
+    required: true,
+    label: 'Va',
+    align: 'left',
+    field: 'Va',
+    sortable: true
+  },
+  {
+    name: 'Fe',
+    required: true,
+    label: 'Fe',
+    align: 'left',
+    field: 'Fe',
+    sortable: true
+  }
+]
+
+// table 行の定義
+const rowsMenuItem: ComputedRef<myVal.FctRowItem> = computed(() => {
+  return props.fctRowItem
+})
 </script>
 
 <template>
   <q-card class="bg-grey-2 q-pa-sm">
-    <q-card class="bg-grey-4 q-pa-sm q-my-md">
-      <div class="row">
-        <div class="col">Commodity</div>
-        <div class="col">Nutrient value</div>
-        <div class="col">Food name</div>
-        <div class="col">Weight</div>
+    <q-table
+      :table-header-style="{ backgroundColor: 'DarkSeaGreen' }"
+      flat
+      bordered
+      dense
+      :rows="[rowsMenuItem]"
+      :columns="columnsMenuItem"
+    />
+    <div class="row bg-grey-4">
+      <div class="col-6">MenuName</div>
+      <div class="col">Weight</div>
+      <div class="col">Star</div>
+    </div>
+    <div class="row">
+      <div class="col-6">
+        <q-select
+          dense
+          :model-value="props.fctRowItem.MenuName"
+          use-input
+          use-chips
+          @new-value="addNewMenuName"
+          :options="menuNames"
+          @filter="filterMenu"
+          @update:model-value="updateMenuName"
+        />
       </div>
-      <div class="row">
-        <div class="col">{{ props.fctRowItem.FctName }}</div>
-        <div class="col">{{ props.fctRowItem.NutrientValue }}</div>
-        <div class="col">
-          <q-select
-            filled
-            dense
-            :model-value="props.fctRowItem.MenuName"
-            use-input
-            use-chips
-            @new-value="addNewMenuName"
-            :options="menuNames"
-            @filter="filterMenu"
-            @update:model-value="updateMenuName"
-          />
-        </div>
-        <div class="col">
-          <q-input
-            type="number"
-            dense
-            filled
-            :model-value="props.fctRowItem.Weight"
-            :rules="[(val) => typeof val === 'number' || 'only number is allowed']"
-            @update:model-value="updateWeight"
-          ></q-input>
-        </div>
+      <div class="col">
+        <q-input
+          type="number"
+          dense
+          filled
+          :model-value="props.fctRowItem.Weight"
+          :rules="[(val) => typeof val === 'number' || 'only number is allowed']"
+          @update:model-value="updateWeight"
+        ></q-input>
       </div>
-      <div class="row">
+      <div class="col">
         <q-checkbox
           dense
           size="sm"
@@ -125,6 +186,6 @@ function filterMenu(val: string, update: (cb: () => void) => void) {
           @update:model-value="onChangeStar"
         />
       </div>
-    </q-card>
+    </div>
   </q-card>
 </template>
