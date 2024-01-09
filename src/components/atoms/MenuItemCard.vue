@@ -2,18 +2,26 @@
 import * as myVal from 'src/models/MyInterface'
 import { computed, type PropType, ref } from 'vue'
 
+interface menuItemType {
+  Weight: number
+  MenuName: string
+}
+
 const props = defineProps({
   menuItem: {
-    type: Object as PropType<myVal.MenuItem>,
+    type: Object as PropType<menuItemType>,
     required: true
   },
   commonMenus: {
     type: Object,
     required: true
+  },
+  star: {
+    type: Boolean,
+    required: true
   }
 })
 
-// emit設定
 const emits = defineEmits<{
   (e: 'update:menuItem', value: typeof props.menuItem): void
 }>()
