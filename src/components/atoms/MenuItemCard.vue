@@ -19,7 +19,7 @@ const emits = defineEmits<{
 
 // menuItem.Star更新
 const onChangeStar = (value: boolean): void => {
-  const res = JSON.parse(JSON.stringify(props.fctRowItem))
+  const res:typeof props.fctRowItem = JSON.parse(JSON.stringify(props.fctRowItem))
   res.Star = value
   const res2 = { value: res, index: 'star' }
   emits('update:fctRowItem', res2)
