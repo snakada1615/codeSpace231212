@@ -134,14 +134,18 @@ const rowsMenuItem: ComputedRef<myVal.FctRowItem> = computed(() => {
 })
 
 // validationルール
-const weightRules = computed(() => typeof props.fctRowItem.Weight === 'number')
-const menuRules = computed(() => props.fctRowItem.MenuName !== null)
+const weightRules = computed(
+  () => typeof props.fctRowItem.Weight === 'number' && props.fctRowItem.Weight > 0
+)
+const menuRules = computed(() => {
+  const res = props.fctRowItem.MenuName?.trim() ? true : false
+  return res
+})
+const allRule = computed(() => menuRules.value && weightRules.value)
 </script>
 
 <template>
   <q-card class="bg-grey-2 q-pa-sm">
-    <div>weightRules: {{ weightRules }}</div>
-    <div>menuRules: {{ menuRules }}</div>
     <q-table
       :table-header-style="{ backgroundColor: 'DarkSeaGreen' }"
       flat
@@ -160,7 +164,7 @@ const menuRules = computed(() => props.fctRowItem.MenuName !== null)
     </div>
     <div class="row flex-center text-center">
       <div class="col-1">
-        <q-btn round ripple color="primary" icon="add" size="sm" />
+        <q-btn round ripple color="primary" icon="add" size="sm" :disable="!allRule" />
       </div>
       <div class="col-6">
         <q-select
@@ -180,7 +184,6 @@ const menuRules = computed(() => props.fctRowItem.MenuName !== null)
       </div>
       <div class="col">
         <q-input
-          ref="weightRef"
           type="number"
           debounce="500"
           dense
