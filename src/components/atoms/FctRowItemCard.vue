@@ -9,13 +9,14 @@ const props = defineProps({
     required: true
   },
   commonMenus: {
-    type: Object,
+    type: Array<string>,
     required: true
   }
 })
 
 const emits = defineEmits<{
   (e: 'update:fctRowItem', value: { value: typeof props.fctRowItem; index: string }): void
+  (e: 'setNewFctRowItem', value: myVal.FctRowItem): void
 }>()
 
 // menuItem.Star更新
@@ -46,8 +47,13 @@ const updateWeight = (value: string | number | null): void => {
   emits('update:fctRowItem', res2)
 }
 
-const stringOptions = myVal.commonMenus
-const menuNames = ref(stringOptions)
+// fctRowItemの追加
+const onSetNewFctRowItem = (): void => {
+  emits('setNewFctRowItem', props.fctRowItem)
+}
+
+// メニュー名一覧
+const menuNames = ref<typeof myVal.commonMenus>(props.commonMenus)
 
 // リストにないメニュー名を追加する
 function addNewMenuName(
@@ -57,7 +63,7 @@ function addNewMenuName(
   // Your implementation here.
 
   if (inputValue.length > 0) {
-    if (!stringOptions.includes(inputValue)) {
+    if (!menuNames.value.includes(inputValue)) {
       doneFn(inputValue as any, 'toggle') // Cast inputValue to `any` since `doneFn` expects item?: any
     }
   }
@@ -67,10 +73,10 @@ function addNewMenuName(
 function filterMenu(val: string, update: (cb: () => void) => void) {
   update(() => {
     if (val === '') {
-      menuNames.value = stringOptions
+      menuNames.value = props.commonMenus
     } else {
       const needle = val.toLowerCase()
-      menuNames.value = stringOptions.filter((v) => v.toLowerCase().indexOf(needle) > -1)
+      menuNames.value = props.commonMenus.filter((v) => v.toLowerCase().indexOf(needle) > -1)
     }
   })
 }
@@ -164,7 +170,15 @@ const allRule = computed(() => menuRules.value && weightRules.value)
     </div>
     <div class="row flex-center text-center">
       <div class="col-1">
-        <q-btn round ripple color="primary" icon="add" size="sm" :disable="!allRule" />
+        <q-btn
+          round
+          ripple
+          color="primary"
+          icon="add"
+          size="sm"
+          :disable="!allRule"
+          @click="onSetNewFctRowItem"
+        />
       </div>
       <div class="col-6">
         <q-select
