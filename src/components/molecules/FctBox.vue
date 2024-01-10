@@ -26,9 +26,9 @@ const onChange = (value: boolean): void => {
     return
   }
   const res = props.fctFavoriteList.map((item) => {
-    if (item.Id === selectedRow.value.keyFct) {
+    if (item.IdStar === selectedRow.value.keyFct) {
       return {
-        Id: item.Id,
+        IdStar: item.IdStar,
         Star: value
       }
     } else {
@@ -116,7 +116,7 @@ const rowsFct = computed(() => {
       value: item[targetNutrient.value],
       FctName: item.FctName,
       FoodGroup: item.FoodGroup,
-      Star: props.fctFavoriteList.find((item2) => item2.Id === item.keyFct)?.Star || false
+      Star: props.fctFavoriteList.find((item2) => item2.IdStar === item.keyFct)?.Star || false
     }
   })
 

@@ -12,7 +12,7 @@ const driItems: DriItems = [
     Name: 'child 6-23 month',
     Pr: 11.65,
     Va: 400.0,
-    id: '0'
+    DriId: '0'
   },
   {
     En: 3066.0,
@@ -20,7 +20,7 @@ const driItems: DriItems = [
     Name: 'lactating',
     Pr: 61.0,
     Va: 850.0,
-    id: '1'
+    DriId: '1'
   },
   {
     En: 2913.0,
@@ -28,7 +28,7 @@ const driItems: DriItems = [
     Name: 'adolescent all',
     Pr: 52.65,
     Va: 600.0,
-    id: '2'
+    DriId: '2'
   }
 ]
 

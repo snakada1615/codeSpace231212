@@ -33,7 +33,7 @@ export interface TargetMember {
 export interface TargetMembers extends Array<TargetMember> {}
 
 export interface DriItem {
-  id: string
+  DriId: string
   Name: string
   En: number
   Fe: number
@@ -59,7 +59,7 @@ export interface FctItem {
 export interface FctItems extends Array<FctItem> {}
 
 export interface FctStar {
-  Id: string
+  IdStar: string
   Star: boolean
 }
 

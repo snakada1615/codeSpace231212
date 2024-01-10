@@ -1,6 +1,6 @@
 import type { Meta, StoryObj, ArgTypes } from '@storybook/vue3'
 import { action } from '@storybook/addon-actions'
-import MenuItemCard from '@/components/atoms/MenuItemCard.vue'
+import MenuItemCard from '@/components/atoms/FctRowItemCard.vue'
 import * as myVal from '@/models/MyInterface'
 import FakerFunc from '@/models/fakerFunc'
 

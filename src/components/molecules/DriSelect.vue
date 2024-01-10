@@ -108,7 +108,7 @@ const rowsFamilyMember = computed<QTableProps['rows']>(() => {
   const driItemsId = myFunc
     .uniq(
       props.driItems.map((item) => {
-        return item.id
+        return item.DriId
       })
     )
     .sort()

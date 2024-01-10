@@ -81,7 +81,7 @@ const rowsFct = computed(() => {
       NutrientValue: item[targetNutrient.value],
       FctName: item.FctName,
       FoodGroup: item.FoodGroup,
-      Star: props.fctFavoriteList.find((item2) => item2.Id === item.Id)?.Star || false
+      Star: props.fctFavoriteList.find((item2) => item2.IdStar === item.Id)?.Star || false
     }
   })
 

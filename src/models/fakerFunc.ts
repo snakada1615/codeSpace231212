@@ -48,7 +48,7 @@ export default class FakerFunc {
 
   static createDri(): models.DriItem {
     return {
-      id: faker.string.uuid(),
+      DriId: faker.string.uuid(),
       Name: faker.helpers.arrayElement([
         'child under 6 month',
         'child 6-23 month',
@@ -74,7 +74,7 @@ export default class FakerFunc {
       'adolescent all'
     ].map((item, index) => {
       return <models.DriItem>{
-        id: String(index),
+        DriId: String(index),
         Name: item,
         En: faker.number.float({ min: 0, max: 4000, precision: 0.1 }),
         Fe: faker.number.float({ min: 0, max: 50, precision: 0.1 }),

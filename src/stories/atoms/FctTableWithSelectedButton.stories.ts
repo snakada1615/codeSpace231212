@@ -9,7 +9,7 @@ const myFct: myVal.FctItems = FakerFunc.createFcts()
 const fctFavoriteList: myVal.FctStars = myFct.map((item, index) => {
   const res = index % 2 ? true : false
   return {
-    Id: item.keyFct,
+    IdStar: item.keyFct,
     Star: res
   }
 })
@@ -42,7 +42,7 @@ export const Second: Story = {
     setup() {
       return { args }
     },
-    template: '<FctTableVue v-bind="args" @row-click="onRowSelected"/>',
+    template: '<FctTableWithSelectButtonVue v-bind="args" @row-click="onRowSelected"/>',
     methods: { onRowSelected: action('onRowSelected') }
   }),
   args: {

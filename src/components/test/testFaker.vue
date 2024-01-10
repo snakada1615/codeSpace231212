@@ -60,7 +60,7 @@ const fctOrg: models.FctItem = {
 }
 
 const driOrg: models.DriItem = {
-  id: 'id001',
+  DriId: 'id001',
   Name: 'adult',
   En: 20,
   Fe: 45,

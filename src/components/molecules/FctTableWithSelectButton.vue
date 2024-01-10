@@ -1,11 +1,8 @@
 <script setup lang="ts">
 import FctTable from '../atoms/FctTableSingleNutrient.vue'
 import MenuItemCard from '../atoms/FctRowItemCard.vue'
-import menuTable from '../atoms/menuTable.vue'
 import * as myVal from 'src/models/MyInterface'
-import myFunc from 'src/models/MyFunctions'
-import FakerFunc from 'src/models/fakerFunc'
-import { ref, computed, type PropType, toValue } from 'vue'
+import { ref, computed, type PropType } from 'vue'
 
 const props = defineProps({
   fct: {
@@ -27,7 +24,6 @@ const props = defineProps({
 const emits = defineEmits<{
   (e: 'update:fctFavoriteList', value: myVal.FctStars): void
   (e: 'update:fctRowItem', value: myVal.FctRowItem): void
-  (e: 'update:menuItems', value: myVal.MenuItems): void
 }>()
 
 let selectedFct = ref<myVal.FctItem>({
@@ -59,10 +55,6 @@ const fctRowItemComputed = computed<myVal.FctRowItem>(() => {
     Weight: 0,
     MenuName: ''
   }
-})
-
-const myMenu = computed<myVal.MenuItems>(() => {
-  return props.menuItems
 })
 
 const commonMenus = myVal.commonMenus
@@ -105,6 +97,5 @@ function onUpdateFctRowItem(val: { value: myVal.FctRowItem; index: string }) {
       @update:fctRowItem="onUpdateFctRowItem"
     />
     <q-btn label="add" />
-    <menuTable :menuItems="myMenu" />
   </q-card>
 </template>

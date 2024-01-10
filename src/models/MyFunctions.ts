@@ -29,7 +29,7 @@ export default class myFunc {
     }
     return target.reduce((accumulator, currentItem) => {
       const count = Number(currentItem.count)
-      const driValue = dri.find((item) => item.id === currentItem.targetId)
+      const driValue = dri.find((item) => item.DriId === currentItem.targetId)
       if (!driValue) {
         throw new Error('targetMember not matching...')
       }
