@@ -28,7 +28,7 @@ const myArgTypes: ArgTypes = {
 }
 
 const meta: Meta<typeof FctTableVue> = {
-  title: 'app/atoms/FctTable',
+  title: 'app/atoms/FctTableWithSingleNutrient',
   component: FctTableVue,
   argTypes: myArgTypes
 }

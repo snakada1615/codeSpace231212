@@ -39,7 +39,7 @@ type Story = StoryObj<typeof assessDietVue>
 const myFct: myVal.FctItems = FakerFunc.createFcts()
 const myFctFavoriteList: myVal.FctStars = myFct.map((item) => {
   return {
-    Id: item.keyFct,
+    IdStar: item.keyFct,
     Star: faker.datatype.boolean()
   }
 })

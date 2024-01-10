@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import FctTable from '../atoms/FctTableSingleNutrient.vue'
-import MenuItemCard from '../atoms/FctRowItemCard.vue'
+import FctRowItemCard from '../atoms/FctRowItemCard.vue'
 import * as myVal from 'src/models/MyInterface'
 import { ref, computed, type PropType } from 'vue'
 
@@ -15,8 +15,8 @@ const props = defineProps({
     required: true
   },
 
-  menuItems: {
-    type: Object as PropType<myVal.MenuItems>,
+  commonMenus: {
+    type: Object as PropType<typeof myVal.commonMenus>,
     required: true
   }
 })
@@ -57,8 +57,6 @@ const fctRowItemComputed = computed<myVal.FctRowItem>(() => {
   }
 })
 
-const commonMenus = myVal.commonMenus
-
 function onUpdateFctRowItem(val: { value: myVal.FctRowItem; index: string }) {
   // menuItem.value = val
   switch (val.index) {
@@ -91,11 +89,10 @@ function onUpdateFctRowItem(val: { value: myVal.FctRowItem; index: string }) {
       :fctFavoriteList="props.fctFavoriteList"
       @row-click="onFctSelected"
     />
-    <MenuItemCard
-      :commonMenus="commonMenus"
+    <FctRowItemCard
+      :commonMenus="props.commonMenus"
       :fct-row-item="fctRowItemComputed"
       @update:fctRowItem="onUpdateFctRowItem"
     />
-    <q-btn label="add" />
   </q-card>
 </template>

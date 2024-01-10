@@ -1,6 +1,6 @@
 import type { Meta, StoryObj, ArgTypes } from '@storybook/vue3'
 import { action } from '@storybook/addon-actions'
-import FctTableVue from '@/components/atoms/FctTableSingleNutrient.vue'
+import FctTableWithSelectButtonVue from '@/components/molecules/FctTableWithSelectButton.vue'
 import * as myVal from '@/models/MyInterface'
 import FakerFunc from '@/models/fakerFunc'
 
@@ -16,34 +16,46 @@ const fctFavoriteList: myVal.FctStars = myFct.map((item, index) => {
 
 // Define the ArgTypes for the storybook without using the generic
 const myArgTypes: ArgTypes = {
-  rowSelected: {
+  'update:fctFavoriteList': {
     control: 'object', // Adjust this control as needed, e.g., 'text' if you want a string input
-    action: 'row-click',
+    action: 'update:fctFavoriteList',
     table: {
       category: 'Events' // Optional: Use categories to organize your argTypes
     },
-    description: 'Event for rowSelected' // Provide a helpful description
-  }
+    description: 'Event for fctFavoriteList update' // Provide a helpful description
+  },
   // ... define other arg types as necessary ...
+  'update:fctRowItem': {
+    control: 'object', // Adjust this control as needed, e.g., 'text' if you want a string input
+    action: 'update:fctRowItem',
+    table: {
+      category: 'Events' // Optional: Use categories to organize your argTypes
+    },
+    description: 'Event for fctRowItem update' // Provide a helpful description
+  }
 }
 
-const meta: Meta<typeof FctTableVue> = {
-  title: 'app/atoms/FctTable',
-  component: FctTableVue,
+const meta: Meta<typeof FctTableWithSelectButtonVue> = {
+  title: 'app/molecules/FctTableWithSelectButton',
+  component: FctTableWithSelectButtonVue,
   argTypes: myArgTypes
 }
 export default meta
 
-type Story = StoryObj<typeof FctTableVue>
+type Story = StoryObj<typeof FctTableWithSelectButtonVue>
 
 export const Second: Story = {
   render: (args) => ({
-    components: { FctTableVue },
+    components: { FctTableWithSelectButtonVue },
     setup() {
       return { args }
     },
-    template: '<FctTableWithSelectButtonVue v-bind="args" @row-click="onRowSelected"/>',
-    methods: { onRowSelected: action('onRowSelected') }
+    template:
+      '<FctTableWithSelectButtonVue v-bind="args" @update:fctRowItem="onUpdateFctRowItem" @update:fctFavoriteList="onUpdateFctFavoriteList" />',
+    methods: {
+      onUpdateFctRowItem: action('update:fctRowItem'),
+      onUpdateFctFavoriteList: action('update:fctFavoriteList')
+    }
   }),
   args: {
     fct: myFct,

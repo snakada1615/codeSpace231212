@@ -132,10 +132,16 @@ const columnsMenuItem: QTableProps['columns'] = [
 const rowsMenuItem: ComputedRef<myVal.FctRowItem> = computed(() => {
   return props.fctRowItem
 })
+
+// validationルール
+const weightRules = computed(() => typeof props.fctRowItem.Weight === 'number')
+const menuRules = computed(() => props.fctRowItem.MenuName !== null)
 </script>
 
 <template>
   <q-card class="bg-grey-2 q-pa-sm">
+    <div>weightRules: {{ weightRules }}</div>
+    <div>menuRules: {{ menuRules }}</div>
     <q-table
       :table-header-style="{ backgroundColor: 'DarkSeaGreen' }"
       flat
@@ -145,14 +151,22 @@ const rowsMenuItem: ComputedRef<myVal.FctRowItem> = computed(() => {
       :columns="columnsMenuItem"
     />
     <div class="row bg-grey-4">
-      <div class="col-6">MenuName</div>
-      <div class="col">Weight</div>
-      <div class="col">Star</div>
+      <div class="col-1 text-center">
+        <div>add</div>
+      </div>
+      <div class="col-6 text-center">MenuName</div>
+      <div class="col text-center">Weight</div>
+      <div class="col text-center">Star</div>
     </div>
-    <div class="row">
+    <div class="row flex-center text-center">
+      <div class="col-1">
+        <q-btn round ripple color="primary" icon="add" size="sm" />
+      </div>
       <div class="col-6">
         <q-select
+          ref="menuRef"
           dense
+          hide-bottom-space
           :model-value="props.fctRowItem.MenuName"
           use-input
           use-chips
@@ -160,15 +174,19 @@ const rowsMenuItem: ComputedRef<myVal.FctRowItem> = computed(() => {
           :options="menuNames"
           @filter="filterMenu"
           @update:model-value="updateMenuName"
+          :error="!menuRules"
+          error-message="'please set menu name'"
         />
       </div>
       <div class="col">
         <q-input
+          ref="weightRef"
           type="number"
+          debounce="500"
           dense
-          filled
           :model-value="props.fctRowItem.Weight"
-          :rules="[(val) => typeof val === 'number' || 'only number is allowed']"
+          error-message="only number is allowed"
+          :error="!weightRules"
           @update:model-value="updateWeight"
         ></q-input>
       </div>
@@ -179,7 +197,7 @@ const rowsMenuItem: ComputedRef<myVal.FctRowItem> = computed(() => {
           :model-value="props.fctRowItem.Star"
           label="mark as favorite"
           color="teal"
-          class="q-mt-md q-ml-md"
+          class="q-mt-md q-ml-md justify-center"
           checked-icon="star"
           unchecked-icon="star_border"
           indeterminate-icon="help"

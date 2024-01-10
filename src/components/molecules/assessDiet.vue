@@ -1,10 +1,7 @@
 <script setup lang="ts">
-import FctTable from '../atoms/FctTableSingleNutrient.vue'
-import MenuItemCard from '../atoms/FctRowItemCard.vue'
+import FctTableWithSelectButtonVue from './FctTableWithSelectButton.vue'
 import menuTable from '../atoms/menuTable.vue'
 import * as myVal from 'src/models/MyInterface'
-import myFunc from 'src/models/MyFunctions'
-import FakerFunc from 'src/models/fakerFunc'
 import { ref, computed, type PropType, toValue } from 'vue'
 
 const props = defineProps({
@@ -30,81 +27,20 @@ const emits = defineEmits<{
   (e: 'update:menuItems', value: myVal.MenuItems): void
 }>()
 
-let selectedFct = ref<myVal.FctItem>({
-  keyFct: '',
-  FoodGroupId: '',
-  FctName: '',
-  FoodGroup: '',
-  Carb: 0,
-  En: 0,
-  Fe: 0,
-  Fat: 0,
-  Pr: 0,
-  Va: 0
-})
-
-function onFctSelected(val: myVal.FctRowItem) {
-  // menuItem.value = val
-  selectedFct.value = val
-}
-
-const fctRowItemComputed = computed<myVal.FctRowItem>(() => {
-  return {
-    ...selectedFct.value,
-    NutrientValue: 0,
-    Star: (
-      props.fctFavoriteList.find((item) => item.IdStar === selectedFct.value.keyFct) ||
-      props.fctFavoriteList[0]
-    ).Star,
-    Weight: 0,
-    MenuName: ''
-  }
-})
-
 const myMenu = computed<myVal.MenuItems>(() => {
   return props.menuItems
 })
-
-const commonMenus = myVal.commonMenus
-
-function onUpdateFctRowItem(val: { value: myVal.FctRowItem; index: string }) {
-  // menuItem.value = val
-  switch (val.index) {
-    case 'star': {
-      const res: myVal.FctStars = props.fctFavoriteList.map((item) => {
-        return {
-          IdStar: item.IdStar,
-          Star: item.IdStar === val.value.keyFct ? val.value.Star : item.Star
-        }
-      })
-      emits('update:fctFavoriteList', res)
-      break
-    }
-    case 'menu':
-      emits('update:fctRowItem', val.value)
-      break
-    case 'weight':
-      emits('update:fctRowItem', val.value)
-      break
-    default:
-      break
-  }
-}
 </script>
 
 <template>
   <q-card>
-    <FctTable
+    <FctTableWithSelectButtonVue
       :fct="props.fct"
-      :fctFavoriteList="props.fctFavoriteList"
-      @row-click="onFctSelected"
+      :fct-favorite-list="props.fctFavoriteList"
+      :common-menus="myVal.commonMenus"
+      @update:fct-favorite-list="emits('update:fctFavoriteList', $event)"
+      @update:fct-row-item="emits('update:fctRowItem', $event)"
     />
-    <MenuItemCard
-      :commonMenus="commonMenus"
-      :fct-row-item="fctRowItemComputed"
-      @update:fctRowItem="onUpdateFctRowItem"
-    />
-    <q-btn label="add" />
     <menuTable :menuItems="myMenu" />
   </q-card>
 </template>
