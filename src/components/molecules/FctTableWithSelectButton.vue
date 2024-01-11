@@ -2,7 +2,7 @@
 import FctTable from '../atoms/FctTableSingleNutrient.vue'
 import FctRowItemCard from '../atoms/FctRowItemCard.vue'
 import * as myVal from 'src/models/MyInterface'
-import { ref, computed, type PropType } from 'vue'
+import { type Ref, ref, computed, type PropType } from 'vue'
 
 const props = defineProps({
   fct: {
@@ -44,6 +44,24 @@ function onFctSelected(val: myVal.FctRowItem) {
   // menuItem.value = val
   selectedFct.value = val
 }
+
+const starComputed = computed(() => {
+  return (
+    props.fctFavoriteList.find((item) => item.IdStar === selectedFct.value.keyFct)?.Star || false
+  )
+})
+
+const fctAddOptions = ref({
+  NutrientValue: 0,
+  Weight: 0,
+  MenuName: ''
+})
+
+const fctRowItemComputed2 = ref<myVal.FctRowItem>({
+  ...selectedFct.value,
+  Star: starComputed.value,
+  ...fctAddOptions.value
+})
 
 const fctRowItemComputed = computed<myVal.FctRowItem>(() => {
   return {
@@ -92,7 +110,7 @@ function onUpdateFctRowItem(val: { value: myVal.FctRowItem; index: string }) {
     />
     <FctRowItemCard
       :commonMenus="props.commonMenus"
-      :fct-row-item="fctRowItemComputed"
+      :fct-row-item="fctRowItemComputed2"
       @update:fctRowItem="onUpdateFctRowItem"
       @new-fct-row-item="emits('newFctRowItem', $event)"
     />
