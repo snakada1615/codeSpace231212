@@ -57,25 +57,34 @@ const fctAddOptions = ref({
   MenuName: ''
 })
 
-const fctRowItemComputed2 = ref<myVal.FctRowItem>({
+const fctRowItemComputed = ref<myVal.FctRowItem>({
   ...selectedFct.value,
   Star: starComputed.value,
   ...fctAddOptions.value
 })
 
-const fctRowItemComputed = computed<myVal.FctRowItem>(() => {
-  return {
-    ...selectedFct.value,
-    NutrientValue: 0,
-    Star: (
-      props.fctFavoriteList.find((item) => item.IdStar === selectedFct.value.keyFct) ||
-      props.fctFavoriteList[0]
-    ).Star,
-    Weight: 0,
-    MenuName: ''
-  }
-})
+// const fctRowItemComputed = computed<myVal.FctRowItem>(() => {
+//   return {
+//     ...selectedFct.value,
+//     NutrientValue: 0,
+//     Star: (
+//       props.fctFavoriteList.find((item) => item.IdStar === selectedFct.value.keyFct) ||
+//       props.fctFavoriteList[0]
+//     ).Star,
+//     Weight: 0,
+//     MenuName: ''
+//   }
+// })
 
+const onUpdateFctStar = (val: boolean) => {
+  const res: myVal.FctStars = props.fctFavoriteList.map((item) => {
+    return {
+      IdStar: item.IdStar,
+      Star: item.IdStar === selectedFct.value.keyFct ? val : item.Star
+    }
+  })
+  emits('update:fctFavoriteList', res)
+}
 function onUpdateFctRowItem(val: { value: myVal.FctRowItem; index: string }) {
   // menuItem.value = val
   switch (val.index) {
@@ -110,8 +119,8 @@ function onUpdateFctRowItem(val: { value: myVal.FctRowItem; index: string }) {
     />
     <FctRowItemCard
       :commonMenus="props.commonMenus"
-      :fct-row-item="fctRowItemComputed2"
-      @update:fctRowItem="onUpdateFctRowItem"
+      :fct-row-item="fctRowItemComputed"
+      @update:fct-star="onUpdateFctStar"
       @new-fct-row-item="emits('newFctRowItem', $event)"
     />
   </q-card>

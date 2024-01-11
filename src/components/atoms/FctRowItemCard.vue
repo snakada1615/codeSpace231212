@@ -16,15 +16,13 @@ const props = defineProps({
 
 const emits = defineEmits<{
   (e: 'update:fctRowItem', value: { value: myVal.FctRowItem; index: string }): void
+  (e: 'update:fctStar', value: boolean): void
   (e: 'newFctRowItem', value: myVal.FctRowItem): void
 }>()
 
 // menuItem.Star更新
 const onChangeStar = (value: boolean): void => {
-  const res: typeof props.fctRowItem = JSON.parse(JSON.stringify(props.fctRowItem))
-  res.Star = value
-  const res2 = { value: res, index: 'star' }
-  emits('update:fctRowItem', res2)
+  emits('update:fctStar', value)
 }
 
 // menuItem.MenuNameの更新
@@ -80,6 +78,14 @@ function filterMenu(val: string, update: (cb: () => void) => void) {
     }
   })
 }
+
+const fctAddOptionOrg = {
+  NutrientValue: 0,
+  Weight: 0,
+  MenuName: ''
+}
+
+const fctAddOption = ref(fctAddOptionOrg)
 
 // table col定義
 // 列の定義
@@ -185,7 +191,7 @@ const allRule = computed(() => menuRules.value && weightRules.value)
           ref="menuRef"
           dense
           hide-bottom-space
-          :model-value="props.fctRowItem.MenuName"
+          v-model:model-value="fctAddOption.MenuName"
           use-input
           use-chips
           @new-value="addNewMenuName"

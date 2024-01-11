@@ -40,7 +40,6 @@ const myMenu = computed<myVal.MenuItems>(() => {
       :common-menus="myVal.commonMenus"
       @update:fct-favorite-list="emits('update:fctFavoriteList', $event)"
       @update:fct-row-item="emits('update:fctRowItem', $event)"
-      @new-fct-row-item=""
     />
     <menuTable :menuItems="myMenu" />
   </q-card>
