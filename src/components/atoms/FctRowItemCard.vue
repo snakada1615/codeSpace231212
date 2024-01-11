@@ -15,8 +15,8 @@ const props = defineProps({
 })
 
 const emits = defineEmits<{
-  (e: 'update:fctRowItem', value: { value: typeof props.fctRowItem; index: string }): void
-  (e: 'setNewFctRowItem', value: myVal.FctRowItem): void
+  (e: 'update:fctRowItem', value: { value: myVal.FctRowItem; index: string }): void
+  (e: 'newFctRowItem', value: myVal.FctRowItem): void
 }>()
 
 // menuItem.Star更新
@@ -49,7 +49,7 @@ const updateWeight = (value: string | number | null): void => {
 
 // fctRowItemの追加
 const onSetNewFctRowItem = (): void => {
-  emits('setNewFctRowItem', props.fctRowItem)
+  emits('newFctRowItem', props.fctRowItem)
 }
 
 // メニュー名一覧

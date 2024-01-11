@@ -24,6 +24,7 @@ const props = defineProps({
 const emits = defineEmits<{
   (e: 'update:fctFavoriteList', value: myVal.FctStars): void
   (e: 'update:fctRowItem', value: myVal.FctRowItem): void
+  (e: 'newFctRowItem', value: myVal.FctRowItem): void
 }>()
 
 let selectedFct = ref<myVal.FctItem>({
@@ -93,6 +94,7 @@ function onUpdateFctRowItem(val: { value: myVal.FctRowItem; index: string }) {
       :commonMenus="props.commonMenus"
       :fct-row-item="fctRowItemComputed"
       @update:fctRowItem="onUpdateFctRowItem"
+      @new-fct-row-item="emits('newFctRowItem', $event)"
     />
   </q-card>
 </template>
