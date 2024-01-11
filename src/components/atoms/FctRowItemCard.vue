@@ -3,9 +3,23 @@ import * as myVal from 'src/models/MyInterface'
 import { computed, type ComputedRef, type PropType, ref } from 'vue'
 import type { QTableProps } from 'quasar'
 
+interface FctAddOptions {
+  KeyNutrient: string
+  Weight: number
+  MenuName: string
+}
+
 const props = defineProps({
-  fctRowItem: {
+  rowFct: {
     type: Object as PropType<myVal.FctRowItem>,
+    required: true
+  },
+  fctAddOptions: {
+    type: Object as PropType<FctAddOptions>,
+    required: true
+  },
+  fctAddStar: {
+    type: Boolean,
     required: true
   },
   commonMenus: {
@@ -17,6 +31,7 @@ const props = defineProps({
 const emits = defineEmits<{
   (e: 'update:fctRowItem', value: { value: myVal.FctRowItem; index: string }): void
   (e: 'newFctRowItem', value: myVal.FctRowItem): void
+  (e: 'update:fctRowItem', value: myVal.FctRowItem): void
 }>()
 
 // menuItem.Star更新
