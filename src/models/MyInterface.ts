@@ -24,13 +24,22 @@ export interface CategoryItem {
   categoryText: string
 }
 
-export interface TargetMember {
+export interface FamilyMember {
   targetId: string
   Name: string
   count: number
 }
 
-export interface TargetMembers extends Array<TargetMember> {}
+export interface FamilyMembers extends Array<FamilyMember> {}
+
+export const sampleFamilyMemberCategory = [
+  'child under 6 month',
+  'child 6-23 month',
+  'lactating',
+  'adult',
+  'pregnant',
+  'adolescent all'
+]
 
 export interface DriItem {
   DriId: string

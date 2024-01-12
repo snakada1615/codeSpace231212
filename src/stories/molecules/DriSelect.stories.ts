@@ -1,55 +1,23 @@
 // Replace vue3 with vue if you are using Storybook for Vue 2
 import type { Meta, StoryObj, ArgTypes } from '@storybook/vue3'
-import DriSelect from 'src/components/molecules/DriSelect.vue'
-import type { DriItems, TargetMembers } from '@/models/MyInterface'
+import DriSelect from 'src/components/atoms/DriSelect.vue'
+import * as myVal from '@/models/MyInterface'
 import { action } from '@storybook/addon-actions'
 import FakerFunc from '@/models/fakerFunc'
 
-const driItems: DriItems = [
-  {
-    En: 1088.0,
-    Fe: 5.8,
-    Name: 'child 6-23 month',
-    Pr: 11.65,
-    Va: 400.0,
-    DriId: '0'
-  },
-  {
-    En: 3066.0,
-    Fe: 44.4,
-    Name: 'lactating',
-    Pr: 61.0,
-    Va: 850.0,
-    DriId: '1'
-  },
-  {
-    En: 2913.0,
-    Fe: 24.9,
-    Name: 'adolescent all',
-    Pr: 52.65,
-    Va: 600.0,
-    DriId: '2'
-  }
-]
-
-const targetMembers: TargetMembers = [
-  { targetId: '0', Name: 'child under 6 month', count: 0 },
-  { targetId: '1', Name: 'child 6-23 month', count: 2 },
-  { targetId: '2', Name: 'lactating', count: 1 },
-  { targetId: '3', Name: 'adult', count: 3 },
-  { targetId: '4', Name: 'pregnant', count: 0 },
-  { targetId: '5', Name: 'adolescent all', count: 1 }
-]
+const driItems: myVal.DriItems = FakerFunc.createDris()
+const driItems2: myVal.DriItems = JSON.parse(JSON.stringify(driItems))
+const familyMembers: myVal.FamilyMembers = FakerFunc.createFamilyMembers()
 
 // Define the ArgTypes for the storybook without using the generic
 const myArgTypes: ArgTypes = {
-  'update:TargetMember': {
+  'update:familyMember': {
     control: 'object', // Adjust this control as needed, e.g., 'text' if you want a string input
-    action: 'update:TargetMember',
+    action: 'update:familyMember',
     table: {
       category: 'Events' // Optional: Use categories to organize your argTypes
     },
-    description: 'Event for TargetMember update' // Provide a helpful description
+    description: 'Event for FamilyMember update' // Provide a helpful description
   }
   // ... define other arg types as necessary ...
 }
@@ -74,14 +42,14 @@ export const Primary: Story = {
     setup() {
       return { args }
     },
-    template: '<DriSelect v-bind="args" @update:TargetMember="onUpdateTargetMember"/>',
+    template: '<DriSelect v-bind="args" @update:familyMember="onUpdateFamilyMember"/>',
     methods: {
-      onUpdateTargetMember: action('onUpdateTargetMember')
+      onUpdateFamilyMember: action('onUpdateFamilyMember')
     }
   }),
   args: {
     driItems,
-    targetMembers
+    familyMembers
   }
 }
 
@@ -91,13 +59,13 @@ export const Second: Story = {
     setup() {
       return { args }
     },
-    template: '<DriSelect v-bind="args" @update:TargetMember="onUpdateTargetMember"/>',
+    template: '<DriSelect v-bind="args" @update:familyMember="onUpdateFamilyMember"/>',
     methods: {
-      onUpdateTargetMember: action('onUpdateTargetMember')
+      onUpdateFamilyMember: action('onUpdateFamilyMember')
     }
   }),
   args: {
-    driItems: FakerFunc.createDris(),
-    targetMembers
+    driItems,
+    familyMembers
   }
 }

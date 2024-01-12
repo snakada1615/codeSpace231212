@@ -2,7 +2,7 @@
 import type { PropType } from 'vue'
 
 const props = defineProps({
-  targetMembers: {
+  familyMembers: {
     type: String as PropType<string>,
     required: true
   }
@@ -11,5 +11,5 @@ const props = defineProps({
 
 <template>
   <div>halo</div>
-  <div>{{ props.targetMembers }}</div>
+  <div>{{ props.familyMembers }}</div>
 </template>

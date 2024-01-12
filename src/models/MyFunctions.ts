@@ -1,5 +1,5 @@
 // 全てのintefaceを読み込む
-import * as models from './MyInterface'
+import * as myVal from './MyInterface'
 
 // 定数のエクスポート
 export const PI = 3.14
@@ -17,7 +17,7 @@ export default class myFunc {
    * @param dri
    * @returns {*}
    */
-  static getNutritionDemand(target: models.TargetMembers, dri: models.DriItems) {
+  static getNutritionDemand(target: myVal.FamilyMembers, dri: myVal.DriItems) {
     const initObj = [
       { key: 'En', value: 0, label: 'Energy' },
       { key: 'Pr', value: 0, label: 'Protein' },
@@ -31,7 +31,7 @@ export default class myFunc {
       const count = Number(currentItem.count)
       const driValue = dri.find((item) => item.DriId === currentItem.targetId)
       if (!driValue) {
-        throw new Error('targetMember not matching...')
+        throw new Error('familyMember not matching...')
       }
       accumulator[0].value += count * Number(driValue.En)
       accumulator[1].value += count * Number(driValue.Pr)

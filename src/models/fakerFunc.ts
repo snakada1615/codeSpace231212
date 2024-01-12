@@ -1,9 +1,9 @@
 import { faker } from '@faker-js/faker'
 // 全てのintefaceを読み込む
-import * as models from './MyInterface'
+import * as myVal from './MyInterface'
 
 export default class FakerFunc {
-  static createFct(foodGroups: typeof models.sampleFood): models.FctItem {
+  static createFct(foodGroups: typeof myVal.sampleFood): myVal.FctItem {
     const myFood = faker.helpers.arrayElement(foodGroups)
     return {
       keyFct: myFood.keyFct,
@@ -20,7 +20,7 @@ export default class FakerFunc {
   }
 
   static createFcts() {
-    return models.sampleFood.map((item) => {
+    return myVal.sampleFood.map((item) => {
       return {
         keyFct: item.keyFct,
         FoodGroupId: item.FoodGroupId,
@@ -36,25 +36,18 @@ export default class FakerFunc {
     })
   }
 
-  static createFctAddOptions(): models.FctAddOptions {
+  static createFctAddOptions(): myVal.FctAddOptions {
     return {
       NutrientValue: faker.number.float({ min: 0, max: 200, precision: 0.1 }),
       Weight: faker.number.float({ min: 0, max: 200, precision: 0.1 }),
-      MenuName: faker.helpers.arrayElement(models.commonMenus)
+      MenuName: faker.helpers.arrayElement(myVal.commonMenus)
     }
   }
 
-  static createDri(): models.DriItem {
+  static createDri(): myVal.DriItem {
     return {
       DriId: faker.string.uuid(),
-      Name: faker.helpers.arrayElement([
-        'child under 6 month',
-        'child 6-23 month',
-        'lactating',
-        'adult',
-        'pregnant',
-        'adolescent all'
-      ]),
+      Name: faker.helpers.arrayElement(myVal.sampleFamilyMemberCategory),
       En: faker.number.float({ min: 0, max: 4000, precision: 0.1 }),
       Fe: faker.number.float({ min: 0, max: 50, precision: 0.1 }),
       Pr: faker.number.float({ min: 0, max: 200, precision: 0.1 }),
@@ -62,16 +55,9 @@ export default class FakerFunc {
     }
   }
 
-  static createDris(): models.DriItems {
-    return [
-      'child under 6 month',
-      'child 6-23 month',
-      'lactating',
-      'adult',
-      'pregnant',
-      'adolescent all'
-    ].map((item, index) => {
-      return <models.DriItem>{
+  static createDris(): myVal.DriItems {
+    return myVal.sampleFamilyMemberCategory.map((item, index) => {
+      return <myVal.DriItem>{
         DriId: String(index),
         Name: item,
         En: faker.number.float({ min: 0, max: 4000, precision: 0.1 }),
@@ -82,9 +68,19 @@ export default class FakerFunc {
     })
   }
 
-  static createMenuItem(): models.MenuItem {
-    const food = this.createFct(models.sampleFood)
-    const menu = faker.helpers.arrayElement(models.commonMenus)
+  static createFamilyMembers(): myVal.FamilyMembers {
+    return myVal.sampleFamilyMemberCategory.map((item, index) => {
+      return {
+        targetId: String(index),
+        Name: item,
+        count: faker.number.int({ min: 0, max: 10 })
+      }
+    })
+  }
+
+  static createMenuItem(): myVal.MenuItem {
+    const food = this.createFct(myVal.sampleFood)
+    const menu = faker.helpers.arrayElement(myVal.commonMenus)
     return {
       ...food,
       IdMenuItem: faker.string.uuid(),
@@ -97,7 +93,7 @@ export default class FakerFunc {
     }
   }
 
-  static createMenuItems(): models.MenuItems {
+  static createMenuItems(): myVal.MenuItems {
     return [...Array(10)].map(() => {
       return this.createMenuItem()
     })

@@ -1,5 +1,4 @@
 <script setup lang="ts">
-import type { DriItems, TargetMembers } from 'src/models/MyInterface'
 import { computed, type PropType } from 'vue'
 import type { QTableProps } from 'quasar'
 import myFunc from 'src/models/MyFunctions'
@@ -7,24 +6,24 @@ import myFunc from 'src/models/MyFunctions'
 import * as myVal from 'src/models/MyInterface'
 
 const props = defineProps({
-  targetMembers: {
-    type: Object as PropType<TargetMembers>,
+  familyMembers: {
+    type: Object as PropType<myVal.FamilyMembers>,
     required: true
   },
 
   driItems: {
-    type: Object as PropType<DriItems>,
+    type: Object as PropType<myVal.DriItems>,
     required: true
   }
 })
 
 const emits = defineEmits<{
-  (e: 'update:TargetMember', value: TargetMembers): void
+  (e: 'update:familyMember', value: myVal.FamilyMembers): void
 }>()
 
 const updateTarget = (index: string, val: number): void => {
   // targetの変更内容を親コンポーネントにemit
-  let newTarget: TargetMembers
+  let newTarget: myVal.FamilyMembers
   if (rowsFamilyMember.value) {
     newTarget = rowsFamilyMember.value.map((item) => {
       // targetで人数が設定されている場合はそれを利用、それ以外は0を設定
@@ -46,11 +45,11 @@ const updateTarget = (index: string, val: number): void => {
     ]
   }
 
-  emits('update:TargetMember', newTarget)
+  emits('update:familyMember', newTarget)
 }
 
 const rowsDri = computed<QTableProps['rows']>(() => {
-  return myFunc.getNutritionDemand(props.targetMembers, props.driItems).map((item) => {
+  return myFunc.getNutritionDemand(props.familyMembers, props.driItems).map((item) => {
     let index: number
     switch (item.label) {
       case 'Energy':
@@ -96,10 +95,10 @@ const columnsDri: QTableProps['columns'] = [
 ]
 
 const rowsFamilyMember = computed<QTableProps['rows']>(() => {
-  // targetMembersとdriItemsの行数が異なる場合にエラー
-  const targetMembersId = myFunc
+  // FamilyMembersとdriItemsの行数が異なる場合にエラー
+  const familyMembersId = myFunc
     .uniq(
-      props.targetMembers.map((item) => {
+      props.familyMembers.map((item) => {
         return item.targetId
       })
     )
@@ -113,14 +112,14 @@ const rowsFamilyMember = computed<QTableProps['rows']>(() => {
     )
     .sort()
     .toString()
-  if (targetMembersId !== driItemsId) {
-    console.log(targetMembersId)
+  if (familyMembersId !== driItemsId) {
+    console.log(familyMembersId)
     console.log(driItemsId)
-    throw new Error('targetMembers does not match with familyType in driItems')
+    throw new Error('FamilyMembers does not match with familyType in driItems')
   }
 
   // 上記で問題なければ以下を返す
-  return props.targetMembers.map((item) => {
+  return props.familyMembers.map((item) => {
     return {
       targetId: item.targetId,
       Name: item.Name,
@@ -150,7 +149,7 @@ const columnsFamilyMember: QTableProps['columns'] = [
 </script>
 
 <template>
-  <!-- TargetMemberの構成決定 -->
+  <!-- FamilyMemberの構成決定 -->
   <q-card class="bg-grey-2 q-pa-sm">
     <q-table
       class="my-sticky-header-table q-my-md"
@@ -167,7 +166,7 @@ const columnsFamilyMember: QTableProps['columns'] = [
           <q-td key="item" :props="familyTableRow"> {{ familyTableRow.row.Name }} </q-td>
           <q-td key="val" :props="familyTableRow">
             <q-input
-              v-model="familyTableRow.row.count"
+              v-model.number="familyTableRow.row.count"
               type="number"
               class="q-py-xs"
               dense
