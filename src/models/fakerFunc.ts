@@ -71,8 +71,12 @@ export default class FakerFunc {
   static createFamilyMembers(): myVal.FamilyMembers {
     return myVal.sampleFamilyMemberCategory.map((item, index) => {
       return {
-        targetId: String(index),
+        DriId: String(index),
         Name: item,
+        En: faker.number.float({ min: 0, max: 4000, precision: 0.1 }),
+        Fe: faker.number.float({ min: 0, max: 50, precision: 0.1 }),
+        Pr: faker.number.float({ min: 0, max: 200, precision: 0.1 }),
+        Va: faker.number.float({ min: 0, max: 500, precision: 0.1 }),
         count: faker.number.int({ min: 0, max: 10 })
       }
     })

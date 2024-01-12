@@ -24,10 +24,33 @@ export interface CategoryItem {
   categoryText: string
 }
 
-export interface FamilyMember {
-  targetId: string
+export interface DriItem {
+  DriId: string
   Name: string
+  En: number
+  Fe: number
+  Pr: number
+  Va: number
+}
+
+export const driItemDefault = {
+  DriId: '',
+  Name: '',
+  En: 0,
+  Fe: 0,
+  Pr: 0,
+  Va: 0
+}
+
+export interface DriItems extends Array<DriItem> {}
+
+export interface FamilyMember extends DriItem {
   count: number
+}
+
+export const familyMemberDefault = {
+  ...driItemDefault,
+  count: 0
 }
 
 export interface FamilyMembers extends Array<FamilyMember> {}
@@ -40,17 +63,6 @@ export const sampleFamilyMemberCategory = [
   'pregnant',
   'adolescent all'
 ]
-
-export interface DriItem {
-  DriId: string
-  Name: string
-  En: number
-  Fe: number
-  Pr: number
-  Va: number
-}
-
-export interface DriItems extends Array<DriItem> {}
 
 export interface FctItem {
   keyFct: string

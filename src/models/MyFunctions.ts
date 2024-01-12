@@ -11,36 +11,6 @@ export function add(x: number, y: number): number {
 }
 
 export default class myFunc {
-  /*
-   * ターゲットグループの構成とdri一蘭から栄養需要を計算する
-   * @param target ターゲット構成[id, count]
-   * @param dri
-   * @returns {*}
-   */
-  static getNutritionDemand(target: myVal.FamilyMembers, dri: myVal.DriItems) {
-    const initObj = [
-      { key: 'En', value: 0, label: 'Energy' },
-      { key: 'Pr', value: 0, label: 'Protein' },
-      { key: 'Va', value: 0, label: 'Vit-A' },
-      { key: 'Fe', value: 0, label: 'Iron' }
-    ]
-    if (!target || target.length === 0) {
-      return initObj
-    }
-    return target.reduce((accumulator, currentItem) => {
-      const count = Number(currentItem.count)
-      const driValue = dri.find((item) => item.DriId === currentItem.targetId)
-      if (!driValue) {
-        throw new Error('familyMember not matching...')
-      }
-      accumulator[0].value += count * Number(driValue.En)
-      accumulator[1].value += count * Number(driValue.Pr)
-      accumulator[2].value += count * Number(driValue.Va)
-      accumulator[3].value += count * Number(driValue.Fe)
-      return accumulator
-    }, initObj)
-  }
-
   // 配列から一意の値を抽出
   static uniq<T>(array: Array<T>): Array<T> {
     return Array.from(new Set(array))

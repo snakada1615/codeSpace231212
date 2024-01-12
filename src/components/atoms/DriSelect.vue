@@ -9,11 +9,6 @@ const props = defineProps({
   familyMembers: {
     type: Object as PropType<myVal.FamilyMembers>,
     required: true
-  },
-
-  driItems: {
-    type: Object as PropType<myVal.DriItems>,
-    required: true
   }
 })
 
@@ -24,56 +19,14 @@ const emits = defineEmits<{
 const updateTarget = (index: string, val: number): void => {
   // targetの変更内容を親コンポーネントにemit
   let newTarget: myVal.FamilyMembers
-  if (rowsFamilyMember.value) {
-    newTarget = rowsFamilyMember.value.map((item) => {
-      // targetで人数が設定されている場合はそれを利用、それ以外は0を設定
-      const myCount = index === item.targetId ? val : item.count
-
-      return {
-        targetId: item.targetId,
-        Name: item.Name,
-        count: myCount
-      }
-    })
-  } else {
-    newTarget = [
-      {
-        targetId: '0',
-        Name: 'children under five',
-        count: 0
-      }
-    ]
-  }
-
+  newTarget = rowsFamilyMember.value.map((item) => {
+    if (index === item.DriId) {
+      item.count = val
+    }
+    return item
+  })
   emits('update:familyMember', newTarget)
 }
-
-const rowsDri = computed<QTableProps['rows']>(() => {
-  return myFunc.getNutritionDemand(props.familyMembers, props.driItems).map((item) => {
-    let index: number
-    switch (item.label) {
-      case 'Energy':
-        index = 0
-        break
-      case 'Protein':
-        index = 1
-        break
-      case 'Vit-A':
-        index = 2
-        break
-      case 'Iron':
-        index = 3
-        break
-      default:
-        index = -1
-    }
-    return {
-      key: item.key,
-      value: myFunc.setDigit(item.value, index),
-      label: item.label
-    }
-  })
-})
 
 const columnsDri: QTableProps['columns'] = [
   {
@@ -94,38 +47,8 @@ const columnsDri: QTableProps['columns'] = [
   }
 ]
 
-const rowsFamilyMember = computed<QTableProps['rows']>(() => {
-  // FamilyMembersとdriItemsの行数が異なる場合にエラー
-  const familyMembersId = myFunc
-    .uniq(
-      props.familyMembers.map((item) => {
-        return item.targetId
-      })
-    )
-    .sort()
-    .toString()
-  const driItemsId = myFunc
-    .uniq(
-      props.driItems.map((item) => {
-        return item.DriId
-      })
-    )
-    .sort()
-    .toString()
-  if (familyMembersId !== driItemsId) {
-    console.log(familyMembersId)
-    console.log(driItemsId)
-    throw new Error('FamilyMembers does not match with familyType in driItems')
-  }
-
-  // 上記で問題なければ以下を返す
-  return props.familyMembers.map((item) => {
-    return {
-      targetId: item.targetId,
-      Name: item.Name,
-      count: item.count
-    }
-  })
+const rowsFamilyMember = computed<myVal.FamilyMembers>(() => {
+  return props.familyMembers
 })
 
 const columnsFamilyMember: QTableProps['columns'] = [
@@ -146,6 +69,43 @@ const columnsFamilyMember: QTableProps['columns'] = [
     sortable: true
   }
 ]
+
+const nutrientSum = computed(() => {
+  const digitIndex = {
+    En: { label: 'Energy', index: 0 },
+    Pr: { label: 'Protein', index: 1 },
+    Va: { label: 'Vit-A', index: 2 },
+    Fe: { label: 'Iron', index: 3 }
+  }
+  const res = props.familyMembers.reduce(
+    (sum, current) => {
+      sum.En += current.En * current.count
+      sum.Pr += current.Pr * current.count
+      sum.Va += current.Va * current.count
+      sum.Pr += current.Pr * current.count
+      return sum
+    },
+    {
+      En: 0,
+      Pr: 0,
+      Va: 0,
+      Fe: 0
+    }
+  )
+  return Object.entries(res).map(([key, val]) => {
+    // Object[key]でアクセスするための操作
+    if (Object.prototype.hasOwnProperty.call(res, key)) {
+      const keyTyped = key as keyof typeof res
+      const val2 = res[keyTyped]
+      const digiIndexVal = digitIndex[keyTyped]
+      return {
+        key: key,
+        value: myFunc.setDigit(val2, digiIndexVal.index),
+        label: digiIndexVal.label
+      }
+    }
+  })
+})
 </script>
 
 <template>
@@ -171,7 +131,7 @@ const columnsFamilyMember: QTableProps['columns'] = [
               class="q-py-xs"
               dense
               @update:model-value="
-                (newValue) => updateTarget(familyTableRow.row.targetId, Number(newValue))
+                (newValue) => updateTarget(familyTableRow.row.DriId, Number(newValue))
               "
               :rules="[(val) => typeof val === 'number' || 'only number is allowed']"
               style="max-height: 40px"
@@ -188,7 +148,7 @@ const columnsFamilyMember: QTableProps['columns'] = [
       flat
       bordered
       dense
-      :rows="rowsDri"
+      :rows="nutrientSum"
       :columns="columnsDri"
       row-key="name"
     />

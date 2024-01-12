@@ -5,8 +5,6 @@ import * as myVal from '@/models/MyInterface'
 import { action } from '@storybook/addon-actions'
 import FakerFunc from '@/models/fakerFunc'
 
-const driItems: myVal.DriItems = FakerFunc.createDris()
-const driItems2: myVal.DriItems = JSON.parse(JSON.stringify(driItems))
 const familyMembers: myVal.FamilyMembers = FakerFunc.createFamilyMembers()
 
 // Define the ArgTypes for the storybook without using the generic
@@ -23,7 +21,7 @@ const myArgTypes: ArgTypes = {
 }
 
 const meta: Meta<typeof DriSelect> = {
-  title: 'app/molecules/DriSelect',
+  title: 'app/atoms/DriSelect',
   component: DriSelect,
   argTypes: myArgTypes
 }
@@ -48,24 +46,6 @@ export const Primary: Story = {
     }
   }),
   args: {
-    driItems,
-    familyMembers
-  }
-}
-
-export const Second: Story = {
-  render: (args) => ({
-    components: { DriSelect },
-    setup() {
-      return { args }
-    },
-    template: '<DriSelect v-bind="args" @update:familyMember="onUpdateFamilyMember"/>',
-    methods: {
-      onUpdateFamilyMember: action('onUpdateFamilyMember')
-    }
-  }),
-  args: {
-    driItems,
     familyMembers
   }
 }
