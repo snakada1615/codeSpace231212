@@ -23,7 +23,7 @@ const props = defineProps({
 
 const emits = defineEmits<{
   (e: 'update:fctFavoriteList', value: myVal.FctStars): void
-  (e: 'newFctRowItem', value: myVal.FctRowItem): void
+  (e: 'addMenuItem', value: myVal.MenuItem): void
 }>()
 
 const myMenu = computed<myVal.MenuItems>(() => {
@@ -36,6 +36,17 @@ const fctFavoriteListComp = computed({
     emits('update:fctFavoriteList', val)
   }
 })
+
+const addMenuItem = (val: myVal.FctRowItem) => {
+  const res = JSON.parse(JSON.stringify(myMenu.value))
+  res.push({
+    ...val,
+    IdMenuItem: '',
+    KeyFamily: '',
+    Date: new Date()
+  })
+  emits('addMenuItem', res)
+}
 </script>
 
 <template>
@@ -44,7 +55,7 @@ const fctFavoriteListComp = computed({
       :fct="props.fct"
       v-model:fct-favorite-list="fctFavoriteListComp"
       :common-menus="myVal.commonMenus"
-      @new-fct-row-item="emits('newFctRowItem', $event)"
+      @new-fct-row-item="addMenuItem"
     />
     <menuTable :menuItems="myMenu" />
   </q-card>

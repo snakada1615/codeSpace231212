@@ -32,26 +32,6 @@ const onChangeStar = (value: boolean): void => {
   emits('update:star', value)
 }
 
-// // menuItem.MenuNameの更新
-// const updateMenuName = (value: string): void => {
-//   const res = JSON.parse(JSON.stringify(fctAddOption))
-//   res.MenuName = value
-//   const res2 = { value: res, index: 'menu' }
-//   emits('update:fctRowItem', res2)
-// }
-
-// // menuItem.Weight の更新
-// const updateWeight = (value: string | number | null): void => {
-//   const numericValue = Number(value)
-//   if (isNaN(numericValue)) {
-//     return
-//   }
-//   const res = JSON.parse(JSON.stringify(fctAddOption))
-//   res.Weight = numericValue
-//   const res2 = { value: res, index: 'weight' }
-//   emits('update:fctRowItem', res2)
-// }
-
 // fctRowItemの追加
 const onFctAddOptions = (): void => {
   emits('update:fctAddOptions', fctAddOptionsRef.value)
@@ -86,6 +66,7 @@ function filterMenu(val: string, update: (cb: () => void) => void) {
   })
 }
 
+// fctSelectedItemに追加要素（fctAppOptions）を付与
 const fctAddOptionsRef = ref<myVal.FctAddOptions>(props.fctAddOptions)
 
 // table col定義
@@ -167,7 +148,6 @@ const allRule = computed(() => menuRules.value && weightRules.value)
 
 <template>
   <q-card class="bg-grey-2 q-pa-sm">
-    weightRules:{{ weightRules }}]{{ fctAddOptions }}
     <q-table
       :table-header-style="{ backgroundColor: 'DarkSeaGreen' }"
       flat

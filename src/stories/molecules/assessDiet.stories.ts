@@ -15,13 +15,13 @@ const myArgTypes: ArgTypes = {
     },
     description: 'Event for fctFavoriteList update' // Provide a helpful description
   },
-  newFctRowItem: {
+  addMenuItem: {
     control: 'object', // Adjust this control as needed, e.g., 'text' if you want a string input
-    action: 'update:fctFavoriteList',
+    action: 'addMenuItem',
     table: {
       category: 'Events' // Optional: Use categories to organize your argTypes
     },
-    description: 'Event for fctRowItem update' // Provide a helpful description
+    description: 'Event for menuItem update' // Provide a helpful description
   }
   // ... define other arg types as necessary ...
 }
@@ -52,9 +52,9 @@ export const Primary: Story = {
       return { args }
     },
     template:
-      '<assessDietVue v-bind="args" @newFctRowItem = "onUpdateFctRowItem" @update:fctFavoriteList = "onUpdateFctFavoriteList" />',
+      '<assessDietVue v-bind="args" @addMenuItem = "onAddMenuItem" @update:fctFavoriteList = "onUpdateFctFavoriteList" />',
     methods: {
-      onUpdateFctRowItem: action('onUpdateFctRowItem'),
+      onAddMenuItem: action('addMenuItem'),
       onUpdateFctFavoriteList: action('onUpdateFctFavoriteList')
     }
   }),
