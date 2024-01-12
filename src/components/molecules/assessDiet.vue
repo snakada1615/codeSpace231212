@@ -2,7 +2,7 @@
 import FctTableWithSelectButtonVue from './FctTableWithSelectButton.vue'
 import menuTable from '../atoms/menuTable.vue'
 import * as myVal from 'src/models/MyInterface'
-import { ref, computed, type PropType, toValue } from 'vue'
+import { computed, type PropType } from 'vue'
 
 const props = defineProps({
   fct: {

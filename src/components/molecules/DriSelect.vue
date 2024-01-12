@@ -175,6 +175,7 @@ const columnsFamilyMember: QTableProps['columns'] = [
                 (newValue) => updateTarget(familyTableRow.row.targetId, Number(newValue))
               "
               :rules="[(val) => typeof val === 'number' || 'only number is allowed']"
+              style="max-height: 40px"
             />
           </q-td>
         </q-tr>
