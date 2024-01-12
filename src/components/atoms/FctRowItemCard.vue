@@ -35,6 +35,13 @@ const onChangeStar = (value: boolean): void => {
 // fctRowItemの追加
 const onFctAddOptions = (): void => {
   emits('update:fctAddOptions', fctAddOptionsRef.value)
+
+  //fctAddOptionsRefを初期化
+  fctAddOptionsRef.value = {
+    NutrientValue: 0,
+    Weight: 0,
+    MenuName: ''
+  }
 }
 
 // メニュー名一覧
