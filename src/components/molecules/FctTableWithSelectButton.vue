@@ -2,7 +2,7 @@
 import FctTable from '../atoms/FctTableSingleNutrient.vue'
 import FctRowItemCard from '../atoms/FctRowItemCard.vue'
 import * as myVal from 'src/models/MyInterface'
-import { type Ref, ref, computed, type PropType } from 'vue'
+import { ref, computed, type PropType } from 'vue'
 
 const props = defineProps({
   fct: {
@@ -23,7 +23,6 @@ const props = defineProps({
 
 const emits = defineEmits<{
   (e: 'update:fctFavoriteList', value: myVal.FctStars): void
-  (e: 'update:fctRowItem', value: myVal.FctRowItem): void
   (e: 'newFctRowItem', value: myVal.FctRowItem): void
 }>()
 
@@ -45,36 +44,22 @@ function onFctSelected(val: myVal.FctRowItem) {
   selectedFct.value = val
 }
 
-const starComputed = computed(() => {
-  return (
-    props.fctFavoriteList.find((item) => item.IdStar === selectedFct.value.keyFct)?.Star || false
-  )
+const starComputed = computed({
+  get() {
+    return (
+      props.fctFavoriteList.find((item) => item.IdStar === selectedFct.value.keyFct)?.Star || false
+    )
+  },
+  set(val) {
+    onUpdateFctStar(val)
+  }
 })
 
-const fctAddOptions = ref({
+const fctAddOptions = ref<myVal.FctAddOptions>({
   NutrientValue: 0,
   Weight: 0,
   MenuName: ''
 })
-
-const fctRowItemComputed = ref<myVal.FctRowItem>({
-  ...selectedFct.value,
-  Star: starComputed.value,
-  ...fctAddOptions.value
-})
-
-// const fctRowItemComputed = computed<myVal.FctRowItem>(() => {
-//   return {
-//     ...selectedFct.value,
-//     NutrientValue: 0,
-//     Star: (
-//       props.fctFavoriteList.find((item) => item.IdStar === selectedFct.value.keyFct) ||
-//       props.fctFavoriteList[0]
-//     ).Star,
-//     Weight: 0,
-//     MenuName: ''
-//   }
-// })
 
 const onUpdateFctStar = (val: boolean) => {
   const res: myVal.FctStars = props.fctFavoriteList.map((item) => {
@@ -85,28 +70,13 @@ const onUpdateFctStar = (val: boolean) => {
   })
   emits('update:fctFavoriteList', res)
 }
-function onUpdateFctRowItem(val: { value: myVal.FctRowItem; index: string }) {
-  // menuItem.value = val
-  switch (val.index) {
-    case 'star': {
-      const res: myVal.FctStars = props.fctFavoriteList.map((item) => {
-        return {
-          IdStar: item.IdStar,
-          Star: item.IdStar === val.value.keyFct ? val.value.Star : item.Star
-        }
-      })
-      emits('update:fctFavoriteList', res)
-      break
-    }
-    case 'menu':
-      emits('update:fctRowItem', val.value)
-      break
-    case 'weight':
-      emits('update:fctRowItem', val.value)
-      break
-    default:
-      break
-  }
+
+const onAddNewFctRowItem = (val: myVal.FctAddOptions) => {
+  emits('newFctRowItem', {
+    ...selectedFct.value,
+    ...val,
+    Star: starComputed.value
+  })
 }
 </script>
 
@@ -119,9 +89,10 @@ function onUpdateFctRowItem(val: { value: myVal.FctRowItem; index: string }) {
     />
     <FctRowItemCard
       :commonMenus="props.commonMenus"
-      :fct-row-item="fctRowItemComputed"
-      @update:fct-star="onUpdateFctStar"
-      @new-fct-row-item="emits('newFctRowItem', $event)"
+      :fct="selectedFct"
+      v-model:fct-add-options="fctAddOptions"
+      v-model:star="starComputed"
+      @update:fct-add-options="onAddNewFctRowItem"
     />
   </q-card>
 </template>

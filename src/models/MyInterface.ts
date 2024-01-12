@@ -79,6 +79,12 @@ export interface FctRowItem extends FctItem {
   MenuName: string
 }
 
+export interface FctAddOptions {
+  NutrientValue: number
+  Weight: number
+  MenuName: string
+}
+
 export const sampleFood = [
   { keyFct: '001', FoodGroupId: '1', FoodGroup: 'Grains, roots and tubers', Name: 'Rice' },
   { keyFct: '002', FoodGroupId: '1', FoodGroup: 'Grains, roots and tubers', Name: 'Maize' },

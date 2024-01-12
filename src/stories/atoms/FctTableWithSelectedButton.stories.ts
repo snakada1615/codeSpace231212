@@ -25,9 +25,9 @@ const myArgTypes: ArgTypes = {
     description: 'Event for fctFavoriteList update' // Provide a helpful description
   },
   // ... define other arg types as necessary ...
-  'update:fctRowItem': {
+  newFctRowItem: {
     control: 'object', // Adjust this control as needed, e.g., 'text' if you want a string input
-    action: 'update:fctRowItem',
+    action: 'newFctRowItem',
     table: {
       category: 'Events' // Optional: Use categories to organize your argTypes
     },
@@ -42,6 +42,8 @@ const meta: Meta<typeof FctTableWithSelectButtonVue> = {
 }
 export default meta
 
+const commonMenus = myVal.commonMenus
+
 type Story = StoryObj<typeof FctTableWithSelectButtonVue>
 
 export const Second: Story = {
@@ -51,14 +53,15 @@ export const Second: Story = {
       return { args }
     },
     template:
-      '<FctTableWithSelectButtonVue v-bind="args" @update:fctRowItem="onUpdateFctRowItem" @update:fctFavoriteList="onUpdateFctFavoriteList" />',
+      '<FctTableWithSelectButtonVue v-bind="args" @newFctRowItem="onUpdateFctRowItem" @update:fctFavoriteList="onUpdateFctFavoriteList" />',
     methods: {
-      onUpdateFctRowItem: action('update:fctRowItem'),
+      onUpdateFctRowItem: action('newFctRowItem'),
       onUpdateFctFavoriteList: action('update:fctFavoriteList')
     }
   }),
   args: {
     fct: myFct,
-    fctFavoriteList
+    fctFavoriteList,
+    commonMenus
   }
 }

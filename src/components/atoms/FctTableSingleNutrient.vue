@@ -113,13 +113,15 @@ const rowsFct = computed(() => {
 // 行の選択
 const tempFctItem = fakerFunc.createFct(myVal.sampleFood)
 
-const rowItemOrg = {
+const rowItemOrg: myVal.FctRowItem = {
   ...tempFctItem,
-  NutrientValue: 200,
-  Star: true,
-  Weight: 234
+  NutrientValue: 0,
+  Star: false,
+  Weight: 0,
+  MenuName: ''
 }
 
+// 行表示用のref
 const selectedRow = ref(rowItemOrg)
 
 // 選択された行をemit

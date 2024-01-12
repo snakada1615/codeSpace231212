@@ -4,8 +4,16 @@ import { computed, type ComputedRef, type PropType, ref } from 'vue'
 import type { QTableProps } from 'quasar'
 
 const props = defineProps({
-  fctRowItem: {
-    type: Object as PropType<myVal.FctRowItem>,
+  fct: {
+    type: Object as PropType<myVal.FctItem>,
+    required: true
+  },
+  fctAddOptions: {
+    type: Object as PropType<myVal.FctAddOptions>,
+    required: true
+  },
+  star: {
+    type: Boolean,
     required: true
   },
   commonMenus: {
@@ -15,39 +23,38 @@ const props = defineProps({
 })
 
 const emits = defineEmits<{
-  (e: 'update:fctRowItem', value: { value: myVal.FctRowItem; index: string }): void
-  (e: 'update:fctStar', value: boolean): void
-  (e: 'newFctRowItem', value: myVal.FctRowItem): void
+  (e: 'update:star', value: boolean): void
+  (e: 'update:fctAddOptions', value: myVal.FctAddOptions): void
 }>()
 
 // menuItem.Star更新
 const onChangeStar = (value: boolean): void => {
-  emits('update:fctStar', value)
+  emits('update:star', value)
 }
 
-// menuItem.MenuNameの更新
-const updateMenuName = (value: string): void => {
-  const res = JSON.parse(JSON.stringify(props.fctRowItem))
-  res.MenuName = value
-  const res2 = { value: res, index: 'menu' }
-  emits('update:fctRowItem', res2)
-}
+// // menuItem.MenuNameの更新
+// const updateMenuName = (value: string): void => {
+//   const res = JSON.parse(JSON.stringify(fctAddOption))
+//   res.MenuName = value
+//   const res2 = { value: res, index: 'menu' }
+//   emits('update:fctRowItem', res2)
+// }
 
-// menuItem.Weight の更新
-const updateWeight = (value: string | number | null): void => {
-  const numericValue = Number(value)
-  if (isNaN(numericValue)) {
-    return
-  }
-  const res = JSON.parse(JSON.stringify(props.fctRowItem))
-  res.Weight = numericValue
-  const res2 = { value: res, index: 'weight' }
-  emits('update:fctRowItem', res2)
-}
+// // menuItem.Weight の更新
+// const updateWeight = (value: string | number | null): void => {
+//   const numericValue = Number(value)
+//   if (isNaN(numericValue)) {
+//     return
+//   }
+//   const res = JSON.parse(JSON.stringify(fctAddOption))
+//   res.Weight = numericValue
+//   const res2 = { value: res, index: 'weight' }
+//   emits('update:fctRowItem', res2)
+// }
 
 // fctRowItemの追加
-const onSetNewFctRowItem = (): void => {
-  emits('newFctRowItem', props.fctRowItem)
+const onFctAddOptions = (): void => {
+  emits('update:fctAddOptions', fctAddOptionsRef.value)
 }
 
 // メニュー名一覧
@@ -79,13 +86,7 @@ function filterMenu(val: string, update: (cb: () => void) => void) {
   })
 }
 
-const fctAddOptionOrg = {
-  NutrientValue: 0,
-  Weight: 0,
-  MenuName: ''
-}
-
-const fctAddOption = ref(fctAddOptionOrg)
+const fctAddOptionsRef = ref<myVal.FctAddOptions>(props.fctAddOptions)
 
 // table col定義
 // 列の定義
@@ -142,22 +143,31 @@ const columnsMenuItem: QTableProps['columns'] = [
 
 // table 行の定義
 const rowsMenuItem: ComputedRef<myVal.FctRowItem> = computed(() => {
-  return props.fctRowItem
+  return {
+    ...props.fct,
+    Star: props.star,
+    ...fctAddOptionsRef.value
+  }
 })
 
 // validationルール
-const weightRules = computed(
-  () => typeof props.fctRowItem.Weight === 'number' && props.fctRowItem.Weight > 0
-)
-const menuRules = computed(() => {
-  const res = props.fctRowItem.MenuName?.trim() ? true : false
+const weightRules = computed(() => {
+  const res =
+    typeof fctAddOptionsRef.value.Weight === 'number' && Number(fctAddOptionsRef.value.Weight) > 0
   return res
 })
+
+const menuRules = computed(() => {
+  const res = fctAddOptionsRef.value.MenuName ? true : false
+  return res
+})
+
 const allRule = computed(() => menuRules.value && weightRules.value)
 </script>
 
 <template>
   <q-card class="bg-grey-2 q-pa-sm">
+    weightRules:{{ weightRules }}]{{ fctAddOptions }}
     <q-table
       :table-header-style="{ backgroundColor: 'DarkSeaGreen' }"
       flat
@@ -183,21 +193,19 @@ const allRule = computed(() => menuRules.value && weightRules.value)
           icon="add"
           size="sm"
           :disable="!allRule"
-          @click="onSetNewFctRowItem"
+          @click="onFctAddOptions"
         />
       </div>
       <div class="col-6">
         <q-select
-          ref="menuRef"
           dense
           hide-bottom-space
-          v-model:model-value="fctAddOption.MenuName"
+          v-model:model-value="fctAddOptionsRef.MenuName"
           use-input
           use-chips
           @new-value="addNewMenuName"
           :options="menuNames"
           @filter="filterMenu"
-          @update:model-value="updateMenuName"
           :error="!menuRules"
           error-message="'please set menu name'"
         />
@@ -207,17 +215,16 @@ const allRule = computed(() => menuRules.value && weightRules.value)
           type="number"
           debounce="500"
           dense
-          :model-value="props.fctRowItem.Weight"
+          v-model.number="fctAddOptionsRef.Weight"
           error-message="only number is allowed"
           :error="!weightRules"
-          @update:model-value="updateWeight"
         ></q-input>
       </div>
       <div class="col">
         <q-checkbox
           dense
           size="sm"
-          :model-value="props.fctRowItem.Star"
+          :model-value="props.star"
           label="mark as favorite"
           color="teal"
           class="q-mt-md q-ml-md justify-center"

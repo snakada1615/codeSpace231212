@@ -15,7 +15,7 @@ const myArgTypes: ArgTypes = {
     },
     description: 'Event for fctFavoriteList update' // Provide a helpful description
   },
-  'update:fctRowItem': {
+  newFctRowItem: {
     control: 'object', // Adjust this control as needed, e.g., 'text' if you want a string input
     action: 'update:fctFavoriteList',
     table: {
@@ -52,7 +52,7 @@ export const Primary: Story = {
       return { args }
     },
     template:
-      '<assessDietVue v-bind="args" @update:fctRowItem = "onUpdateFctRowItem" @update:fctFavoriteList = "onUpdateFctFavoriteList" />',
+      '<assessDietVue v-bind="args" @newFctRowItem = "onUpdateFctRowItem" @update:fctFavoriteList = "onUpdateFctFavoriteList" />',
     methods: {
       onUpdateFctRowItem: action('onUpdateFctRowItem'),
       onUpdateFctFavoriteList: action('onUpdateFctFavoriteList')

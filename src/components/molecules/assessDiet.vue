@@ -23,12 +23,18 @@ const props = defineProps({
 
 const emits = defineEmits<{
   (e: 'update:fctFavoriteList', value: myVal.FctStars): void
-  (e: 'update:fctRowItem', value: myVal.FctRowItem): void
-  (e: 'update:menuItems', value: myVal.MenuItems): void
+  (e: 'newFctRowItem', value: myVal.FctRowItem): void
 }>()
 
 const myMenu = computed<myVal.MenuItems>(() => {
   return props.menuItems
+})
+
+const fctFavoriteListComp = computed({
+  get: () => props.fctFavoriteList,
+  set: (val: myVal.FctStars) => {
+    emits('update:fctFavoriteList', val)
+  }
 })
 </script>
 
@@ -36,10 +42,9 @@ const myMenu = computed<myVal.MenuItems>(() => {
   <q-card>
     <FctTableWithSelectButtonVue
       :fct="props.fct"
-      :fct-favorite-list="props.fctFavoriteList"
+      v-model:fct-favorite-list="fctFavoriteListComp"
       :common-menus="myVal.commonMenus"
-      @update:fct-favorite-list="emits('update:fctFavoriteList', $event)"
-      @update:fct-row-item="emits('update:fctRowItem', $event)"
+      @new-fct-row-item="emits('newFctRowItem', $event)"
     />
     <menuTable :menuItems="myMenu" />
   </q-card>

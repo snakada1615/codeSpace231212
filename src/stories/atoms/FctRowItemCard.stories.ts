@@ -4,29 +4,30 @@ import FctRowItemCard from '@/components/atoms/FctRowItemCard.vue'
 import * as myVal from '@/models/MyInterface'
 import FakerFunc from '@/models/fakerFunc'
 
-const fctRowItem: myVal.FctRowItem = FakerFunc.createFctRowItem()
-const fctRowItem2 = JSON.parse(JSON.stringify(fctRowItem))
-fctRowItem2.Weight = 'happyDays'
+const fct: myVal.FctItem = FakerFunc.createFct(myVal.sampleFood)
+const fctAddOptions: myVal.FctAddOptions = FakerFunc.createFctAddOptions()
+const fctAddOptions2 = JSON.parse(JSON.stringify(fctAddOptions))
+fctAddOptions2.Weight = 'happyDays'
 
 const commonMenus = myVal.commonMenus
 
 // Define the ArgTypes for the storybook without using the generic
 const myArgTypes: ArgTypes = {
-  'update:fctRowItem': {
+  'update:fctAddOptions': {
     control: 'object', // Adjust this control as needed, e.g., 'text' if you want a string input
-    action: 'update:fctRowItem',
+    action: 'update:fctAddOptions',
     table: {
       category: 'Events' // Optional: Use categories to organize your argTypes
     },
-    description: 'Event for fctRowItem update' // Provide a helpful description
+    description: 'Event for fctAddOptions addition' // Provide a helpful description
   },
-  setNewFctRowItem: {
+  'update:star': {
     control: 'object', // Adjust this control as needed, e.g., 'text' if you want a string input
-    action: 'setNewFctRowItem',
+    action: 'update:star',
     table: {
       category: 'Events' // Optional: Use categories to organize your argTypes
     },
-    description: 'Event for FctRowItem addition' // Provide a helpful description
+    description: 'Event for star addition' // Provide a helpful description
   }
   // ... define other arg types as necessary ...
 }
@@ -47,14 +48,16 @@ export const First: Story = {
       return { args }
     },
     template:
-      '<FctRowItemCard v-bind="args"  @update:fctRowItem="onUpdateFctRowItem" @newFctRowItem="onSetNewFctRowItem" />',
+      '<FctRowItemCard v-bind="args"  @update:fctAddOptions="onNewFctRowItem" @update:star="onUpdateFctStar" />',
     methods: {
-      onUpdateFctRowItem: action('update:fctRowItem'),
-      onSetNewFctRowItem: action('setNewFctRowItem')
+      onNewFctRowItem: action('update:fctAddOptions'),
+      onUpdateFctStar: action('update:star')
     }
   }),
   args: {
-    fctRowItem: fctRowItem,
+    fct,
+    fctAddOptions,
+    star: false,
     commonMenus: commonMenus
   }
 }
@@ -66,14 +69,16 @@ export const Second: Story = {
       return { args }
     },
     template:
-      '<FctRowItemCard v-bind="args"  @update:fctRowItem="onUpdateFctRowItem" @setNewFctRowItem="onSetNewFctRowItem" />',
+      '<FctRowItemCard v-bind="args"  @update:fctAddOptions="onNewFctRowItem" @update:star="onUpdateFctStar" />',
     methods: {
-      onUpdateFctRowItem: action('update:fctRowItem'),
-      onSetNewFctRowItem: action('setNewFctRowItem')
+      onNewFctRowItem: action('update:fctAddOptions'),
+      onUpdateFctStar: action('update:star')
     }
   }),
   args: {
-    fctRowItem: fctRowItem2,
+    fct,
+    fctAddOptions: fctAddOptions2,
+    star: false,
     commonMenus: commonMenus
   }
 }
