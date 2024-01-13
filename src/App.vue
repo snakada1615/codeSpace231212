@@ -11,20 +11,22 @@ function toggleLeftDrawer() {
 <template>
   <div>
     <q-layout view="hHh lpR fFf">
-      <q-header elevated class="bg-primary text-white" height-hint="98">
+      <q-header elevated class="bg-secondary text-white" height-hint="50">
         <q-toolbar>
           <q-btn dense flat round icon="menu" @click="toggleLeftDrawer" />
 
           <q-toolbar-title>
-            <q-icon name="soup_kitchen" size="2em" />
-            Title
+            <q-icon name="soup_kitchen" size="1em" />
+            IFNA Nutrient App
           </q-toolbar-title>
         </q-toolbar>
 
-        <q-tabs align="left">
-          <q-route-tab to="/" label="Page One" />
-          <q-route-tab to="/" label="Page Two" />
-          <q-route-tab to="/about" label="Page Three" />
+        <q-tabs align="left" class="bg-teal-3 text-black">
+          <q-route-tab to="/home" label="Page One" />
+          <q-route-tab to="/test" label="Page Two" />
+          <q-route-tab to="/registUser" label="registration" />
+          <q-route-tab to="/loginUser" label="user login" />
+          <q-route-tab to="/feedTest" label="feedTest" />
         </q-tabs>
       </q-header>
 

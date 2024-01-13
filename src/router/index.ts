@@ -1,12 +1,15 @@
 import { createRouter, createWebHistory } from 'vue-router'
 import HomeView from '../views/HomeView.vue'
 import ErrorPage from '../components/atoms/ErrorPage.vue'
+import RegisterUserVue from '@/views/RegisterUser.vue'
+import feedTestVue from '@/views/feedTest.vue'
+import LoginUserVue from '@/views/LoginUser.vue'
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
   routes: [
     {
-      path: '/',
+      path: '/home',
       name: 'home',
       component: HomeView
     },
@@ -32,6 +35,21 @@ const router = createRouter({
       path: '/errorPage',
       name: 'ErrorPage',
       component: ErrorPage
+    },
+    {
+      path: '/registUser',
+      name: 'RegisterUser',
+      component: RegisterUserVue
+    },
+    {
+      path: '/loginUser',
+      name: 'LoginUser',
+      component: LoginUserVue
+    },
+    {
+      path: '/feedTest',
+      name: 'feedTestVue',
+      component: feedTestVue
     }
   ]
 })

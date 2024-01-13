@@ -1,5 +1,5 @@
 <script setup lang="ts"></script>
 
 <template>
-  <main>Halo</main>
+  <main>Halo thisishome</main>
 </template>
