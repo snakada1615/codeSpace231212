@@ -11,26 +11,13 @@ import '@quasar/extras/material-icons/material-icons.css'
 import 'quasar/src/css/index.sass'
 
 // IMport firebase
-import firebase from 'firebase/compat/app'
+// import firebase from 'firebase/compat/app'
+import { auth } from '@/models/fireFunctions'
 
 import App from './App.vue'
 import router from './router'
 
 const app = createApp(App)
-
-// For Firebase JS SDK v7.20.0 and later, measurementId is optional
-const firebaseConfig = {
-  apiKey: 'AIzaSyCeFvsKeAZAVOv-Y3_5YpIt1iz5nLFeslc',
-  authDomain: 'ifnanfaapp101.firebaseapp.com',
-  projectId: 'ifnanfaapp101',
-  storageBucket: 'ifnanfaapp101.appspot.com',
-  messagingSenderId: '1024877003239',
-  appId: '1:1024877003239:web:bb25aeee1a9216ed7f3d42',
-  measurementId: 'G-QD44RZTNSD'
-}
-
-// Initialize Firebase
-firebase.initializeApp(firebaseConfig)
 
 app.use(createPinia())
 app.use(router)

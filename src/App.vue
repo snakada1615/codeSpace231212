@@ -2,7 +2,9 @@
 import { ref } from 'vue'
 import { getAuth } from 'firebase/auth'
 import { useRouter } from 'vue-router'
+import { useUserState } from '@/stores/mainStore'
 
+const authState = useUserState()
 const router = useRouter()
 
 const leftDrawerOpen = ref(false)
@@ -11,15 +13,17 @@ function toggleLeftDrawer() {
   return
 }
 const auth = getAuth()
-const isLoggedIn = ref(true)
-// runs after firebase is initialized
-auth.onAuthStateChanged(function (user) {
-  if (user) {
-    isLoggedIn.value = true // if we have a user
-  } else {
-    isLoggedIn.value = false // if we do not
-  }
-})
+// const isLoggedIn = ref(true)
+// // runs after firebase is initialized
+// auth.onAuthStateChanged(function (user) {
+//   if (user) {
+//     isLoggedIn.value = true // if we have a user
+//     authState.setLoginState(true)
+//   } else {
+//     isLoggedIn.value = false // if we do not
+//     authState.setLoginState(false)
+//   }
+// })
 
 const logOut = () => {
   auth.signOut()
@@ -41,7 +45,7 @@ const logOut = () => {
 
           <!-- login/logout用のメニュー -->
           <!-- logout -->
-          <q-btn v-if="isLoggedIn" flat round>
+          <q-btn v-if="authState.isLoggedin" flat round>
             <q-icon name="face" />
             <q-menu>
               <q-list dense style="min-width: 100px">
@@ -54,7 +58,7 @@ const logOut = () => {
           </q-btn>
 
           <!-- login -->
-          <q-btn v-if="!isLoggedIn" flat round>
+          <q-btn v-if="!authState.isLoggedin" flat round>
             <q-icon name="psychology_alt" />
             <q-menu>
               <q-list dense style="min-width: 100px">
@@ -68,7 +72,7 @@ const logOut = () => {
         </q-toolbar>
 
         <q-tabs align="left" class="bg-teal-3 text-black">
-          <q-route-tab to="/home" label="Page One" />
+          <q-route-tab to="/" label="Page One" />
           <q-route-tab to="/myTest01" label="myTest01" />
           <q-route-tab to="/registUser" label="registration" />
           <q-route-tab to="/loginUser" label="user login" />

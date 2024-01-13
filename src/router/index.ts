@@ -1,6 +1,7 @@
 import { createRouter, createWebHistory } from 'vue-router'
 import type { RouteLocationNormalized, NavigationGuardNext } from 'vue-router'
 // import { isAuthenticated } from './auth' // Your auth module with TypeScript types
+import { fireFunc } from '@/models/fireFunctions'
 
 // Guard function
 import HomeView from '../views/HomeView.vue'
@@ -14,7 +15,7 @@ const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
   routes: [
     {
-      path: '/home',
+      path: '/',
       name: 'home',
       component: HomeView
     },
@@ -66,14 +67,16 @@ const router = createRouter({
 })
 
 // Guard function
-const checkAuth = (
+async function checkAuth(
   to: RouteLocationNormalized,
   from: RouteLocationNormalized,
   next: NavigationGuardNext
-) => {
-  //  if (to.meta.requiresAuth && !isAuthenticated()) {
-  if (to.meta.requiresAuth) {
-    next({ name: 'Login' })
+) {
+  const currentUser = await fireFunc.getCurrentUser()
+  console.log(currentUser)
+  if (to.meta.requiresAuth && !currentUser) {
+    alert('you have to login first to use this app')
+    next({ name: 'home' })
   } else {
     next()
   }
