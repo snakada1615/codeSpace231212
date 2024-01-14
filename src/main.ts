@@ -12,7 +12,7 @@ import 'quasar/src/css/index.sass'
 
 // IMport firebase
 // import firebase from 'firebase/compat/app'
-import { auth } from '@/models/fireFunctions'
+// import { auth } from '@/models/fireFunctions'
 
 import App from './App.vue'
 import router from './router'
