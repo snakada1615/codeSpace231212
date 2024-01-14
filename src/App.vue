@@ -4,6 +4,7 @@ import { useRouter } from 'vue-router'
 import { AuthState } from '@/stores/mainStore'
 import { auth } from '@/models/fireFunctions'
 import LoginUser from '@/components/atoms/LoginDialog.vue'
+import RegisterDialog from './components/atoms/RegisterDialog.vue'
 
 const authState = AuthState()
 const router = useRouter()
@@ -31,6 +32,7 @@ const logOut = () => {
 }
 
 const loginDialog = ref(false)
+const registDialog = ref(false)
 </script>
 
 <template>
@@ -67,6 +69,9 @@ const loginDialog = ref(false)
                 <q-item clickable v-close-popup>
                   <q-item-section @click="loginDialog = true">logIn</q-item-section>
                 </q-item>
+                <q-item clickable v-close-popup>
+                  <q-item-section @click="registDialog = true">register</q-item-section>
+                </q-item>
                 <!-- Add more items here -->
               </q-list>
             </q-menu>
@@ -91,5 +96,6 @@ const loginDialog = ref(false)
       </q-page-container>
     </q-layout>
     <login-user v-model:open-dialog="loginDialog" />
+    <register-dialog v-model:open-dialog="registDialog" />
   </div>
 </template>
