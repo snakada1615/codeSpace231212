@@ -1,5 +1,5 @@
 import { createRouter, createWebHistory } from 'vue-router'
-import type { RouteLocationNormalized, NavigationGuardNext } from 'vue-router'
+// import type { RouteLocationNormalized, NavigationGuardNext } from 'vue-router'
 // import { isAuthenticated } from './auth' // Your auth module with TypeScript types
 import { fireFunc } from '@/models/fireFunctions'
 
@@ -67,25 +67,33 @@ const router = createRouter({
 })
 
 // Guard function
-async function checkAuth(
-  to: RouteLocationNormalized,
-  from: RouteLocationNormalized,
-  next: NavigationGuardNext
-) {
-  const currentUser = await fireFunc.getCurrentUser()
-  console.log(currentUser)
-  if (to.meta.requiresAuth && !currentUser) {
-    alert('you have to login first to use this app')
-    next({ name: 'home' })
-  } else {
-    next()
-  }
-}
+// async function checkAuth(
+//   to: RouteLocationNormalized,
+//   from: RouteLocationNormalized,
+//   next: NavigationGuardNext
+// ) {
+//   const currentUser = await fireFunc.getCurrentUser()
+//   console.log(currentUser)
+//   if (to.meta.requiresAuth && !currentUser) {
+//     alert('you have to login first to use this app')
+//     next({ name: 'home' })
+//   } else {
+//     next()
+//   }
+// }
 
 // Global beforeEach hook for navigation guard
 router.beforeEach(async (to, from, next) => {
   try {
-    await checkAuth(to, from, next)
+    // await checkAuth(to, from, next)
+    const currentUser = await fireFunc.getCurrentUser()
+    console.log(currentUser)
+    if (to.meta.requiresAuth && !currentUser) {
+      alert('you have to login first to use this app')
+      next({ name: 'home' })
+    } else {
+      next()
+    }
     // Set page title or perform other global checks here.
   } catch (error) {
     console.error(error)

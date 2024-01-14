@@ -1,8 +1,8 @@
 <script setup lang="ts">
 import { ref } from 'vue'
-import { getAuth } from 'firebase/auth'
 import { useRouter } from 'vue-router'
 import { AuthState } from '@/stores/mainStore'
+import { auth } from '@/models/fireFunctions'
 
 const authState = AuthState()
 const router = useRouter()
@@ -12,7 +12,6 @@ function toggleLeftDrawer() {
   leftDrawerOpen.value = !leftDrawerOpen.value
   return
 }
-const auth = getAuth()
 // const isLoggedIn = ref(true)
 // runs after firebase is initialized
 auth.onAuthStateChanged(function (user) {
