@@ -3,6 +3,7 @@ import { ref } from 'vue'
 import { useRouter } from 'vue-router'
 import { AuthState } from '@/stores/mainStore'
 import { auth } from '@/models/fireFunctions'
+import LoginUser from '@/components/atoms/LoginDialog.vue'
 
 const authState = AuthState()
 const router = useRouter()
@@ -28,6 +29,8 @@ const logOut = () => {
   auth.signOut()
   router.push('/')
 }
+
+const loginDialog = ref(false)
 </script>
 
 <template>
@@ -62,7 +65,7 @@ const logOut = () => {
             <q-menu>
               <q-list dense style="min-width: 100px">
                 <q-item clickable v-close-popup>
-                  <q-item-section>logIn</q-item-section>
+                  <q-item-section @click="loginDialog = true">logIn</q-item-section>
                 </q-item>
                 <!-- Add more items here -->
               </q-list>
@@ -73,8 +76,6 @@ const logOut = () => {
         <q-tabs align="left" class="bg-teal-3 text-black">
           <q-route-tab to="/" label="Page One" />
           <q-route-tab to="/myTest01" label="myTest01" />
-          <q-route-tab to="/registUser" label="registration" />
-          <q-route-tab to="/loginUser" label="user login" />
           <q-route-tab to="/feedTest" label="feedTest" />
         </q-tabs>
       </q-header>
@@ -89,5 +90,6 @@ const logOut = () => {
         <router-view />
       </q-page-container>
     </q-layout>
+    <login-user v-model:open-dialog="loginDialog" />
   </div>
 </template>

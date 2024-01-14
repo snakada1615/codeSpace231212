@@ -1,15 +1,7 @@
 <script setup lang="ts">
-import type { PropType } from 'vue'
-
-const props = defineProps({
-  familyMembers: {
-    type: String as PropType<string>,
-    required: true
-  }
-})
+import myTest01 from '@/components/test/myTest01.vue'
 </script>
 
 <template>
-  <div>halo</div>
-  <div>{{ props.familyMembers }}</div>
+  <myTest01 />
 </template>

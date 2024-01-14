@@ -6,9 +6,7 @@ import { fireFunc } from '@/models/fireFunctions'
 // Guard function
 import HomeView from '../views/HomeView.vue'
 import ErrorPage from '../components/atoms/ErrorPage.vue'
-import RegisterUserVue from '@/views/RegisterUser.vue'
 import feedTestVue from '@/views/feedTest.vue'
-import LoginUserVue from '@/views/LoginUser.vue'
 import myTest01Vue from '../views/myTest01.vue'
 
 const router = createRouter({
@@ -41,16 +39,6 @@ const router = createRouter({
       path: '/errorPage',
       name: 'ErrorPage',
       component: ErrorPage
-    },
-    {
-      path: '/registUser',
-      name: 'RegisterUser',
-      component: RegisterUserVue
-    },
-    {
-      path: '/loginUser',
-      name: 'LoginUser',
-      component: LoginUserVue
     },
     {
       path: '/feedTest',
