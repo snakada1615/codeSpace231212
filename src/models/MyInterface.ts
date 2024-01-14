@@ -45,11 +45,17 @@ export const driItemDefault = {
 export interface DriItems extends Array<DriItem> {}
 
 export interface FamilyMember extends DriItem {
+  locationId: string
+  familyId: string
+  familyName: string
   count: number
 }
 
 export const familyMemberDefault = {
   ...driItemDefault,
+  locationId: '',
+  familyId: '',
+  familyName: '',
   count: 0
 }
 
