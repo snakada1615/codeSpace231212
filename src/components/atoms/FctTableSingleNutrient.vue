@@ -65,11 +65,35 @@ const columnsFct: QTableProps['columns'] = [
     sortable: true
   },
   {
-    name: 'val',
+    name: 'En',
     required: true,
-    label: 'Value',
+    label: 'En',
     align: 'left',
-    field: 'NutrientValue',
+    field: 'En',
+    sortable: true
+  },
+  {
+    name: 'Pr',
+    required: true,
+    label: 'Pr',
+    align: 'left',
+    field: 'Pr',
+    sortable: true
+  },
+  {
+    name: 'Va',
+    required: true,
+    label: 'Va',
+    align: 'left',
+    field: 'Va',
+    sortable: true
+  },
+  {
+    name: 'Fe',
+    required: true,
+    label: 'Fe',
+    align: 'left',
+    field: 'Fe',
     sortable: true
   }
 ]
