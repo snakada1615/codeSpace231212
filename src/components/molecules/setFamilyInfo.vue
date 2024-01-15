@@ -95,9 +95,5 @@ const nameRules = computed(() => {
       </div>
     </div>
     <DriSelect v-model:family-members="familyMembersComputed" />
-    <div class="col-2">
-      <q-btn icon="add" size="sm" @click="sayHi" />
-      test
-    </div>
   </q-card>
 </template>
