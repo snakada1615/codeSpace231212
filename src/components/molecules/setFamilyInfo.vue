@@ -1,29 +1,103 @@
 <script setup lang="ts">
-import * as myVal from '@/models/MyInterface'
+import * as myVal from 'src/models/MyInterface'
 import { computed, type PropType } from 'vue'
 import DriSelect from '../atoms/DriSelect.vue'
 
 const props = defineProps({
-  familyMembers: {
-    type: Object as PropType<myVal.FamilyMembers>,
+  location: {
+    type: String,
+    default: ''
+  },
+  familyAll: {
+    type: Object as PropType<myVal.FamilyAll>,
     required: true
   }
 })
 
 const emits = defineEmits<{
-  (e: 'update:familyMembers', value: myVal.FamilyMembers): void
+  (e: 'update:familyAll', value: myVal.FamilyAll): void
+  (e: 'saveFamilyAll', value: myVal.FamilyAll): void
 }>()
 
 const familyMembersComputed = computed({
   get() {
-    return props.familyMembers
+    return props.familyAll.familyMembers
   },
   set(val) {
-    emits('update:familyMembers', val)
+    const res = {
+      ...props.familyAll,
+      familyMembers: val
+    }
+    emits('update:familyAll', res)
   }
 })
+
+const familyNameComputed = computed({
+  get() {
+    return props.familyAll.familyName
+  },
+  set(val) {
+    const res = {
+      ...props.familyAll,
+      familyName: val
+    }
+    emits('update:familyAll', res)
+  }
+})
+
+const addFamilyAll = () => {
+  console.log(props.familyAll)
+  emits('saveFamilyAll', props.familyAll)
+}
+
+function sayHi() {
+  console.log('hi')
+}
+
+const nameRules = computed(() => {
+  const res = (familyNameComputed.value ? true : false) && familyNameComputed.value.length > 2
+  return res
+})
 </script>
+
 <template>
-  <q-card> halo</q-card>
-  <DriSelect v-model:family-members="familyMembersComputed" />
+  <q-card class="q-pt-md">
+    <div class="row">
+      <div class="col-5">
+        <div class="q-px-md">location: {{ props.location }}</div>
+      </div>
+      <div class="col-5">
+        <q-input
+          v-model:model-value="familyNameComputed"
+          label="family name"
+          class="q-px-sm"
+          filled
+          dense
+          :error="!nameRules"
+          error-message="'family name should be longer than 2 letters'"
+        >
+          <template v-slot:prepend>
+            <q-icon name="face" />
+          </template>
+        </q-input>
+      </div>
+      <div class="col-2">
+        <q-btn
+          round
+          ripple
+          color="primary"
+          icon="add"
+          size="sm"
+          :disable="!nameRules"
+          @click="addFamilyAll"
+        />
+        save
+      </div>
+    </div>
+    <DriSelect v-model:family-members="familyMembersComputed" />
+    <div class="col-2">
+      <q-btn icon="add" size="sm" @click="sayHi" />
+      test
+    </div>
+  </q-card>
 </template>

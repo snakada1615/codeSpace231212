@@ -69,7 +69,6 @@ export default class FakerFunc {
   }
 
   static createFamilyMembers(): myVal.FamilyMembers {
-    const locationId = faker.string.uuid()
     return myVal.sampleFamilyMemberCategory.map((item, index) => {
       return {
         DriId: String(index),
@@ -78,12 +77,18 @@ export default class FakerFunc {
         Fe: faker.number.float({ min: 0, max: 50, precision: 0.1 }),
         Pr: faker.number.float({ min: 0, max: 200, precision: 0.1 }),
         Va: faker.number.float({ min: 0, max: 500, precision: 0.1 }),
-        locationId: locationId,
-        familyId: faker.string.uuid(),
-        familyName: faker.person.firstName(),
         count: faker.number.int({ min: 0, max: 10 })
       }
     })
+  }
+
+  static createFamilyAll(): myVal.FamilyAll {
+    return {
+      locationId: faker.string.uuid(),
+      familyId: faker.string.uuid(),
+      familyName: faker.person.firstName(),
+      familyMembers: this.createFamilyMembers()
+    }
   }
 
   static createMenuItem(): myVal.MenuItem {

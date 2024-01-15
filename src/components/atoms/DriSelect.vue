@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { computed, type PropType } from 'vue'
 import type { QTableProps } from 'quasar'
-import myFunc from 'src/models/MyFunctions'
+import myFunc from '@/models/MyFunctions'
 // 全てのintefaceを読み込む
 import * as myVal from 'src/models/MyInterface'
 
