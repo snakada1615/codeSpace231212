@@ -58,7 +58,7 @@ export const First: Story = {
 
 const ProjectInfo2 = {
   ...projectInfo,
-  location: 'bus stop',
+  location: 'okayama',
   projectName: 'myProject1',
   familyMembers: FakerFunc.createFamilyMembers()
 }

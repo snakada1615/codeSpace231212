@@ -53,7 +53,6 @@ const onRowClick = (event: Event, row: RowItem): void => {
   selectedRow.value = row
   // You can handle the row click event here.
   // For example, navigate to a different page or display details about the row.
-  console.log(row)
   emits('row-selected', row)
 }
 

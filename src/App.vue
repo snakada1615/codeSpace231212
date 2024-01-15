@@ -80,6 +80,7 @@ const registDialog = ref(false)
 
         <q-tabs align="left" class="bg-teal-3 text-black">
           <q-route-tab to="/" label="Page One" />
+          <q-route-tab to="/setProjectInfo" label="Project info" />
           <q-route-tab to="/myTest01" label="myTest01" />
           <q-route-tab to="/feedTest" label="feedTest" />
         </q-tabs>

@@ -8,6 +8,7 @@ import HomeView from '../views/HomeView.vue'
 import ErrorPage from '../components/atoms/ErrorPage.vue'
 import feedTestVue from '@/views/feedTest.vue'
 import myTest01Vue from '../views/myTest01.vue'
+import setProjectInfoVue from '@/components/molecules/setProjectInfo.vue'
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -50,6 +51,12 @@ const router = createRouter({
       path: '/myTest01',
       name: 'myTest01Vue',
       component: myTest01Vue
+    },
+    {
+      path: '/setProjectInfo',
+      name: 'setProjectInfo',
+      component: setProjectInfoVue,
+      meta: { requiresAuth: true }
     }
   ]
 })
