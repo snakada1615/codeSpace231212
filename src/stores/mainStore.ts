@@ -17,32 +17,6 @@ export const AuthState = defineStore('counter', {
   }
 })
 
-export const useUserState = defineStore('userstate', {
-  state: () => ({
-    user: onAuthStateChanged(auth, (u) => {
-      console.log('change login status')
-      return u
-    })
-  }),
-  getters: {
-    isLoggedin: (state) => (state.user === null ? true : false)
-  },
-  actions: {
-    setLoginState(val: boolean) {
-      console.log(val)
-    },
-    // setUser(u) {
-    //   this.user = u
-    // },
-    async login(email: string, password: string) {
-      await signInWithEmailAndPassword(auth, email, password)
-    },
-    async logout() {
-      await signOut(auth)
-    }
-  }
-})
-
 // You would need to create a Pinia instance and install it as a plugin in your Vue app.
 
 // export const userState = defineStore('userstate', () => {

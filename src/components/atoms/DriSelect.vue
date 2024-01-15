@@ -13,7 +13,7 @@ const props = defineProps({
 })
 
 const emits = defineEmits<{
-  (e: 'update:familyMember', value: myVal.FamilyMembers): void
+  (e: 'update:familyMembers', value: myVal.FamilyMembers): void
 }>()
 
 const updateTarget = (index: string, val: number): void => {
@@ -25,7 +25,7 @@ const updateTarget = (index: string, val: number): void => {
     }
     return item
   })
-  emits('update:familyMember', newTarget)
+  emits('update:familyMembers', newTarget)
 }
 
 const columnsDri: QTableProps['columns'] = [

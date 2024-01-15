@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import * as myVal from 'src/models/MyInterface'
-import { computed, type PropType } from 'vue'
+import { computed, ref, type PropType } from 'vue'
 import DriSelect from '../atoms/DriSelect.vue'
 
 const props = defineProps({
@@ -45,14 +45,23 @@ const familyNameComputed = computed({
   }
 })
 
+const totalFamilySize = computed(() => {
+  return props.familyAll.familyMembers.reduce((sum, current) => {
+    sum += current.count
+    return sum
+  }, 0)
+})
+
+const myLocation = ref(props.location)
+
 const addFamilyAll = () => {
   console.log(props.familyAll)
   emits('saveFamilyAll', props.familyAll)
 }
 
-function sayHi() {
-  console.log('hi')
-}
+const numberRules = computed(() => {
+  return totalFamilySize.value > 0
+})
 
 const nameRules = computed(() => {
   const res = (familyNameComputed.value ? true : false) && familyNameComputed.value.length > 2
@@ -64,7 +73,18 @@ const nameRules = computed(() => {
   <q-card class="q-pt-md">
     <div class="row">
       <div class="col-5">
-        <div class="q-px-md">location: {{ props.location }}</div>
+        <q-input
+          v-model:model-value="myLocation"
+          label="location"
+          class="q-px-sm"
+          filled
+          dense
+          disable
+        >
+          <template v-slot:prepend>
+            <q-icon name="flag" />
+          </template>
+        </q-input>
       </div>
       <div class="col-5">
         <q-input
@@ -88,7 +108,7 @@ const nameRules = computed(() => {
           color="primary"
           icon="add"
           size="sm"
-          :disable="!nameRules"
+          :disable="!nameRules || !numberRules"
           @click="addFamilyAll"
         />
         save

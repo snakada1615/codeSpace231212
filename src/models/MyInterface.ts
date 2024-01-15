@@ -24,6 +24,37 @@ export interface CategoryItem {
   categoryText: string
 }
 
+export interface appUser {
+  name: string
+  job: string
+  title: string
+  country: string
+}
+
+export const appUserDefault = {
+  name: '',
+  job: '',
+  title: '',
+  country: ''
+}
+
+export interface ProjectInfo {
+  projectName: string
+  projectId: string
+  locationId: string
+  location: string
+  familyMembers: FamilyMembers
+}
+
+export const sampleFamilyMemberCategory = [
+  'child under 6 month',
+  'child 6-23 month',
+  'lactating',
+  'adult',
+  'pregnant',
+  'adolescent all'
+]
+
 export interface DriItem {
   DriId: string
   Name: string
@@ -55,6 +86,14 @@ export const familyMemberDefault = {
 
 export interface FamilyMembers extends Array<FamilyMember> {}
 
+const familyMembersDefault = sampleFamilyMemberCategory.map((item, index) => {
+  return {
+    ...familyMemberDefault,
+    DriId: String(index),
+    Name: item
+  }
+})
+
 export interface FamilyAll {
   locationId: string
   familyId: string
@@ -62,14 +101,13 @@ export interface FamilyAll {
   familyMembers: FamilyMembers
 }
 
-export const sampleFamilyMemberCategory = [
-  'child under 6 month',
-  'child 6-23 month',
-  'lactating',
-  'adult',
-  'pregnant',
-  'adolescent all'
-]
+export const ProjectInfoDefault = {
+  projectName: '',
+  projectId: '',
+  locationId: '',
+  location: '',
+  familyMembers: familyMembersDefault
+}
 
 export interface FctItem {
   keyFct: string

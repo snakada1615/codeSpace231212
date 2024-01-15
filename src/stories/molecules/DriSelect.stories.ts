@@ -9,13 +9,13 @@ const familyMembers: myVal.FamilyMembers = FakerFunc.createFamilyMembers()
 
 // Define the ArgTypes for the storybook without using the generic
 const myArgTypes: ArgTypes = {
-  'update:familyMember': {
+  'update:familyMembers': {
     control: 'object', // Adjust this control as needed, e.g., 'text' if you want a string input
-    action: 'update:familyMember',
+    action: 'update:familyMembers',
     table: {
       category: 'Events' // Optional: Use categories to organize your argTypes
     },
-    description: 'Event for FamilyMember update' // Provide a helpful description
+    description: 'Event for FamilyMembers update' // Provide a helpful description
   }
   // ... define other arg types as necessary ...
 }
@@ -40,7 +40,7 @@ export const Primary: Story = {
     setup() {
       return { args }
     },
-    template: '<DriSelect v-bind="args" @update:familyMember="onUpdateFamilyMember"/>',
+    template: '<DriSelect v-bind="args" @update:familyMembers="onUpdateFamilyMember"/>',
     methods: {
       onUpdateFamilyMember: action('onUpdateFamilyMember')
     }
