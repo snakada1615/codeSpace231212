@@ -28,6 +28,9 @@ import {
   type UserCredential
 } from 'firebase/auth'
 import { useRouter } from 'vue-router' // import router
+import { useProjectData } from '@/stores/mainStore'
+const projectData = useProjectData()
+
 const email = ref('')
 const password = ref('')
 const errMsg = ref() // ERROR MESSAGE
@@ -56,6 +59,8 @@ const register = () => {
   createUserWithEmailAndPassword(auth, email.value, password.value) // need .value because ref()
     .then(() => {
       router.push('/feedTest') // redirect to the feed
+      const uid = auth.currentUser ? auth.currentUser.uid : '' // get unique uid
+      projectData.setUserId(uid) // keep uid in pinia
       closeDialog()
     })
     .catch((error: Error) => {
@@ -71,6 +76,8 @@ const signInWithGoogle = (): void => {
     .then((result: UserCredential) => {
       console.log(result)
       router.push('/feedTest')
+      const uid = auth.currentUser ? auth.currentUser.uid : '' // get unique uid
+      projectData.setUserId(uid) // keep uid in pinia
       closeDialog()
     })
     .catch((error: Error) => {

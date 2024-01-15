@@ -1,3 +1,5 @@
+import { mdiCityVariantOutline } from '@quasar/extras/mdi-v4'
+
 export interface DiversityState {
   name: string
   status: boolean
@@ -107,6 +109,13 @@ export interface FamilyAll {
   familyMembers: FamilyMembers
 }
 
+export const familyAllDefault = {
+  locationId: '',
+  familyId: '',
+  familyName: '',
+  familyMembers: familyMembersDefault
+}
+
 export const ProjectInfoDefault = {
   projectName: '',
   projectId: '',
@@ -126,6 +135,19 @@ export interface FctItem {
   Fat: number
   Pr: number
   Va: number
+}
+
+export const fctItemDefault = {
+  keyFct: '',
+  FoodGroupId: '',
+  FctName: '',
+  FoodGroup: '',
+  Carb: 0,
+  En: 0,
+  Fe: 0,
+  Fat: 0,
+  Pr: 0,
+  Va: 0
 }
 
 export interface FctItems extends Array<FctItem> {}
@@ -149,6 +171,14 @@ export interface FctRowItem extends FctItem {
   Star: boolean
   Weight: number
   MenuName: string
+}
+
+export const fctRowItemDefault = {
+  ...fctItemDefault,
+  NutrientValue: 0,
+  Star: false,
+  Weight: 0,
+  MenuName: ''
 }
 
 export interface FctAddOptions {
@@ -232,6 +262,13 @@ export interface MenuItem extends FctRowItem {
   IdMenuItem: string
   KeyFamily: string
   Date: Date
+}
+
+export const menuItemDefault = {
+  ...fctRowItemDefault,
+  IdMenuItem: '',
+  KeyFamily: '',
+  Date: new Date()
 }
 
 export interface MenuItems extends Array<MenuItem> {}

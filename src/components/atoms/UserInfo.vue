@@ -1,6 +1,6 @@
 <template>
-  <q-page padding>
-    <q-form @submit.prevent="onSubmit" class="q-gutter-md">
+  <q-card>
+    <q-form @submit.prevent="onSubmit" class="q-gutter-md q-pa-md">
       <q-input
         dense
         filled
@@ -61,17 +61,30 @@
         <q-btn label="Reset" type="reset" @click="onReset" color="primary" flat class="q-ml-sm" />
       </div>
     </q-form>
-  </q-page>
+  </q-card>
 </template>
 
 <script lang="ts" setup>
 import { ref } from 'vue'
 import * as myVal from '@/models/MyInterface'
+import type { PropType } from 'vue'
 
-const appUser = ref<myVal.appUser>(myVal.appUserDefault)
+const props = defineProps({
+  appUser: {
+    type: Object as PropType<myVal.appUser>,
+    required: true
+  }
+})
+
+const emits = defineEmits<{
+  (e: 'update:appUser', value: myVal.appUser): void
+}>()
+
+const appUser = ref<myVal.appUser>(props.appUser)
 
 function onSubmit() {
   console.log('Form submitted:', appUser.value)
+  emits('update:appUser', appUser.value)
   // Handle the form submission logic here.
 }
 

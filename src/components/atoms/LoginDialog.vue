@@ -27,6 +27,8 @@ import {
   signInWithEmailAndPassword
 } from 'firebase/auth'
 import { useRouter } from 'vue-router' // import router
+import { useProjectData } from '@/stores/mainStore'
+const projectData = useProjectData()
 
 const router = useRouter() // get a reference to our vue router
 const email = ref('')
@@ -58,6 +60,8 @@ const signIn = () => {
     .then(() => {
       errMsg.value = ''
       router.push('/feed') // redirect to the feed
+      const uid = auth.currentUser ? auth.currentUser.uid : '' // get unique uid
+      projectData.setUserId(uid) // keep uid in pinia
       closeDialog()
     })
     .catch((error) => {
@@ -84,6 +88,8 @@ const signInWithGoogle = (): void => {
     .then(() => {
       errMsg.value = ''
       router.push('/feedTest')
+      const uid = auth.currentUser ? auth.currentUser.uid : '' // get unique uid
+      projectData.setUserId(uid) // keep uid in pinia
       closeDialog()
     })
     .catch((error: Error) => {

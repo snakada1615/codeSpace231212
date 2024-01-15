@@ -1,12 +1,12 @@
 <script setup lang="ts">
 import { ref } from 'vue'
 import { useRouter } from 'vue-router'
-import { AuthState } from '@/stores/mainStore'
+import { useAuthState } from '@/stores/mainStore'
 import { auth } from '@/models/fireFunctions'
 import LoginUser from '@/components/atoms/LoginDialog.vue'
 import RegisterDialog from './components/atoms/RegisterDialog.vue'
 
-const authState = AuthState()
+const authState = useAuthState()
 const router = useRouter()
 
 const leftDrawerOpen = ref(false)
@@ -80,6 +80,7 @@ const registDialog = ref(false)
 
         <q-tabs align="left" class="bg-teal-3 text-black">
           <q-route-tab to="/" label="Page One" />
+          <q-route-tab to="/setUserInfo" label="user info" />
           <q-route-tab to="/setProjectInfo" label="Project info" />
           <q-route-tab to="/myTest01" label="myTest01" />
           <q-route-tab to="/feedTest" label="feedTest" />

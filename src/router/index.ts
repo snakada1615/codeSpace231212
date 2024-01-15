@@ -8,7 +8,8 @@ import HomeView from '../views/HomeView.vue'
 import ErrorPage from '../components/atoms/ErrorPage.vue'
 import feedTestVue from '@/views/feedTest.vue'
 import myTest01Vue from '../views/myTest01.vue'
-import setProjectInfoVue from '@/components/molecules/setProjectInfo.vue'
+import setProjectInfoVue from '@/views/ProjectInfo.vue'
+import setUserInfoVue from '@/views/setUserInfo.vue'
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -57,6 +58,12 @@ const router = createRouter({
       name: 'setProjectInfo',
       component: setProjectInfoVue,
       meta: { requiresAuth: true }
+    },
+    {
+      path: '/setUserInfo',
+      name: 'setUserInfo',
+      component: setUserInfoVue,
+      meta: { requiresAuth: true }
     }
   ]
 })
@@ -82,7 +89,6 @@ router.beforeEach(async (to, from, next) => {
   try {
     // await checkAuth(to, from, next)
     const currentUser = await fireFunc.getCurrentUser()
-    console.log(currentUser)
     if (to.meta.requiresAuth && !currentUser) {
       alert('you have to login first to use this app')
       next({ name: 'home' })
