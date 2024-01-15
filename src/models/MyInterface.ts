@@ -25,17 +25,23 @@ export interface CategoryItem {
 }
 
 export interface appUser {
+  userId: string
   name: string
   job: string
   title: string
   country: string
+  region: string
+  town: string
 }
 
 export const appUserDefault = {
+  userId: '',
   name: '',
   job: '',
   title: '',
-  country: ''
+  country: '',
+  region: '',
+  town: ''
 }
 
 export interface ProjectInfo {

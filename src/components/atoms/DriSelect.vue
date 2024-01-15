@@ -3,7 +3,7 @@ import { computed, type PropType } from 'vue'
 import type { QTableProps } from 'quasar'
 import myFunc from '@/models/MyFunctions'
 // 全てのintefaceを読み込む
-import * as myVal from 'src/models/MyInterface'
+import * as myVal from '@/models/MyInterface'
 
 const props = defineProps({
   familyMembers: {

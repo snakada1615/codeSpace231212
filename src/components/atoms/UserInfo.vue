@@ -1,32 +1,81 @@
 <template>
-  <q-form class="q-gutter-md">
-    <q-input filled dense v-model="projectInfo.projectName" label="Project Name" class="q-mx-sm" />
-    <q-input filled dense v-model="projectInfo.location" label="Location" />
-    <!-- You can add more inputs for other DriItems properties here -->
-    <DriSelect v-model:family-members="projectInfo.familyMembers" />
-    <q-btn label="Submit" color="primary" @click="submitForm" />
-  </q-form>
+  <q-page padding>
+    <q-form @submit.prevent="onSubmit" class="q-gutter-md">
+      <q-input
+        dense
+        filled
+        class="q-my-sm"
+        v-model="appUser.name"
+        label="Name"
+        lazy-rules
+        :rules="[(val) => (val && val.length > 0) || 'Please fill in the name']"
+      />
+      <q-input
+        dense
+        filled
+        class="q-my-sm"
+        v-model="appUser.job"
+        label="Job"
+        lazy-rules
+        :rules="[(val) => (val && val.length > 0) || 'Please fill in the job']"
+      />
+      <q-input
+        dense
+        filled
+        class="q-my-sm"
+        v-model="appUser.title"
+        label="Title"
+        lazy-rules
+        :rules="[(val) => (val && val.length > 0) || 'Please fill in the title']"
+      />
+      <q-input
+        dense
+        filled
+        class="q-my-sm"
+        v-model="appUser.country"
+        label="Country"
+        lazy-rules
+        :rules="[(val) => (val && val.length > 0) || 'Please fill in the country']"
+      />
+      <q-input
+        dense
+        filled
+        class="q-my-sm"
+        v-model="appUser.region"
+        label="region"
+        lazy-rules
+        :rules="[(val) => (val && val.length > 0) || 'Please fill in the region(optional)']"
+      />
+      <q-input
+        dense
+        filled
+        class="q-my-sm"
+        v-model="appUser.town"
+        label="town/city"
+        lazy-rules
+        :rules="[(val) => (val && val.length > 0) || 'Please fill in the town/city(optional)']"
+      />
+
+      <div>
+        <q-btn label="Submit" type="submit" color="primary" />
+        <q-btn label="Reset" type="reset" @click="onReset" color="primary" flat class="q-ml-sm" />
+      </div>
+    </q-form>
+  </q-page>
 </template>
 
-<script setup lang="ts">
+<script lang="ts" setup>
 import { ref } from 'vue'
-import { QForm, QInput, QBtn } from 'quasar'
-import type { ProjectInfo } from '@/models/MyInterface' // Assuming your interface is in a separate file named interfaces.ts
-import DriSelect from './DriSelect.vue'
 import * as myVal from '@/models/MyInterface'
 
-// Initial state for our form
+const appUser = ref<myVal.appUser>(myVal.appUserDefault)
 
-const projectInfo = ref(myVal.ProjectInfoDefault)
+function onSubmit() {
+  console.log('Form submitted:', appUser.value)
+  // Handle the form submission logic here.
+}
 
-const emits = defineEmits<{
-  (e: 'update:projectInfo', value: myVal.ProjectInfo): void
-}>()
-
-function submitForm() {
-  console.log('Submitted project info:', projectInfo.value)
-  // emits('update:projectInfo', projectInfo.value)
-  // Handle the form submission logic here
-  // e.g., send data to an API, validation, etc.
+function onReset() {
+  appUser.value = myVal.appUserDefault
 }
 </script>
