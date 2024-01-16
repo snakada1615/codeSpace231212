@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import FctTable from '../atoms/FctTableSingleNutrient.vue'
-import FctRowItemCard from '../atoms/FctRowItemCard.vue'
+import FctRowItemCard from '@/components/atoms/FctRowItemCard.vue'
 import * as myVal from 'src/models/MyInterface'
 import { ref, computed, type PropType } from 'vue'
 

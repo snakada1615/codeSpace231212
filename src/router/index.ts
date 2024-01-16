@@ -1,4 +1,5 @@
-import { createRouter, createWebHistory } from 'vue-router'
+// import { createRouter, createWebHistory } from 'vue-router'
+import { createRouter, createWebHistory } from 'vue-router/auto'
 // import type { RouteLocationNormalized, NavigationGuardNext } from 'vue-router'
 // import { isAuthenticated } from './auth' // Your auth module with TypeScript types
 import { fireFunc } from '@/models/fireFunctions'

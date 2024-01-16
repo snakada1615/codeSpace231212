@@ -352,7 +352,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@babel/parser@npm:^7.1.0, @babel/parser@npm:^7.14.7, @babel/parser@npm:^7.20.7, @babel/parser@npm:^7.21.4, @babel/parser@npm:^7.22.15, @babel/parser@npm:^7.23.0, @babel/parser@npm:^7.23.5, @babel/parser@npm:^7.23.6, @babel/parser@npm:^7.6.0, @babel/parser@npm:^7.9.6":
+"@babel/parser@npm:^7.1.0, @babel/parser@npm:^7.14.7, @babel/parser@npm:^7.20.7, @babel/parser@npm:^7.21.4, @babel/parser@npm:^7.22.15, @babel/parser@npm:^7.22.7, @babel/parser@npm:^7.23.0, @babel/parser@npm:^7.23.5, @babel/parser@npm:^7.23.6, @babel/parser@npm:^7.6.0, @babel/parser@npm:^7.9.6":
   version: 7.23.6
   resolution: "@babel/parser@npm:7.23.6"
   bin:
@@ -1436,7 +1436,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@babel/types@npm:^7.0.0, @babel/types@npm:^7.20.7, @babel/types@npm:^7.21.4, @babel/types@npm:^7.22.15, @babel/types@npm:^7.22.19, @babel/types@npm:^7.22.5, @babel/types@npm:^7.23.0, @babel/types@npm:^7.23.6, @babel/types@npm:^7.4.4, @babel/types@npm:^7.6.1, @babel/types@npm:^7.8.3, @babel/types@npm:^7.9.6":
+"@babel/types@npm:^7.0.0, @babel/types@npm:^7.20.7, @babel/types@npm:^7.21.4, @babel/types@npm:^7.22.15, @babel/types@npm:^7.22.19, @babel/types@npm:^7.22.5, @babel/types@npm:^7.23.0, @babel/types@npm:^7.23.5, @babel/types@npm:^7.23.6, @babel/types@npm:^7.4.4, @babel/types@npm:^7.6.1, @babel/types@npm:^7.8.3, @babel/types@npm:^7.9.6":
   version: 7.23.6
   resolution: "@babel/types@npm:7.23.6"
   dependencies:
@@ -3351,6 +3351,22 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@rollup/pluginutils@npm:^5.0.2, @rollup/pluginutils@npm:^5.0.4, @rollup/pluginutils@npm:^5.1.0":
+  version: 5.1.0
+  resolution: "@rollup/pluginutils@npm:5.1.0"
+  dependencies:
+    "@types/estree": "npm:^1.0.0"
+    estree-walker: "npm:^2.0.2"
+    picomatch: "npm:^2.3.1"
+  peerDependencies:
+    rollup: ^1.20.0||^2.0.0||^3.0.0||^4.0.0
+  peerDependenciesMeta:
+    rollup:
+      optional: true
+  checksum: c7bed15711f942d6fdd3470fef4105b73991f99a478605e13d41888963330a6f9e32be37e6ddb13f012bc7673ff5e54f06f59fd47109436c1c513986a8a7612d
+  languageName: node
+  linkType: hard
+
 "@rollup/rollup-android-arm-eabi@npm:4.8.0":
   version: 4.8.0
   resolution: "@rollup/rollup-android-arm-eabi@npm:4.8.0"
@@ -4591,6 +4607,13 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@types/estree@npm:^1.0.0":
+  version: 1.0.5
+  resolution: "@types/estree@npm:1.0.5"
+  checksum: b3b0e334288ddb407c7b3357ca67dbee75ee22db242ca7c56fe27db4e1a31989cb8af48a84dd401deb787fe10cc6b2ab1ee82dc4783be87ededbe3d53c79c70d
+  languageName: node
+  linkType: hard
+
 "@types/express-serve-static-core@npm:^4.17.33":
   version: 4.17.41
   resolution: "@types/express-serve-static-core@npm:4.17.41"
@@ -5202,6 +5225,25 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@vue-macros/common@npm:^1.8.0":
+  version: 1.10.0
+  resolution: "@vue-macros/common@npm:1.10.0"
+  dependencies:
+    "@babel/types": "npm:^7.23.5"
+    "@rollup/pluginutils": "npm:^5.1.0"
+    "@vue/compiler-sfc": "npm:^3.3.10"
+    ast-kit: "npm:^0.11.3"
+    local-pkg: "npm:^0.5.0"
+    magic-string-ast: "npm:^0.3.0"
+  peerDependencies:
+    vue: ^2.7.0 || ^3.2.25
+  peerDependenciesMeta:
+    vue:
+      optional: true
+  checksum: 833ff79ada6ee7b9c89d6bbdd100cccbf48f180e9b51d3962ef1df38457545149b48f00587b5d35e0565851da9f6b77e326103801e794eb6c516bd1d0e6583fa
+  languageName: node
+  linkType: hard
+
 "@vue/babel-helper-vue-transform-on@npm:^1.1.5":
   version: 1.1.5
   resolution: "@vue/babel-helper-vue-transform-on@npm:1.1.5"
@@ -5250,7 +5292,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@vue/compiler-sfc@npm:3.3.11, @vue/compiler-sfc@npm:^3.2.0":
+"@vue/compiler-sfc@npm:3.3.11, @vue/compiler-sfc@npm:^3.2.0, @vue/compiler-sfc@npm:^3.3.10":
   version: 3.3.11
   resolution: "@vue/compiler-sfc@npm:3.3.11"
   dependencies:
@@ -5705,12 +5747,44 @@ __metadata:
   languageName: node
   linkType: hard
 
+"ast-kit@npm:^0.11.3":
+  version: 0.11.3
+  resolution: "ast-kit@npm:0.11.3"
+  dependencies:
+    "@babel/parser": "npm:^7.23.5"
+    "@rollup/pluginutils": "npm:^5.1.0"
+    pathe: "npm:^1.1.1"
+  checksum: f45a53ed9149aa2932e963b6c9121d606f5aabf4f1c99d1356b20a5b4ac9ae79373b59fd7f3a3123c39e27a12b353643e6f3f47d1e1fa577ee777539bb74d149
+  languageName: node
+  linkType: hard
+
+"ast-kit@npm:^0.9.4":
+  version: 0.9.5
+  resolution: "ast-kit@npm:0.9.5"
+  dependencies:
+    "@babel/parser": "npm:^7.22.7"
+    "@rollup/pluginutils": "npm:^5.0.2"
+    pathe: "npm:^1.1.1"
+  checksum: 4ea86de71319db90f7f58f6882714693cbb94a8e8a1ad07c6088ff93899f0ae9196edbb693dc99db58fdde83e834f49b3ff75373c499e23b1c2af2122e030182
+  languageName: node
+  linkType: hard
+
 "ast-types@npm:^0.16.1":
   version: 0.16.1
   resolution: "ast-types@npm:0.16.1"
   dependencies:
     tslib: "npm:^2.0.1"
   checksum: abcc49e42eb921a7ebc013d5bec1154651fb6dbc3f497541d488859e681256901b2990b954d530ba0da4d0851271d484f7057d5eff5e07cb73e8b10909f711bf
+  languageName: node
+  linkType: hard
+
+"ast-walker-scope@npm:^0.5.0":
+  version: 0.5.0
+  resolution: "ast-walker-scope@npm:0.5.0"
+  dependencies:
+    "@babel/parser": "npm:^7.22.7"
+    ast-kit: "npm:^0.9.4"
+  checksum: 2730cbb50e3e5ba468317d8db9a3038a77a27f99b26559c6e05f59726fad7409956f930773e9ab7b84d00d9f7d6669d54d04311319bace216dc1e0f4db8fcb8f
   languageName: node
   linkType: hard
 
@@ -6286,6 +6360,7 @@ __metadata:
     semver: "npm:^7.5.4"
     storybook: "npm:^7.6.4"
     typescript: "npm:~5.2.0"
+    unplugin-vue-router: "npm:^0.7.0"
     vite: "npm:^5.0.5"
     vitest: "npm:^1.0.1"
     vue: "npm:^3.3.10"
@@ -7539,7 +7614,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"fast-glob@npm:^3.2.9, fast-glob@npm:^3.3.0":
+"fast-glob@npm:^3.2.9, fast-glob@npm:^3.3.0, fast-glob@npm:^3.3.1":
   version: 3.3.2
   resolution: "fast-glob@npm:3.3.2"
   dependencies:
@@ -9280,6 +9355,13 @@ __metadata:
   languageName: node
   linkType: hard
 
+"local-pkg@npm:^0.4.3":
+  version: 0.4.3
+  resolution: "local-pkg@npm:0.4.3"
+  checksum: 361c77d7873a629f09c9e86128926227171ee0fe3435d282fb80303ff255bb4d3c053b555d47e953b4f41d2561f2a7bc0e53e9ca5c9bc9607226a77c91ea4994
+  languageName: node
+  linkType: hard
+
 "local-pkg@npm:^0.5.0":
   version: 0.5.0
   resolution: "local-pkg@npm:0.5.0"
@@ -9424,7 +9506,16 @@ __metadata:
   languageName: node
   linkType: hard
 
-"magic-string@npm:^0.30.0, magic-string@npm:^0.30.5":
+"magic-string-ast@npm:^0.3.0":
+  version: 0.3.0
+  resolution: "magic-string-ast@npm:0.3.0"
+  dependencies:
+    magic-string: "npm:^0.30.2"
+  checksum: f9aa9e372ecd2ccbe1178eb9a2d206307291c4b93cef0aa40802aa1036d02f0e878d975841579e0345cdf01466112c13bb8e4502f856e2463f5b5ea87d5bd1d7
+  languageName: node
+  linkType: hard
+
+"magic-string@npm:^0.30.0, magic-string@npm:^0.30.2, magic-string@npm:^0.30.5":
   version: 0.30.5
   resolution: "magic-string@npm:0.30.5"
   dependencies:
@@ -11490,6 +11581,13 @@ __metadata:
   languageName: node
   linkType: hard
 
+"scule@npm:^1.0.0":
+  version: 1.2.0
+  resolution: "scule@npm:1.2.0"
+  checksum: 4cbf1e9dd2f6472aba926d63333191cf79b56725c33cd0531f80cee6d10a545f7eec54bbedc2877ff83adaf4eedd258dc3f02d926e809ed6c39c8a131f1a61e0
+  languageName: node
+  linkType: hard
+
 "semver@npm:2 || 3 || 4 || 5, semver@npm:^5.6.0":
   version: 5.7.2
   resolution: "semver@npm:5.7.2"
@@ -12497,7 +12595,33 @@ __metadata:
   languageName: node
   linkType: hard
 
-"unplugin@npm:^1.3.1":
+"unplugin-vue-router@npm:^0.7.0":
+  version: 0.7.0
+  resolution: "unplugin-vue-router@npm:0.7.0"
+  dependencies:
+    "@babel/types": "npm:^7.22.19"
+    "@rollup/pluginutils": "npm:^5.0.4"
+    "@vue-macros/common": "npm:^1.8.0"
+    ast-walker-scope: "npm:^0.5.0"
+    chokidar: "npm:^3.5.3"
+    fast-glob: "npm:^3.3.1"
+    json5: "npm:^2.2.3"
+    local-pkg: "npm:^0.4.3"
+    mlly: "npm:^1.4.2"
+    pathe: "npm:^1.1.1"
+    scule: "npm:^1.0.0"
+    unplugin: "npm:^1.5.0"
+    yaml: "npm:^2.3.2"
+  peerDependencies:
+    vue-router: ^4.1.0
+  peerDependenciesMeta:
+    vue-router:
+      optional: true
+  checksum: c6ad27c2885a2048ff261d4ea71d4b5e61f332d7c261bcea9c55f77f9a4b19c95c865a8e48d5e2d0079e00cad8352fbbd15003246e16c50ac47cdce2d3302601
+  languageName: node
+  linkType: hard
+
+"unplugin@npm:^1.3.1, unplugin@npm:^1.5.0":
   version: 1.5.1
   resolution: "unplugin@npm:1.5.1"
   dependencies:
@@ -13212,6 +13336,13 @@ __metadata:
   version: 4.0.0
   resolution: "yallist@npm:4.0.0"
   checksum: 2286b5e8dbfe22204ab66e2ef5cc9bbb1e55dfc873bbe0d568aa943eb255d131890dfd5bf243637273d31119b870f49c18fcde2c6ffbb7a7a092b870dc90625a
+  languageName: node
+  linkType: hard
+
+"yaml@npm:^2.3.2":
+  version: 2.3.4
+  resolution: "yaml@npm:2.3.4"
+  checksum: cf03b68f8fef5e8516b0f0b54edaf2459f1648317fc6210391cf606d247e678b449382f4bd01f77392538429e306c7cba8ff46ff6b37cac4de9a76aff33bd9e1
   languageName: node
   linkType: hard
 
