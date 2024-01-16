@@ -1,10 +1,10 @@
 <script setup lang="ts">
 import { ref } from 'vue'
 import { useRouter } from 'vue-router'
-import { useAuthState } from '@/stores/mainStore'
-import { auth } from '@/models/fireFunctions'
+import { fireFunc } from '@/models/fireFunctions'
 import LoginUser from '@/components/atoms/LoginDialog.vue'
 import RegisterDialog from './components/atoms/RegisterDialog.vue'
+import { useAuthState } from '@/stores/mainStore'
 
 const authState = useAuthState()
 const router = useRouter()
@@ -16,18 +16,9 @@ function toggleLeftDrawer() {
 }
 // const isLoggedIn = ref(true)
 // runs after firebase is initialized
-auth.onAuthStateChanged(function (user) {
-  if (user) {
-    //    isLoggedIn.value = true // if we have a user
-    authState.setLoginState(true)
-  } else {
-    //    isLoggedIn.value = false // if we do not
-    authState.setLoginState(false)
-  }
-})
 
 const logOut = () => {
-  auth.signOut()
+  fireFunc.logOut()
   router.push('/')
 }
 
@@ -79,7 +70,7 @@ const registDialog = ref(false)
         </q-toolbar>
 
         <q-tabs align="left" class="bg-teal-3 text-black">
-          <q-route-tab to="/" label="Page One" />
+          <q-route-tab to="/start" label="Page One" />
           <q-route-tab to="/setUserInfo" label="user info" />
           <q-route-tab to="/setProjectInfo" label="Project info" />
           <q-route-tab to="/myTest01" label="myTest01" />

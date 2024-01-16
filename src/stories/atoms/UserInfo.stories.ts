@@ -1,7 +1,7 @@
 import type { Meta, StoryObj, ArgTypes } from '@storybook/vue3'
 import { action } from '@storybook/addon-actions'
 import userInfo from '@/components/atoms/UserInfo.vue'
-// import * as myVal from '@/models/MyInterface';
+import * as myVal from '@/models/MyInterface'
 // import FakerFunc from '@/models/fakerFunc';
 // Define the ArgTypes for the storybook without using the generic
 const myArgTypes: ArgTypes = {
@@ -15,6 +15,8 @@ const myArgTypes: ArgTypes = {
   }
   // ... define other arg types as necessary ...
 }
+
+const appUser = myVal.appUserDefault
 
 const meta: Meta<typeof userInfo> = {
   title: 'app/atoms/userInfo',
@@ -36,5 +38,7 @@ export const First: Story = {
       function1: action('update:ProjectInfo')
     }
   }),
-  args: {}
+  args: {
+    appUser
+  }
 }

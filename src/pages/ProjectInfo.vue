@@ -1,7 +1,7 @@
 <script setup lang="ts">
-import * as myVal from '@/models/MyInterface'
+import * as myVal from '../models/MyInterface'
 import { ref, computed, defineProps, type PropType } from 'vue'
-import setProjectInfo from '@/components/molecules/setProjectInfo.vue'
+import setProjectInfo from '../components/molecules/setProjectInfo.vue'
 
 const emits = defineEmits<{
   (e: 'update:projectInfo', value: myVal.ProjectInfo): void

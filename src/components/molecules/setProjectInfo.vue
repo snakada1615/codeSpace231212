@@ -1,7 +1,7 @@
 <script setup lang="ts">
-import * as myVal from 'src/models/MyInterface'
+import * as myVal from '@/models/MyInterface'
 import { computed, type PropType } from 'vue'
-import DriSelect from '../atoms/DriSelect.vue'
+import DriSelect from '@/components/atoms/DriSelect.vue'
 
 const props = defineProps({
   projectInfo: {

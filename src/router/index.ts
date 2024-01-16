@@ -1,106 +1,38 @@
 // import { createRouter, createWebHistory } from 'vue-router'
 import { createRouter, createWebHistory } from 'vue-router/auto'
-// import type { RouteLocationNormalized, NavigationGuardNext } from 'vue-router'
-// import { isAuthenticated } from './auth' // Your auth module with TypeScript types
+import { type NavigationGuardNext, type RouteLocationNormalized } from 'vue-router'
 import { fireFunc } from '@/models/fireFunctions'
 
 // Guard function
-import HomeView from '../views/HomeView.vue'
-import ErrorPage from '../components/atoms/ErrorPage.vue'
-import feedTestVue from '@/views/feedTest.vue'
-import myTest01Vue from '../views/myTest01.vue'
-import setProjectInfoVue from '@/views/ProjectInfo.vue'
-import setUserInfoVue from '@/views/setUserInfo.vue'
-
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
-  routes: [
-    {
-      path: '/',
-      name: 'home',
-      component: HomeView
-    },
-    {
-      path: '/test',
-      name: 'test',
-      component: () => import('../views/myTest01.vue')
-    },
-    {
-      path: '/about',
-      name: 'about',
-      // route level code-splitting
-      // this generates a separate chunk (About.[hash].js) for this route
-      // which is lazy-loaded when the route is visited.
-      component: () => import('../views/AboutView.vue')
-    },
-    {
-      path: '/:pathMatch(.*)*',
-      name: 'ErrorPage',
-      component: ErrorPage
-    },
-    {
-      path: '/errorPage',
-      name: 'ErrorPage',
-      component: ErrorPage
-    },
-    {
-      path: '/feedTest',
-      name: 'feedTestVue',
-      component: feedTestVue,
-      meta: { requiresAuth: true }
-    },
-    {
-      path: '/myTest01',
-      name: 'myTest01Vue',
-      component: myTest01Vue
-    },
-    {
-      path: '/setProjectInfo',
-      name: 'setProjectInfo',
-      component: setProjectInfoVue,
-      meta: { requiresAuth: true }
-    },
-    {
-      path: '/setUserInfo',
-      name: 'setUserInfo',
-      component: setUserInfoVue,
-      meta: { requiresAuth: true }
-    }
-  ]
+  routes: []
 })
-
-// Guard function
-// async function checkAuth(
-//   to: RouteLocationNormalized,
-//   from: RouteLocationNormalized,
-//   next: NavigationGuardNext
-// ) {
-//   const currentUser = await fireFunc.getCurrentUser()
-//   console.log(currentUser)
-//   if (to.meta.requiresAuth && !currentUser) {
-//     alert('you have to login first to use this app')
-//     next({ name: 'home' })
-//   } else {
-//     next()
-//   }
-// }
 
 // Global beforeEach hook for navigation guard
-router.beforeEach(async (to, from, next) => {
-  try {
-    // await checkAuth(to, from, next)
-    const currentUser = await fireFunc.getCurrentUser()
-    if (to.meta.requiresAuth && !currentUser) {
-      alert('you have to login first to use this app')
-      next({ name: 'home' })
-    } else {
-      next()
+router.beforeEach(
+  async (to: RouteLocationNormalized, from: RouteLocationNormalized, next: NavigationGuardNext) => {
+    try {
+      // Assume fireFunc.getCurrentUser() is an async function returning a Promise<boolean>
+      const isLoggedIn = await fireFunc.getCurrentUser()
+      const allowedPath = ['index', 'test', 'login', 'ErrorPage', 'start']
+      console.log(to)
+
+      // Check if the current path is allowed
+      const allowed = allowedPath.some((path) => to.path.toLowerCase().includes(path.toLowerCase()))
+
+      // Redirect to home if the user is not logged in and trying to access a restricted path
+      if (!allowed && !isLoggedIn) {
+        alert('You have to login first to use this app')
+        next({ path: '/index' })
+      } else {
+        next() // Proceed if the path is allowed or if the user is logged in
+      }
+    } catch (error) {
+      console.error(error)
+      next(false) // Optionally redirect to a global error page
     }
-    // Set page title or perform other global checks here.
-  } catch (error) {
-    console.error(error)
-    next(false) // Optionally redirect to a global error page
   }
-})
+)
 
 export default router

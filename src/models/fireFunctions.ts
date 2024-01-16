@@ -44,4 +44,8 @@ export class fireFunc {
       }, reject)
     })
   }
+
+  static logOut() {
+    auth.signOut()
+  }
 }

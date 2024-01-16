@@ -3,6 +3,9 @@ import './assets/main.css'
 import { createApp } from 'vue'
 import { createPinia } from 'pinia'
 import { Quasar } from 'quasar'
+import { auth } from '@/models/fireFunctions'
+import { type User } from 'firebase/auth'
+import { useAuthState } from '@/stores/mainStore'
 
 // Import icon libraries
 import '@quasar/extras/material-icons/material-icons.css'
@@ -23,6 +26,17 @@ app.use(createPinia())
 app.use(router)
 app.use(Quasar, {
   plugins: {} // import Quasar plugins and add here
+})
+
+const authState = useAuthState()
+auth.onAuthStateChanged((user: User | null) => {
+  if (user) {
+    //    isLoggedIn.value = true // if we have a user
+    authState.setLoginState(true)
+  } else {
+    //    isLoggedIn.value = false // if we do not
+    authState.setLoginState(false)
+  }
 })
 
 // Global error handler
