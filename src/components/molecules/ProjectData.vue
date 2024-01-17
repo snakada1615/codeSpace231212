@@ -122,6 +122,6 @@ const numberRules = computed(() => {
         save
       </div>
     </div>
-    <DriSelect v-model:family-members="familyMembersComputed" />
+    <DriSelect :family-members="familyMembersComputed" />
   </q-card>
 </template>

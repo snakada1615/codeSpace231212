@@ -1,6 +1,6 @@
 import type { Meta, StoryObj, ArgTypes } from '@storybook/vue3'
 import { action } from '@storybook/addon-actions'
-import setProjectInfo from '@/components/molecules/setProjectInfo.vue'
+import projectData from '@/components/molecules/ProjectData.vue'
 import FakerFunc from '@/models/fakerFunc'
 import { faker } from '@faker-js/faker'
 import * as myVal from '@/models/MyInterface'
@@ -27,37 +27,37 @@ const myArgTypes: ArgTypes = {
   // ... define other arg types as necessary ...
 }
 
-const projectInfo = myVal.ProjectInfoDefault
+const projectInfoDat = myVal.ProjectInfoDefault
 
-const meta: Meta<typeof setProjectInfo> = {
-  title: 'app/molecules/setProjectInfo',
-  component: setProjectInfo,
+const meta: Meta<typeof projectData> = {
+  title: 'app/molecules/ProjectData',
+  component: projectData,
   argTypes: myArgTypes
 }
 export default meta
 
-type Story = StoryObj<typeof setProjectInfo>
+type Story = StoryObj<typeof projectData>
 
 export const First: Story = {
   render: (args) => ({
-    components: { setProjectInfo },
+    components: { projectData },
     setup() {
       return { args }
     },
     template:
-      '<setProjectInfo v-bind="args" @update:projectInfo="function1" @saveProjectInfo="function2" />',
+      '<projectData v-bind="args" @update:projectInfo="function1" @saveProjectInfo="function2" />',
     methods: {
       function1: action('update:projectInfo'),
       function2: action('saveprojectInfo')
     }
   }),
   args: {
-    projectInfo
+    projectInfo: projectInfoDat
   }
 }
 
 const ProjectInfo2 = {
-  ...projectInfo,
+  ...projectInfoDat,
   location: 'okayama',
   projectName: 'myProject1',
   familyMembers: FakerFunc.createFamilyMembers()
@@ -65,12 +65,12 @@ const ProjectInfo2 = {
 
 export const Second: Story = {
   render: (args) => ({
-    components: { setProjectInfo },
+    components: { projectData },
     setup() {
       return { args }
     },
     template:
-      '<setProjectInfo v-bind="args" @update:projectInfo="function1" @saveProjectInfo="function2" />',
+      '<projectData v-bind="args" @update:projectInfo="function1" @saveProjectInfo="function2" />',
     methods: {
       function1: action('update:projectInfo'),
       function2: action('saveprojectInfo')
