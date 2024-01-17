@@ -2,7 +2,7 @@
   <div class="errorPage">
     <div class="text-cyan-4" style="font-size: 2em">
       <q-icon name="home" />
-      <router-link to="/start">Go back home</router-link>
+      <router-link to="/">Go back home</router-link>
     </div>
     <div class="row">
       <div class="col-6">

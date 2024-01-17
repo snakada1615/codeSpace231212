@@ -47,7 +47,7 @@ app.config.errorHandler = (err, instance, info) => {
   console.log('Error info:', info)
 
   // Add code for UI notifications, reporting or other error handling logic
-  router.push({ name: 'ErrorPage', state: { myError: JSON.stringify((err as Error).message) } })
+  router.push({ path: '/ErrorPage', state: { myError: JSON.stringify((err as Error).message) } })
 }
 
 app.mount('#app')

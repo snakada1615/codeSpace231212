@@ -77,12 +77,15 @@ const nutrientSum = computed(() => {
     Va: { label: 'Vit-A', index: 2 },
     Fe: { label: 'Iron', index: 3 }
   }
+  type NutrientKey = 'En' | 'Pr' | 'Va' | 'Fe'
+
+  // Assuming `props.familyMembers` is reactive this will trigger the computed property when changed
   const res = props.familyMembers.reduce(
     (sum, current) => {
       sum.En += current.En * current.count
       sum.Pr += current.Pr * current.count
       sum.Va += current.Va * current.count
-      sum.Pr += current.Pr * current.count
+      sum.Fe += current.Fe * current.count // Fixed here, was sum.Pr before
       return sum
     },
     {
@@ -92,17 +95,14 @@ const nutrientSum = computed(() => {
       Fe: 0
     }
   )
+
   return Object.entries(res).map(([key, val]) => {
-    // Object[key]でアクセスするための操作
-    if (Object.prototype.hasOwnProperty.call(res, key)) {
-      const keyTyped = key as keyof typeof res
-      const val2 = res[keyTyped]
-      const digiIndexVal = digitIndex[keyTyped]
-      return {
-        key: key,
-        value: myFunc.setDigit(val2, digiIndexVal.index),
-        label: digiIndexVal.label
-      }
+    // Since we know `digitIndex` contains all keys from `res`, we can access directly
+    const digiIndexVal = digitIndex[key as NutrientKey]
+    return {
+      key: key,
+      value: myFunc.setDigit(val, digiIndexVal.index),
+      label: digiIndexVal.label
     }
   })
 })
@@ -142,6 +142,8 @@ const nutrientSum = computed(() => {
     </q-table>
 
     <!-- 家族合計での栄養必要量 -->
+    <q-card class="q-my-sm">{{ props.familyMembers }}</q-card>
+    <q-card>{{ nutrientSum }}</q-card>
     <q-table
       class="my-sticky-header-table"
       :table-header-style="{ backgroundColor: 'DarkSeaGreen' }"

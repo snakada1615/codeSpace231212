@@ -33,6 +33,9 @@ export const useProjectData = defineStore('prjData', {
     },
     setAppUser(val: myVal.appUser) {
       this.appUser = val
+    },
+    setProjectInfo(val: myVal.ProjectInfo) {
+      this.projectInfo = val
     }
   }
 })

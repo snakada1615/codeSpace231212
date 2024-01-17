@@ -10,6 +10,7 @@ const appUserStore = computed({
     return projectData.appUser
   },
   set(val) {
+    console.log('set')
     projectData.setAppUser(val)
   }
 })
