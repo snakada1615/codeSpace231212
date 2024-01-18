@@ -15,6 +15,5 @@ const projectInfoStore = computed({
 })
 </script>
 <template>
-  {{ myProjectData.projectInfo }}
   <projectData v-model:projectInfo="projectInfoStore" />
 </template>

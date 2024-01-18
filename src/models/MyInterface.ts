@@ -47,12 +47,15 @@ export const appUserDefault = {
 }
 
 export interface ProjectInfo {
+  userId: string
   projectName: string
   projectId: string
   locationId: string
   location: string
-  familyMembers: FamilyMembers
+  targetPopulation: FamilyMembers
 }
+
+export interface ProjectInfos extends Array<ProjectInfo> {}
 
 export const sampleFamilyMemberCategory = [
   'child under 6 month',
@@ -102,26 +105,30 @@ const familyMembersDefault = sampleFamilyMemberCategory.map((item, index) => {
   }
 })
 
-export interface FamilyAll {
+export interface House {
+  projectId: string
   locationId: string
   familyId: string
   familyName: string
   familyMembers: FamilyMembers
 }
 
-export const familyAllDefault = {
+export interface Houses extends Array<House> {}
+
+export const houseDefault = {
+  projectId: '',
   locationId: '',
   familyId: '',
   familyName: '',
   familyMembers: familyMembersDefault
 }
 
-export const ProjectInfoDefault = {
+export const projectInfoDefault = {
   projectName: '',
   projectId: '',
   locationId: '',
   location: '',
-  familyMembers: familyMembersDefault
+  targetPopulation: familyMembersDefault
 }
 
 export interface FctItem {
@@ -243,8 +250,6 @@ export const sampleFood = [
   { keyFct: '031', FoodGroupId: '9', FoodGroup: 'oil/fat', Name: 'Maize oil' }
 ]
 
-export const sampleDri = [{}]
-
 export interface nutrientLabel {
   label: string
   value: keyof FctItem
@@ -259,19 +264,25 @@ export const nutrientLabels: nutrientLabel[] = [
 ]
 
 export interface MenuItem extends FctRowItem {
-  IdMenuItem: string
+  menuItemId: string
   KeyFamily: string
   Date: Date
 }
 
 export const menuItemDefault = {
   ...fctRowItemDefault,
-  IdMenuItem: '',
+  menuItemId: '',
   KeyFamily: '',
   Date: new Date()
 }
 
-export interface MenuItems extends Array<MenuItem> {}
+export interface Menu {
+  projectId: string
+  userId: string
+  items: Array<MenuItem>
+}
+
+export interface Menues extends Array<Menu> {}
 
 export const commonMenus: string[] = [
   '1st meal',
@@ -282,3 +293,12 @@ export const commonMenus: string[] = [
   '2nd snack',
   '3rd snack'
 ]
+
+export type AllProjectData = appUser | Houses | Menues
+
+export enum projectDataType {
+  'appUser',
+  'Projects',
+  'Houses',
+  'Menus'
+}

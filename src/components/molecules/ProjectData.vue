@@ -17,7 +17,7 @@ const emits = defineEmits<{
 
 const familyMembersComputed = computed({
   get() {
-    return props.projectInfo.familyMembers
+    return props.projectInfo.targetPopulation
   },
   set(val) {
     const res = {
@@ -29,7 +29,7 @@ const familyMembersComputed = computed({
 })
 
 const totalFamilySize = computed(() => {
-  return props.projectInfo.familyMembers.reduce((sum, current) => {
+  return props.projectInfo.targetPopulation.reduce((sum, current) => {
     sum += current.count
     return sum
   }, 0)

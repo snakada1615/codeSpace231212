@@ -27,7 +27,7 @@ const myArgTypes: ArgTypes = {
   // ... define other arg types as necessary ...
 }
 
-const projectInfoDat = myVal.ProjectInfoDefault
+const projectInfoDat = myVal.projectInfoDefault
 
 const meta: Meta<typeof projectData> = {
   title: 'app/molecules/ProjectData',

@@ -6,6 +6,7 @@ import { auth } from '@/models/fireFunctions'
 import { onAuthStateChanged, signInWithEmailAndPassword, signOut } from 'firebase/auth'
 import type { User } from 'firebase/auth'
 import * as myVal from '@/models/MyInterface'
+import { fireFunc } from '@/models/fireFunctions'
 
 export const useAuthState = defineStore('auth', {
   state: () => ({
@@ -21,21 +22,68 @@ export const useAuthState = defineStore('auth', {
 export const useProjectData = defineStore('prjData', {
   state: () => ({
     appUser: myVal.appUserDefault,
-    projectInfo: myVal.ProjectInfoDefault,
+    projectInfos: [myVal.projectInfoDefault],
     fct: [myVal.fctItemDefault],
     dri: [myVal.driItemDefault],
-    familyAll: myVal.familyAllDefault,
-    menuItems: [myVal.menuItemDefault]
+    menues: [{ items: [myVal.menuItemDefault], projectId: myVal.projectInfoDefault.projectId }],
+    houses: [myVal.houseDefault]
   }),
   actions: {
     setUserId(val: string) {
       this.appUser.userId = val
     },
+    setFct(val: myVal.FctItems) {
+      this.fct = val
+    },
+    setDri(val: myVal.DriItems) {
+      this.dri = val
+    },
     setAppUser(val: myVal.appUser) {
       this.appUser = val
     },
-    setProjectInfo(val: myVal.ProjectInfo) {
-      this.projectInfo = val
+    setProjectInfos(val: myVal.ProjectInfos) {
+      this.projectInfos = val
+    },
+    setHouses(val: myVal.Houses) {
+      this.houses = val
+    },
+    setMenues(val: myVal.Menues) {
+      this.menues = val
+    },
+
+    async fireGetProject(userId: string) {
+      const res = await fireFunc.fireGetQueryProject('projectInfos', 'userId', userId)
+      if (res) {
+        this.setProjectInfos(res)
+      }
+    },
+    async fireGetFct(userId: string) {
+      const res = await fireFunc.fireGetQueryFct('fct', 'userId', userId)
+      if (res) {
+        this.setFct(res)
+      } else {
+        throw new Error('no FCT data in firebase @mainStore/fireGetFct')
+      }
+    },
+    async fireGetDri(userId: string) {
+      const res = await fireFunc.fireGetQueryDri('dci', 'userId', userId)
+      if (res) {
+        this.setDri(res)
+      } else {
+        throw new Error('no DRI data in firebase @mainStore/fireGetDri')
+      }
+    },
+    async fireGetHouse(userId: string) {
+      const res = await fireFunc.fireGetQueryHouses('dci', 'userId', userId)
+      if (res) {
+        this.setHouses(res)
+      }
+    },
+    async fireGetMenu(userId: string) {
+      const res = await fireFunc.fireGetQueryMenues('dci', 'userId', userId)
+      if (res) {
+        this.setMenues(res)
+      }
     }
   }
 })

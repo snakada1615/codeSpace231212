@@ -15,8 +15,8 @@ const props = defineProps({
     required: true
   },
 
-  menuItems: {
-    type: Object as PropType<myVal.MenuItems>,
+  menu: {
+    type: Object as PropType<myVal.Menu>,
     required: true
   }
 })
@@ -26,8 +26,8 @@ const emits = defineEmits<{
   (e: 'addMenuItem', value: myVal.MenuItem): void
 }>()
 
-const myMenu = computed<myVal.MenuItems>(() => {
-  return props.menuItems
+const myMenu = computed<myVal.Menu>(() => {
+  return props.menu
 })
 
 const fctFavoriteListComp = computed({
@@ -57,6 +57,6 @@ const addMenuItem = (val: myVal.FctRowItem) => {
       :common-menus="myVal.commonMenus"
       @new-fct-row-item="addMenuItem"
     />
-    <menuTable :menuItems="myMenu" />
+    <menuTable :menu="myMenu" />
   </q-card>
 </template>

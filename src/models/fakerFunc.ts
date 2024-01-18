@@ -82,8 +82,9 @@ export default class FakerFunc {
     })
   }
 
-  static createFamilyAll(): myVal.FamilyAll {
+  static createHouse(): myVal.House {
     return {
+      projectId: faker.string.uuid(),
       locationId: faker.string.uuid(),
       familyId: faker.string.uuid(),
       familyName: faker.person.firstName(),
@@ -96,7 +97,7 @@ export default class FakerFunc {
     const menu = faker.helpers.arrayElement(myVal.commonMenus)
     return {
       ...food,
-      IdMenuItem: faker.string.uuid(),
+      menuItemId: faker.string.uuid(),
       KeyFamily: faker.person.firstName(),
       Date: faker.date.past(),
       MenuName: menu,
@@ -106,7 +107,7 @@ export default class FakerFunc {
     }
   }
 
-  static createMenuItems(): myVal.MenuItems {
+  static createMenu(): myVal.Menu {
     return [...Array(10)].map(() => {
       return this.createMenuItem()
     })

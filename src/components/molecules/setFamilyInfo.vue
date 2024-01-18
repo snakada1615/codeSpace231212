@@ -9,14 +9,14 @@ const props = defineProps({
     default: ''
   },
   familyAll: {
-    type: Object as PropType<myVal.FamilyAll>,
+    type: Object as PropType<myVal.House>,
     required: true
   }
 })
 
 const emits = defineEmits<{
-  (e: 'update:familyAll', value: myVal.FamilyAll): void
-  (e: 'saveFamilyAll', value: myVal.FamilyAll): void
+  (e: 'update:familyAll', value: myVal.House): void
+  (e: 'saveFamilyAll', value: myVal.House): void
 }>()
 
 const familyMembersComputed = computed({

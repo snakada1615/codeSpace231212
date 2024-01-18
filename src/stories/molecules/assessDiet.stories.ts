@@ -43,7 +43,7 @@ const myFctFavoriteList: myVal.FctStars = myFct.map((item) => {
     Star: faker.datatype.boolean()
   }
 })
-const myMenuItems: myVal.MenuItems = FakerFunc.createMenuItems()
+const myMenu: myVal.Menu = FakerFunc.createMenu()
 
 export const Primary: Story = {
   render: (args) => ({
@@ -61,6 +61,6 @@ export const Primary: Story = {
   args: {
     fct: myFct,
     fctFavoriteList: myFctFavoriteList,
-    menuItems: myMenuItems
+    menu: myMenu
   }
 }

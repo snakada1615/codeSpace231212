@@ -4,8 +4,8 @@ import { type ComputedRef, ref, computed, type PropType } from 'vue'
 import type { QTableProps } from 'quasar'
 
 const props = defineProps({
-  menuItems: {
-    type: Object as PropType<myVal.MenuItems>,
+  menu: {
+    type: Object as PropType<myVal.Menu>,
     required: true
   }
 })
@@ -70,8 +70,8 @@ const columnsMenuItem: QTableProps['columns'] = [
   }
 ]
 
-const rowsMenuItem: ComputedRef<myVal.MenuItems> = computed(() => {
-  return props.menuItems
+const rowsMenuItem: ComputedRef<myVal.Menu> = computed(() => {
+  return props.menu
 })
 </script>
 

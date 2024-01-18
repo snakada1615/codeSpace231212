@@ -3,7 +3,7 @@ import menuTableVue from '@/components/atoms/menuTable.vue'
 import * as myVal from '@/models/MyInterface'
 import FakerFunc from '@/models/fakerFunc'
 
-const myMenu: myVal.MenuItems = FakerFunc.createMenuItems()
+const myMenu: myVal.Menu = FakerFunc.createMenu()
 
 const meta: Meta<typeof menuTableVue> = {
   title: 'app/atoms/menuTable',
@@ -22,6 +22,6 @@ export const Second: Story = {
     template: '<menuTableVue v-bind="args" />'
   }),
   args: {
-    menuItems: myMenu
+    menu: myMenu
   }
 }

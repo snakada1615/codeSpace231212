@@ -2,7 +2,20 @@
 // import { onBeforeUnmount } from 'vue'
 import { initializeApp } from 'firebase/app'
 import { getAuth, type User } from 'firebase/auth'
-import { getFirestore } from 'firebase/firestore'
+import { getFirestore, type FirestoreDataConverter, type WithFieldValue } from 'firebase/firestore'
+import {
+  doc,
+  collection,
+  setDoc,
+  getDoc,
+  getDocs,
+  query,
+  where,
+  QueryDocumentSnapshot,
+  type DocumentData
+} from 'firebase/firestore'
+import * as myVal from '@/models/MyInterface'
+import type { CollectionReference } from 'firebase/firestore/lite'
 
 // For Firebase JS SDK v7.20.0 and later, measurementId is optional
 const firebaseConfig = {
@@ -21,21 +34,38 @@ const app = initializeApp(firebaseConfig)
 export const auth = getAuth(app)
 export const db = getFirestore(app)
 
-export class fireFunc {
-  // static useAuthListener = () => {
-  //   const authListener = getAuth().onAuthStateChanged(function (user) {
-  //     if (!user) {
-  //       // not logged in
-  //       alert('you must be logged in to view this. redirecting to the home page')
-  //       router.push('/')
-  //     }
-  //   })
-  //   onBeforeUnmount(() => {
-  //     // clear up listener
-  //     authListener()
-  //   })
-  // }
+// 型安全にするためのconverter
+export const converter = <T>(): FirestoreDataConverter<T> => ({
+  toFirestore: (data: WithFieldValue<T>): WithFieldValue<DocumentData> => {
+    if (data === null || typeof data !== 'object') {
+      throw new Error('data to send firestore must be an object / error in toFIrestore')
+    }
+    return { ...data } as WithFieldValue<DocumentData>
+  },
+  fromFirestore: (snapshot: QueryDocumentSnapshot): T => {
+    const data = snapshot.data()
+    return data as T
+  }
+})
 
+// export const converter = <T>(): FirestoreDataConverter<T> => ({
+//   toFirestore: (data: WithFieldValue<T>): WithFieldValue<DocumentData> => {
+//     // Make sure to return an object that satisfies the WithFieldValue<DocumentData> type
+//     if (data === null || typeof data !== 'object') {
+//       throw new Error('data to send firestore must be an object / error in toFIrestore')
+//       return {}
+//     } else {
+//       return { ...data } as WithFieldValue<DocumentData>
+//     }
+//   },
+//   fromFirestore: (snapshot: QueryDocumentSnapshot): T => {
+//     const data = snapshot.data()
+//     // You might need some more logic here to properly cast to type T
+//     return data as T
+//   }
+// })
+
+export class fireFunc {
   static async getCurrentUser(): Promise<User | null> {
     return new Promise((resolve, reject) => {
       const unsubscribe = auth.onAuthStateChanged((user) => {
@@ -47,5 +77,113 @@ export class fireFunc {
 
   static logOut() {
     auth.signOut()
+  }
+
+  static async fireGet(collectionId: string, docId: string) {
+    const docRef = doc(db, collectionId, docId)
+    const snapshot = await getDoc(docRef)
+    if (snapshot.exists()) {
+      return snapshot.data()
+    } else {
+      return null
+    }
+  }
+
+  static async fireGetQuery(collectionId: string, key: string, val: string) {
+    const colRef: CollectionReference = collection(db, collectionId)
+
+    const q = query(colRef, where(key, '==', val))
+    const snapshot = await getDocs(q)
+    const res: Array<myVal.AllProjectData> = []
+    snapshot.forEach((doc) => {
+      const docData = doc.data() as myVal.AllProjectData // type assertion...
+      res.push(docData)
+    })
+    return res
+  }
+
+  static async fireSet(collectionId: string, docId: string, val: object) {
+    await setDoc(doc(db, collectionId, docId), val)
+  }
+
+  static async fireSetMerge(collectionId: string, docId: string, val: object) {
+    await setDoc(doc(db, collectionId, docId), val, { merge: true })
+  }
+
+  static async fireGetQueryTyped<T>(
+    collectionId: string,
+    key: string,
+    val: string,
+    type: new () => T
+  ) {
+    const colRef: CollectionReference = collection(db, collectionId)
+    const q = query(colRef, where(key, '==', val)).withConverter(converter<T>())
+    const snapshot = await getDocs(q)
+    const res: Array<T> = []
+    snapshot.forEach((doc) => {
+      const docData = doc.data() as T
+      res.push(docData)
+    })
+    return res
+  }
+
+  static async fireGetQueryProject(collectionId: string, key: string, val: string) {
+    const colRef: CollectionReference = collection(db, collectionId)
+    const q = query(colRef, where(key, '==', val)).withConverter(converter<myVal.ProjectInfo>())
+    const snapshot = await getDocs(q)
+    const res: Array<myVal.ProjectInfo> = []
+    snapshot.forEach((doc) => {
+      const docData = doc.data()
+      res.push(docData)
+    })
+    return res
+  }
+
+  static async fireGetQueryHouses(collectionId: string, key: string, val: string) {
+    const colRef: CollectionReference = collection(db, collectionId)
+    const q = query(colRef, where(key, '==', val)).withConverter(converter<myVal.House>())
+    const snapshot = await getDocs(q)
+    const res: Array<myVal.House> = []
+    snapshot.forEach((doc) => {
+      const docData = doc.data()
+      res.push(docData)
+    })
+    return res
+  }
+
+  static async fireGetQueryMenues(collectionId: string, key: string, val: string) {
+    const colRef: CollectionReference = collection(db, collectionId)
+    const q = query(colRef, where(key, '==', val)).withConverter(converter<myVal.Menu>())
+    const snapshot = await getDocs(q)
+    const res: Array<myVal.Menu> = []
+    snapshot.forEach((doc) => {
+      const docData = doc.data()
+      res.push(docData)
+    })
+    return res
+  }
+
+  static async fireGetQueryFct(collectionId: string, key: string, val: string) {
+    const colRef: CollectionReference = collection(db, collectionId)
+    const q = query(colRef, where(key, '==', val)).withConverter(converter<myVal.FctItem>())
+    const snapshot = await getDocs(q)
+    const res: Array<myVal.FctItem> = []
+    snapshot.forEach((doc) => {
+      const docData = doc.data()
+      res.push(docData)
+    })
+    return res
+  }
+
+  static async fireGetQueryDri(collectionId: string, key: string, val: string) {
+    const colRef: CollectionReference = collection(db, collectionId)
+    const q = query(colRef, where(key, '==', val)).withConverter(converter<myVal.DriItem>())
+    const snapshot = await getDocs(q)
+    const res: Array<myVal.DriItem> = []
+    snapshot.forEach((doc) => {
+      const docData = doc.data()
+      res.push(docData)
+    })
+    return res
   }
 }
