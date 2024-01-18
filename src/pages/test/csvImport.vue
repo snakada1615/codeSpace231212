@@ -14,13 +14,17 @@
       </template>
     </q-file>
     <q-table :rows="res"></q-table>
+    {{ res2 }}
   </div>
 </template>
 
 <script setup lang="ts">
-import { ref } from 'vue'
+import { ref, computed } from 'vue'
 import Papa from 'papaparse'
 let res = ref([])
+let res2 = computed(() => {
+  return Object.keys(res.value[0])
+})
 
 // Define a ref to store the selected file
 const uploadedFile = ref<File | null>(null)
