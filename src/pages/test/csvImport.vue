@@ -13,18 +13,40 @@
         <q-icon name="cloud_upload" />
       </template>
     </q-file>
-    <q-table :rows="res"></q-table>
-    {{ res[0] }}
+    <q-table :rows="csvArray"></q-table>
+    <div>{{ csvArray[0] }}</div>
+    <div>{{ refKeys }}</div>
   </div>
 </template>
 
 <script setup lang="ts">
-import { ref, computed } from 'vue'
+import { Ref, ref, computed } from 'vue'
 import Papa from 'papaparse'
-let res = ref([])
-// let res2 = computed(() => {
-//   return Object.keys(res.value[0])
-// })
+import * as myVal from '../../models/MyInterface'
+
+// Define an interface that matches the structure of a row in your CSV
+interface CsvRow {
+  [key: string]: string // This assumes all values in the CSV are strings
+}
+
+// Create a ref for an array of CsvRow objects
+let csvArray: Ref<CsvRow[]> = ref([]) // Example initialization
+
+let csvKeys = computed(() => {
+  return Object.keys(csvArray.value[0])
+})
+
+const refKeys = Object.keys(myVal.driItemDefault)
+
+const typeCheck = (refArray: string[]) => {
+  let res = true
+  refArray.forEach((item) => {
+    if (!csvKeys.value.includes(item)) {
+      res = false
+    }
+  })
+  return res
+}
 
 // Define a ref to store the selected file
 const uploadedFile = ref<File | null>(null)
@@ -46,7 +68,12 @@ const processFile = (): void => {
       complete: (results) => {
         console.log('Parsed CSV data:', results.data)
         // Handle the CSV data as needed...
-        res.value = results.data
+        csvArray.value = results.data as CsvRow[]
+        const res = typeCheck(refKeys)
+        if (!res) {
+          alert('data type is invalid for DRI type. it must include columns [ ' + refKeys + ']')
+        }
+        console.log(res)
       },
       error: (error) => {
         console.error('Error parsing CSV:', error)
