@@ -4617,6 +4617,15 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@types/papaparse@npm:^5":
+  version: 5.3.14
+  resolution: "@types/papaparse@npm:5.3.14"
+  dependencies:
+    "@types/node": "npm:*"
+  checksum: feb4d215903b67442feaa9836a6a5771e78dc6a9da24781e399c6f891622fa82245cd783ab2613c5be43e4a2d6a94da52325538e4485af258166864576ecd0d8
+  languageName: node
+  linkType: hard
+
 "@types/pretty-hrtime@npm:^1.0.0":
   version: 1.0.3
   resolution: "@types/pretty-hrtime@npm:1.0.3"
@@ -6203,6 +6212,7 @@ __metadata:
     "@tsconfig/node18": "npm:^18.2.2"
     "@types/jsdom": "npm:^21.1.6"
     "@types/node": "npm:^18.19.2"
+    "@types/papaparse": "npm:^5"
     "@types/react": "npm:^18"
     "@types/react-dom": "npm:^18"
     "@types/semver": "npm:^7"
@@ -6219,6 +6229,7 @@ __metadata:
     firebase: "npm:^10.7.1"
     jsdom: "npm:^23.0.1"
     npm-run-all2: "npm:^6.1.1"
+    papaparse: "npm:^5.4.1"
     pinia: "npm:^2.1.7"
     prettier: "npm:^3.0.3"
     quasar: "npm:^2.14.1"
@@ -10207,6 +10218,13 @@ __metadata:
   version: 0.2.9
   resolution: "pako@npm:0.2.9"
   checksum: 79c1806ebcf325b60ae599e4d7227c2e346d7b829dc20f5cf24cef07c934079dc3a61c5b3c8278a2f7a190c4a613e343ea11e5302dbe252efd11712df4b6b041
+  languageName: node
+  linkType: hard
+
+"papaparse@npm:^5.4.1":
+  version: 5.4.1
+  resolution: "papaparse@npm:5.4.1"
+  checksum: 201f37c4813453fed5bfb4c01816696b099d2db9ff1e8fb610acc4771fdde91d2a22b6094721edb0fedb21ca3c46f04263f68be4beb3e35b8c72278f0cedc7b7
   languageName: node
   linkType: hard
 

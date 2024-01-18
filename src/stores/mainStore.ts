@@ -1,10 +1,7 @@
 // import { defineStore } from 'pinia'
 
-import { ref } from 'vue'
+// import { ref } from 'vue'
 import { defineStore } from 'pinia'
-import { auth } from '@/models/fireFunctions'
-import { onAuthStateChanged, signInWithEmailAndPassword, signOut } from 'firebase/auth'
-import type { User } from 'firebase/auth'
 import * as myVal from '@/models/MyInterface'
 import { fireFunc } from '@/models/fireFunctions'
 
