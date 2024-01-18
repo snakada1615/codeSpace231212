@@ -15,15 +15,17 @@ router.beforeEach(
     try {
       // Assume fireFunc.getCurrentUser() is an async function returning a Promise<boolean>
       const isLoggedIn = await fireFunc.getCurrentUser()
-      const allowedPath = ['index', 'test', 'login', 'ErrorPage', 'start']
+      const allowedPath = ['index', 'test', 'login', 'ErrorPage']
 
       // Check if the current path is allowed
-      const allowed = allowedPath.some((path) => to.path.toLowerCase().includes(path.toLowerCase()))
+      const allowed =
+        allowedPath.some((path) => to.path.toLowerCase().includes(path.toLowerCase())) ||
+        to.path === '/'
 
       // Redirect to home if the user is not logged in and trying to access a restricted path
       if (!allowed && !isLoggedIn) {
         alert('You have to login first to use this app')
-        next({ path: '/index' })
+        next({ path: '/' })
       } else {
         next() // Proceed if the path is allowed or if the user is logged in
       }

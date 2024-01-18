@@ -59,9 +59,7 @@ const signIn = () => {
   signInWithEmailAndPassword(auth, email.value, password.value) // THIS LINE CHANGED
     .then(() => {
       errMsg.value = ''
-      router.push('/feed') // redirect to the feed
-      const uid = auth.currentUser ? auth.currentUser.uid : '' // get unique uid
-      projectData.setUserId(uid) // keep uid in pinia
+      router.push('/')
       closeDialog()
     })
     .catch((error) => {
@@ -88,8 +86,6 @@ const signInWithGoogle = (): void => {
     .then(() => {
       errMsg.value = ''
       router.push('/feedTest')
-      const uid = auth.currentUser ? auth.currentUser.uid : '' // get unique uid
-      projectData.setUserId(uid) // keep uid in pinia
       closeDialog()
     })
     .catch((error: Error) => {

@@ -58,9 +58,7 @@ const closeDialog = () => {
 const register = () => {
   createUserWithEmailAndPassword(auth, email.value, password.value) // need .value because ref()
     .then(() => {
-      router.push('/feedTest') // redirect to the feed
-      const uid = auth.currentUser ? auth.currentUser.uid : '' // get unique uid
-      projectData.setUserId(uid) // keep uid in pinia
+      router.push('/') // redirect to the feed
       closeDialog()
     })
     .catch((error: Error) => {
@@ -75,9 +73,7 @@ const signInWithGoogle = (): void => {
   signInWithPopup(auth, provider)
     .then((result: UserCredential) => {
       console.log(result)
-      router.push('/feedTest')
-      const uid = auth.currentUser ? auth.currentUser.uid : '' // get unique uid
-      projectData.setUserId(uid) // keep uid in pinia
+      router.push('/')
       closeDialog()
     })
     .catch((error: Error) => {

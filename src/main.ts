@@ -5,7 +5,7 @@ import { createPinia } from 'pinia'
 import { Quasar } from 'quasar'
 import { auth } from '@/models/fireFunctions'
 import { type User } from 'firebase/auth'
-import { useAuthState } from '@/stores/mainStore'
+import { useAuthState, useProjectData } from '@/stores/mainStore'
 
 // Import icon libraries
 import '@quasar/extras/material-icons/material-icons.css'
@@ -29,13 +29,17 @@ app.use(Quasar, {
 })
 
 const authState = useAuthState()
+const projectData = useProjectData()
+
 auth.onAuthStateChanged((user: User | null) => {
   if (user) {
     //    isLoggedIn.value = true // if we have a user
     authState.setLoginState(true)
+    projectData.setUserId(user.uid) // keep uid in pinia
   } else {
     //    isLoggedIn.value = false // if we do not
     authState.setLoginState(false)
+    projectData.setUserId('') // keep uid in pinia
   }
 })
 
