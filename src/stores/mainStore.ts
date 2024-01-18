@@ -28,6 +28,7 @@ export const useProjectData = defineStore('prjData', {
     menues: [{ items: [myVal.menuItemDefault], projectId: myVal.projectInfoDefault.projectId }],
     houses: [myVal.houseDefault]
   }),
+
   actions: {
     setUserId(val: string) {
       this.appUser.userId = val
@@ -52,61 +53,50 @@ export const useProjectData = defineStore('prjData', {
     },
 
     async fireGetProject(userId: string) {
-      const res = await fireFunc.fireGetQueryProject('projectInfos', 'userId', userId)
+      const res = await fireFunc.fireGetQueryTyped<myVal.ProjectInfo>(
+        'projectInfos',
+        'userId',
+        userId
+      )
       if (res) {
         this.setProjectInfos(res)
       }
     },
+
     async fireGetFct(userId: string) {
-      const res = await fireFunc.fireGetQueryFct('fct', 'userId', userId)
+      const res = await fireFunc.fireGetQueryTyped<myVal.FctItem>('fct', 'userId', userId)
       if (res) {
         this.setFct(res)
       } else {
         throw new Error('no FCT data in firebase @mainStore/fireGetFct')
       }
     },
+
     async fireGetDri(userId: string) {
-      const res = await fireFunc.fireGetQueryDri('dci', 'userId', userId)
+      const res = await fireFunc.fireGetQueryTyped<myVal.DriItem>('dci', 'userId', userId)
       if (res) {
         this.setDri(res)
       } else {
         throw new Error('no DRI data in firebase @mainStore/fireGetDri')
       }
     },
+
     async fireGetHouse(userId: string) {
-      const res = await fireFunc.fireGetQueryHouses('dci', 'userId', userId)
+      const res = await fireFunc.fireGetQueryTyped<myVal.House>('dci', 'userId', userId)
       if (res) {
         this.setHouses(res)
       }
     },
+
     async fireGetMenu(userId: string) {
-      const res = await fireFunc.fireGetQueryMenues('dci', 'userId', userId)
+      const res = await fireFunc.fireGetQueryTyped<myVal.Menu>('dci', 'userId', userId)
       if (res) {
         this.setMenues(res)
       }
+    },
+
+    async fireSetFct(fctId: string, val: myVal.FctItem) {
+      await fireFunc.fireSetMergeTyped<myVal.FctItem>('fct', fctId, val)
     }
   }
 })
-// You would need to create a Pinia instance and install it as a plugin in your Vue app.
-
-// export const userState = defineStore('userstate', () => {
-//   const user = ref<User | null>(null)
-
-// onAuthStateChanged(auth, (u) => {
-//   user.value = u
-// })
-
-//   async function login(email: string, password: string) {
-//     await signInWithEmailAndPassword(auth, email, password)
-//   }
-
-//   async function logout() {
-//     await signOut(auth)
-//   }
-
-//   return {
-//     user,
-//     login,
-//     logout
-//   }
-// })
