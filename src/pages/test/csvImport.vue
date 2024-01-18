@@ -14,7 +14,7 @@
       </template>
     </q-file>
     <q-table :rows="res"></q-table>
-    {{ res2 }}
+    {{ res[0] }}
   </div>
 </template>
 
@@ -22,9 +22,9 @@
 import { ref, computed } from 'vue'
 import Papa from 'papaparse'
 let res = ref([])
-let res2 = computed(() => {
-  return Object.keys(res.value[0])
-})
+// let res2 = computed(() => {
+//   return Object.keys(res.value[0])
+// })
 
 // Define a ref to store the selected file
 const uploadedFile = ref<File | null>(null)
