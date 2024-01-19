@@ -1,5 +1,6 @@
 <template>
   <div class="q-pa-md">
+    {{ projectStore.dri }}
     <div class="row">
       <div class="col">
         <q-file
@@ -26,7 +27,14 @@
         ></q-select>
       </div>
       <div class="col-3">
-        <q-btn label="save" icon="save" :disable="!isDataReady" dense class="q-mx-sm" />
+        <q-btn
+          label="save"
+          icon="save"
+          :disable="!isDataReady"
+          @click="saveCsv"
+          dense
+          class="q-mx-sm"
+        />
       </div>
     </div>
     <q-card v-if="!isFiletypeCorrect" class="text-negative q-pa-sm">
@@ -47,6 +55,8 @@ import { type Ref, ref, computed } from 'vue'
 import Papa from 'papaparse'
 import * as myVal from '../../models/MyInterface'
 import myFunc from '../../models/MyFunctions'
+import { useProjectData } from '@/stores/mainStore'
+const projectStore = useProjectData()
 
 const isFiletypeCorrect = ref(false)
 
@@ -88,8 +98,14 @@ const typeCheck = (refArray: string[]) => {
   return res
 }
 
+let driTyped: Ref<myVal.DriItems> = ref([myVal.driItemDefault])
+
 // Define a ref to store the selected file
 const uploadedFile = ref<File | null>(null)
+
+const saveCsv = (): void => {
+  projectStore.setDri(driTyped.value)
+}
 
 const processFile = (): void => {
   if (!uploadedFile.value) return
@@ -123,8 +139,8 @@ const processFile = (): void => {
 
         typedCsv.value = myFunc.convertToTypedArray<myVal.DriItem>(csvArray.value)
         console.log(typedCsv.value)
-        const temp: myVal.DriItems = typedCsv.value
-        console.log(temp)
+        driTyped = typedCsv.value
+        console.log(driTyped)
       },
       error: (error: Error) => {
         isFiletypeCorrect.value = false
