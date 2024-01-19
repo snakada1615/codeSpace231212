@@ -27,8 +27,8 @@ import {
   signInWithEmailAndPassword
 } from 'firebase/auth'
 import { useRouter } from 'vue-router' // import router
-import { useProjectData } from '@/stores/mainStore'
-const projectData = useProjectData()
+// import { useProjectData } from '@/stores/mainStore'
+// const projectData = useProjectData()
 
 const router = useRouter() // get a reference to our vue router
 const email = ref('')

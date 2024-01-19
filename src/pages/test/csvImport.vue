@@ -1,28 +1,50 @@
 <template>
   <div class="q-pa-md">
-    <q-file
-      outlined
-      v-model="uploadedFile"
-      label="Choose CSV file"
-      filled
-      dense
-      accept=".csv"
-      @update:model-value="processFile"
-    >
-      <template v-slot:prepend>
-        <q-icon name="cloud_upload" />
-      </template>
-    </q-file>
+    <div class="row">
+      <div class="col">
+        <q-file
+          outlined
+          v-model="uploadedFile"
+          label="Load CSV file"
+          filled
+          dense
+          accept=".csv"
+          @update:model-value="processFile"
+        >
+          <template v-slot:prepend>
+            <q-icon name="cloud_upload" />
+          </template>
+        </q-file>
+      </div>
+      <div class="col-3">
+        <q-select
+          :options="refKeys"
+          v-model:model-value="refKey"
+          label="fileType"
+          dense
+          filled
+        ></q-select>
+      </div>
+      <div class="col-3">
+        <q-btn label="save" icon="save" :disable="!isFiletypeCorrect" dense class="q-mx-sm" />
+      </div>
+    </div>
+    <q-card v-if="!isFiletypeCorrect" class="text-negative q-pa-sm">
+      your csv-file must contain: {{ refKey.value }}
+    </q-card>
+    <q-card v-if="isFiletypeCorrect" class="text-primary q-pa-sm">
+      now you can save this csv-file under your account
+    </q-card>
     <q-table :rows="csvArray"></q-table>
-    <div>{{ csvArray[0] }}</div>
-    <div>{{ refKeys }}</div>
   </div>
 </template>
 
 <script setup lang="ts">
-import { Ref, ref, computed } from 'vue'
+import { type Ref, ref, computed } from 'vue'
 import Papa from 'papaparse'
 import * as myVal from '../../models/MyInterface'
+
+const isFiletypeCorrect = ref(false)
 
 // Define an interface that matches the structure of a row in your CSV
 interface CsvRow {
@@ -36,7 +58,12 @@ let csvKeys = computed(() => {
   return Object.keys(csvArray.value[0])
 })
 
-const refKeys = Object.keys(myVal.driItemDefault)
+// const refKey = Object.keys(myVal.driItemDefault)
+const refKeys = [
+  { label: 'FCT', value: Object.keys(myVal.fctItemDefault) },
+  { label: 'DRI', value: Object.keys(myVal.driItemDefault) }
+]
+const refKey = ref(refKeys[0])
 
 const typeCheck = (refArray: string[]) => {
   let res = true
@@ -69,13 +96,18 @@ const processFile = (): void => {
         console.log('Parsed CSV data:', results.data)
         // Handle the CSV data as needed...
         csvArray.value = results.data as CsvRow[]
-        const res = typeCheck(refKeys)
-        if (!res) {
-          alert('data type is invalid for DRI type. it must include columns [ ' + refKeys + ']')
+        isFiletypeCorrect.value = typeCheck(refKey.value.value)
+        if (!isFiletypeCorrect.value) {
+          alert(
+            'data type is invalid for DRI type. it must include columns [ ' +
+              refKey.value.value +
+              ']'
+          )
         }
-        console.log(res)
+        console.log(isFiletypeCorrect.value)
       },
-      error: (error) => {
+      error: (error: Error) => {
+        isFiletypeCorrect.value = false
         console.error('Error parsing CSV:', error)
       }
     })

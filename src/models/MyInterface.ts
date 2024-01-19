@@ -1,5 +1,3 @@
-import { mdiCityVariantOutline } from '@quasar/extras/mdi-v4'
-
 export interface DiversityState {
   name: string
   status: boolean
@@ -124,6 +122,7 @@ export const houseDefault = {
 }
 
 export const projectInfoDefault = {
+  userId: '',
   projectName: '',
   projectId: '',
   locationId: '',

@@ -2,7 +2,7 @@ import type { Meta, StoryObj, ArgTypes } from '@storybook/vue3'
 import { action } from '@storybook/addon-actions'
 import projectData from '@/components/molecules/ProjectData.vue'
 import FakerFunc from '@/models/fakerFunc'
-import { faker } from '@faker-js/faker'
+// import { faker } from '@faker-js/faker'
 import * as myVal from '@/models/MyInterface'
 // import * as myVal from '@/models/MyInterface';
 // import FakerFunc from '@/models/fakerFunc';

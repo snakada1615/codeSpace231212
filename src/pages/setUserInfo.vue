@@ -1,6 +1,6 @@
 <script setup lang="ts">
-import * as myVal from '../models/MyInterface'
-import { computed, defineProps, defineEmits, type PropType } from 'vue'
+// import * as myVal from '../models/MyInterface'
+import { computed } from 'vue'
 import userInfo from '../components/atoms/UserInfo.vue'
 import { useProjectData } from '../stores/mainStore'
 const projectData = useProjectData()

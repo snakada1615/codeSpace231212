@@ -63,9 +63,9 @@ const nutrientLabels = myVal.nutrientLabels
 const nutrientLabel: Ref<myVal.nutrientLabel> = ref(nutrientLabels[0])
 
 // 選択された栄養素のラベル
-const targetNutrient = computed<keyof myVal.FctItem>(() => {
-  return nutrientLabel.value.value
-})
+// const targetNutrient = computed<keyof myVal.FctItem>(() => {
+//   return nutrientLabel.value.value
+// })
 
 // 対象となる作物群の一覧
 let commodityGroups = myFunc.uniq(
