@@ -98,13 +98,11 @@ const typeCheck = (refArray: string[]) => {
   return res
 }
 
-let driTyped: Ref<myVal.DriItems> = ref([myVal.driItemDefault])
-
 // Define a ref to store the selected file
 const uploadedFile = ref<File | null>(null)
 
 const saveCsv = (): void => {
-  projectStore.setDri(driTyped.value)
+  projectStore.setDri(typedCsv.value as myVal.DriItems)
 }
 
 const processFile = (): void => {
@@ -138,7 +136,6 @@ const processFile = (): void => {
         }
 
         typedCsv.value = myFunc.convertToTypedArray<myVal.DriItem>(csvArray.value)
-        driTyped.value = typedCsv.value
       },
       error: (error: Error) => {
         isFiletypeCorrect.value = false
