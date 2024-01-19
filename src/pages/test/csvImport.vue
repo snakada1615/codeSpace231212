@@ -138,9 +138,7 @@ const processFile = (): void => {
         }
 
         typedCsv.value = myFunc.convertToTypedArray<myVal.DriItem>(csvArray.value)
-        console.log(typedCsv.value)
-        driTyped = typedCsv.value
-        console.log(driTyped)
+        driTyped.value = typedCsv.value
       },
       error: (error: Error) => {
         isFiletypeCorrect.value = false
