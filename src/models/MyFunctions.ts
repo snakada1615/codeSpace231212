@@ -50,4 +50,8 @@ export default class myFunc {
     }
     return res
   }
+
+  static convertToTypedArray<T>(data: any[]): T[] {
+    return data.map((item) => item as T)
+  }
 }

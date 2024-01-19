@@ -26,14 +26,17 @@
         ></q-select>
       </div>
       <div class="col-3">
-        <q-btn label="save" icon="save" :disable="!isFiletypeCorrect" dense class="q-mx-sm" />
+        <q-btn label="save" icon="save" :disable="!isDataReady" dense class="q-mx-sm" />
       </div>
     </div>
     <q-card v-if="!isFiletypeCorrect" class="text-negative q-pa-sm">
       your csv-file must contain: {{ refKey.value }}
     </q-card>
-    <q-card v-if="isFiletypeCorrect" class="text-primary q-pa-sm">
-      now you can save this csv-file under your account
+    <q-card v-if="isFiletypeCorrect && !isDataReady" class="text-negative q-pa-sm">
+      error in data type from csv: {{ refKey.value }}
+    </q-card>
+    <q-card v-if="isDataReady" class="text-primary q-pa-sm">
+      now you can save/register this csv-file under your account!
     </q-card>
     <q-table :rows="csvArray"></q-table>
   </div>
@@ -43,28 +46,38 @@
 import { type Ref, ref, computed } from 'vue'
 import Papa from 'papaparse'
 import * as myVal from '../../models/MyInterface'
+import myFunc from '../../models/MyFunctions'
 
 const isFiletypeCorrect = ref(false)
+
+const isDataReady = computed(() => {
+  return isFiletypeCorrect.value && typedCsv
+})
+
+let typedCsv = ref<myVal.FctItems | myVal.DriItems | null>(null)
 
 // Define an interface that matches the structure of a row in your CSV
 interface CsvRow {
   [key: string]: string // This assumes all values in the CSV are strings
 }
 
-// Create a ref for an array of CsvRow objects
+// 読み込んだCSVファイル全体の生データを入れる変数（Array of Object）
 let csvArray: Ref<CsvRow[]> = ref([]) // Example initialization
 
+// 読み込んだCSVファイルの型チェックを行うためのkey一覧。q-selectのv-modelにつなげてドロップダウンで選択（DRI/FCT）
 let csvKeys = computed(() => {
   return Object.keys(csvArray.value[0])
 })
 
-// const refKey = Object.keys(myVal.driItemDefault)
+// ドロップダウン用のオプション（FCT/DRI）。const refKey = Object.keys(myVal.driItemDefault)
 const refKeys = [
-  { label: 'FCT', value: Object.keys(myVal.fctItemDefault) },
-  { label: 'DRI', value: Object.keys(myVal.driItemDefault) }
+  { label: 'FCT', value: Object.keys(myVal.fctItemDefault), myType: typeof myVal.fctItemDefault },
+  { label: 'DRI', value: Object.keys(myVal.driItemDefault), myType: typeof myVal.driItemDefault }
 ]
+// ドロップダウン用のv-model
 const refKey = ref(refKeys[0])
 
+// CSVファイルの型チェック
 const typeCheck = (refArray: string[]) => {
   let res = true
   refArray.forEach((item) => {
@@ -96,6 +109,8 @@ const processFile = (): void => {
         console.log('Parsed CSV data:', results.data)
         // Handle the CSV data as needed...
         csvArray.value = results.data as CsvRow[]
+
+        // ファイルの型チェック
         isFiletypeCorrect.value = typeCheck(refKey.value.value)
         if (!isFiletypeCorrect.value) {
           alert(
@@ -103,8 +118,13 @@ const processFile = (): void => {
               refKey.value.value +
               ']'
           )
+          return
         }
-        console.log(isFiletypeCorrect.value)
+
+        typedCsv.value = myFunc.convertToTypedArray<myVal.DriItem>(csvArray.value)
+        console.log(typedCsv.value)
+        const temp: myVal.DriItems = typedCsv.value
+        console.log(temp)
       },
       error: (error: Error) => {
         isFiletypeCorrect.value = false
