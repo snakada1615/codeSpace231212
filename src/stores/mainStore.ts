@@ -36,8 +36,11 @@ export const useProjectData = defineStore('prjData', {
     setDri(val: myVal.DriItems) {
       this.dri = val
     },
-    setAppUser(val: myVal.appUser) {
+    setAppUser(val: myVal.AppUser) {
       this.appUser = val
+    },
+    setCurrentDataset(val: myVal.CurrentDataSet) {
+      this.appUser.currentDataSet = val
     },
     setProjectInfos(val: myVal.ProjectInfos) {
       this.projectInfos = val
@@ -92,8 +95,16 @@ export const useProjectData = defineStore('prjData', {
       }
     },
 
-    async fireSetFct(fctId: string, val: myVal.FctItem) {
-      await fireFunc.fireSetMergeTyped<myVal.FctItem>('fct', fctId, val)
+    async fireSetFct(fctId: string, val: myVal.FctItemsWithNote) {
+      await fireFunc.fireSetMergeTyped<myVal.FctItemsWithNote>('fct', fctId, val)
+    },
+
+    async fireSetDri(driId: string, val: myVal.DriItemsWithNote) {
+      await fireFunc.fireSetMergeTyped<myVal.DriItemsWithNote>('dri', driId, val)
+    },
+
+    async fireSetAppUser(userId: string, val: myVal.AppUser) {
+      await fireFunc.fireSetMergeTyped<myVal.AppUser>('user', userId, val)
     }
   }
 })

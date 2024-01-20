@@ -19,6 +19,8 @@ export default class FakerFunc {
     }
   }
 
+  static uuid = faker.string.uuid
+
   static createFcts() {
     return myVal.sampleFood.map((item) => {
       return {
@@ -108,8 +110,12 @@ export default class FakerFunc {
   }
 
   static createMenu(): myVal.Menu {
-    return [...Array(10)].map(() => {
-      return this.createMenuItem()
-    })
+    return {
+      projectId: this.uuid(),
+      userId: this.uuid(),
+      items: [...Array(10)].map(() => {
+        return this.createMenuItem()
+      })
+    }
   }
 }

@@ -1,3 +1,31 @@
+<script setup lang="ts">
+import * as myVal from 'src/models/MyInterface'
+import { computed, defineEmits, type PropType } from 'vue'
+import { useProjectData } from '@/stores/mainStore'
+// import { ref } from 'vue'
+const myProjectData = useProjectData()
+
+const props = defineProps({
+  appUser: {
+    type: Object as PropType<myVal.AppUser>,
+    required: true
+  }
+})
+
+const emits = defineEmits<{
+  (e: 'update:appUser', value: myVal.AppUser): void
+}>()
+
+const appUserComp = computed({
+  get() {
+    return props.appUser
+  },
+  set(val) {
+    emits('update:appUser', val)
+  }
+})
+</script>
+
 <template>
   <q-card>
     <q-input
@@ -57,31 +85,3 @@
     {{ myProjectData.appUser }}
   </q-card>
 </template>
-
-<script lang="ts" setup>
-// import { ref } from 'vue'
-import * as myVal from '@/models/MyInterface'
-import { computed, defineEmits, type PropType } from 'vue'
-import { useProjectData } from '@/stores/mainStore'
-const myProjectData = useProjectData()
-
-const props = defineProps({
-  appUser: {
-    type: Object as PropType<myVal.appUser>,
-    required: true
-  }
-})
-
-const emits = defineEmits<{
-  (e: 'update:appUser', value: myVal.appUser): void
-}>()
-
-const appUserComp = computed({
-  get() {
-    return props.appUser
-  },
-  set(val) {
-    emits('update:appUser', val)
-  }
-})
-</script>

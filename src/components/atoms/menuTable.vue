@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import * as myVal from 'src/models/MyInterface'
+import * as myVal from '@/models/MyInterface'
 import { type ComputedRef, computed, type PropType } from 'vue'
 import type { QTableProps } from 'quasar'
 

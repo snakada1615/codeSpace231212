@@ -24,7 +24,21 @@ export interface CategoryItem {
   categoryText: string
 }
 
-export interface appUser {
+//現在ユーザーが利用しているデータセット
+export interface CurrentDataSet {
+  fct: string
+  dri: string
+  project: string
+}
+
+export const currentDataSetDefault = {
+  fct: '',
+  dri: '',
+  project: ''
+}
+
+// 現在のユーザー情報
+export interface AppUser {
   userId: string
   name: string
   job: string
@@ -32,6 +46,7 @@ export interface appUser {
   country: string
   region: string
   town: string
+  currentDataSet: CurrentDataSet
 }
 
 export const appUserDefault = {
@@ -41,7 +56,8 @@ export const appUserDefault = {
   title: '',
   country: '',
   region: '',
-  town: ''
+  town: '',
+  currentDataSet: currentDataSetDefault
 }
 
 export interface ProjectInfo {
@@ -83,6 +99,12 @@ export const driItemDefault = {
 }
 
 export interface DriItems extends Array<DriItem> {}
+
+export interface DriItemsWithNote {
+  data: DriItems
+  note: string
+  users: String[]
+}
 
 export interface FamilyMember extends DriItem {
   count: number
@@ -157,6 +179,13 @@ export const fctItemDefault = {
 }
 
 export interface FctItems extends Array<FctItem> {}
+
+// fct tableに検索用の付加情報を追加したもの
+export interface FctItemsWithNote {
+  data: FctItems
+  note: string
+  users: String[]
+}
 
 export interface FctStar {
   IdStar: string
@@ -293,7 +322,7 @@ export const commonMenus: string[] = [
   '3rd snack'
 ]
 
-export type AllProjectData = appUser | Houses | Menues
+export type AllProjectData = AppUser | Houses | Menues
 
 export enum projectDataType {
   'appUser',

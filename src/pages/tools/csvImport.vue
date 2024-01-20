@@ -1,6 +1,6 @@
 <template>
   <div class="q-pa-md">
-    {{ projectStore.dri }}
+    {{ projectStore.appUser }}
     <div class="row">
       <div class="col">
         <q-file
@@ -27,14 +27,7 @@
         ></q-select>
       </div>
       <div class="col-3">
-        <q-btn
-          label="save"
-          icon="save"
-          :disable="!isDataReady"
-          @click="saveCsv"
-          dense
-          class="q-mx-sm"
-        />
+        <q-btn label="save" icon="save" :disable="!isDataReady" @click="saveCsv" class="q-mx-sm" />
       </div>
     </div>
     <q-card v-if="!isFiletypeCorrect" class="text-negative q-pa-sm">
@@ -55,8 +48,9 @@ import { type Ref, ref, computed } from 'vue'
 import Papa from 'papaparse'
 import * as myVal from '../../models/MyInterface'
 import myFunc from '../../models/MyFunctions'
-import { useProjectData } from '@/stores/mainStore'
+import { useProjectData } from '../../stores/mainStore'
 const projectStore = useProjectData()
+import fakerFunc from '../../models/fakerFunc'
 
 const isFiletypeCorrect = ref(false)
 
@@ -88,7 +82,7 @@ const refKeys = [
 const refKey = ref(refKeys[0])
 
 // CSVファイルの型チェック
-const typeCheck = (refArray: string[]) => {
+function typeCheck(refArray: string[]) {
   let res = true
   refArray.forEach((item) => {
     if (!csvKeys.value.includes(item)) {
@@ -101,9 +95,112 @@ const typeCheck = (refArray: string[]) => {
 // Define a ref to store the selected file
 const uploadedFile = ref<File | null>(null)
 
-const saveCsv = (): void => {
-  projectStore.setDri(typedCsv.value as myVal.DriItems)
+function saveCsv(): void {
+  if (refKey.value.label === 'DRI') {
+    // driの更新
+    const myId = fakerFunc.uuid()
+    projectStore.setDri(typedCsv.value as myVal.DriItems)
+    projectStore.fireSetDri(myId, {
+      note: '',
+      users: [projectStore.appUser.userId],
+      data: typedCsv.value as myVal.DriItems
+    })
+
+    // appUserの更新
+    const newAppUser: myVal.AppUser = {
+      ...projectStore.appUser,
+      currentDataSet: {
+        ...projectStore.appUser.currentDataSet,
+        dri: myId
+      }
+    }
+    projectStore.setAppUser(newAppUser)
+    projectStore.fireSetAppUser(projectStore.appUser.userId, newAppUser)
+  } else {
+    // fctの更新
+    const myId = fakerFunc.uuid()
+    projectStore.setDri(typedCsv.value as myVal.FctItems)
+    projectStore.fireSetFct(myId, {
+      note: '',
+      users: [projectStore.appUser.userId],
+      data: typedCsv.value as myVal.FctItems
+    })
+
+    // appUserの更新
+    const newAppUser: myVal.AppUser = {
+      ...projectStore.appUser,
+      currentDataSet: {
+        ...projectStore.appUser.currentDataSet,
+        fct: myId
+      }
+    }
+    projectStore.setAppUser(newAppUser)
+    projectStore.fireSetAppUser(projectStore.appUser.userId, newAppUser)
+  }
 }
+
+// // Define a type for the handler functions in the project store
+// type SetItemFunction<T> = (item: T) => void;
+// type FireSetItemFunction<T> = (id: string, item: T) => void;
+
+// // Define a generic type for AppUser that can accommodate various data set types
+// interface AppUserGeneric<T> {
+//   userId: string;
+//   currentDataSet: {
+//     dri?: string; // Assuming 'dri' is just one possible data set key
+//     [key: string]: any; // Other data set keys with unknown property names
+//   };
+// }
+
+// interface SaveCsvParams<T> {
+//   typedCsvValue: T;               // The actual CSV value parsed with the correct type
+//   setItem: SetItemFunction<T>;    // Function to set the item in the store
+//   fireSetItem: FireSetItemFunction<T>; // Function to trigger/fire the set item action
+//   dataTypeKey: keyof AppUserGeneric<T>; // The key under which to store the ID in the currentDataSet object
+// }
+
+// const saveCsv2 = <T>(params: SaveCsvParams<T>): void => {
+//   const { typedCsvValue, setItem, fireSetItem, dataTypeKey } = params;
+
+//   // Generate a unique ID for the new data set entry
+//   const myId = fakerFunc.uuid();
+
+//   // Update the project store with the new data set
+//   setItem(typedCsvValue);
+//   fireSetItem(myId, {
+//     note: '',
+//     users: [projectStore.appUser.userId],
+//     data: typedCsvValue,
+//   });
+
+//   // Update the appUser with the new data set ID
+//   const newAppUser: AppUserGeneric<T> = {
+//     ...projectStore.appUser,
+//     currentDataSet: {
+//       ...projectStore.appUser.currentDataSet,
+//       [dataTypeKey]: myId,
+//     },
+//   };
+
+//   projectStore.setAppUser(newAppUser);
+//   projectStore.fireSetAppUser(projectStore.appUser.userId, newAppUser);
+// };
+
+// // Usage example for DRIItems
+// saveCsv({
+//   typedCsvValue: typedCsv.value as myVal.DriItems,
+//   setItem: projectStore.setDri,
+//   fireSetItem: projectStore.fireSetDri,
+//   dataTypeKey: 'dri',
+// });
+
+// // Usage example for FCTItems
+// saveCsv({
+//   typedCsvValue: typedCsv.value as myVal.FCTItems,
+//   setItem: projectStore.setFct,
+//   fireSetItem: projectStore.fireSetFct,
+//   dataTypeKey: 'fct',
+// });
 
 const processFile = (): void => {
   if (!uploadedFile.value) return
@@ -120,7 +217,6 @@ const processFile = (): void => {
     Papa.parse(content, {
       header: true,
       complete: (results) => {
-        console.log('Parsed CSV data:', results.data)
         // Handle the CSV data as needed...
         csvArray.value = results.data as CsvRow[]
 
