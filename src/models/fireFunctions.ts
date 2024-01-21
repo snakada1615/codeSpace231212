@@ -97,6 +97,16 @@ export class fireFunc {
     await setDoc(doc(db, collectionId, docId), val, { merge: true })
   }
 
+  static async fireGetTyped<T>(collectionId: string, docId: string): Promise<T | null> {
+    const docRef = doc(db, collectionId, docId).withConverter(this.converter<T>())
+    const snapshot = await getDoc(docRef)
+    if (snapshot.exists()) {
+      return snapshot.data() as T
+    } else {
+      return null
+    }
+  }
+
   static async fireGetQueryTyped<T>(collectionId: string, key: string, val: string): Promise<T[]> {
     const colRef: CollectionReference = collection(db, collectionId)
     const q = query(colRef, where(key, '==', val)).withConverter(this.converter<T>())

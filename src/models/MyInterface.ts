@@ -29,12 +29,16 @@ export interface CurrentDataSet {
   fct: string
   dri: string
   project: string
+  fctDefault: string // 初期データを確保
+  driDefault: string // 初期データを確保
 }
 
 export const currentDataSetDefault = {
   fct: '',
   dri: '',
-  project: ''
+  project: '',
+  fctDefault: '', // 初期データを確保
+  driDefault: '' // 初期データを確保
 }
 
 // 現在のユーザー情報
@@ -103,7 +107,7 @@ export interface DriItems extends Array<DriItem> {}
 export interface DriItemsWithNote {
   data: DriItems
   note: string
-  users: String[]
+  userId: string
 }
 
 export interface FamilyMember extends DriItem {
@@ -184,7 +188,19 @@ export interface FctItems extends Array<FctItem> {}
 export interface FctItemsWithNote {
   data: FctItems
   note: string
-  users: String[]
+  userId: string
+}
+
+export const fctItemsWIthNoteDefault = {
+  data: [fctItemDefault],
+  note: '',
+  userId: ''
+}
+
+export const driItemsWIthNoteDefault = {
+  data: [driItemDefault],
+  note: '',
+  userId: ''
 }
 
 export interface FctStar {
@@ -292,8 +308,10 @@ export const nutrientLabels: nutrientLabel[] = [
 ]
 
 export interface MenuItem extends FctRowItem {
-  menuItemId: string
+  userId: string
+  projectId: string
   KeyFamily: string
+  menuItemId: string
   Date: Date
 }
 
@@ -301,14 +319,18 @@ export const menuItemDefault = {
   ...fctRowItemDefault,
   menuItemId: '',
   KeyFamily: '',
+  projectId: '',
+  userId: '',
   Date: new Date()
 }
 
-export interface Menu {
-  projectId: string
-  userId: string
-  items: Array<MenuItem>
-}
+// export interface Menu {
+//   projectId: string
+//   userId: string
+//   items: Array<MenuItem>
+// }
+
+export interface Menu extends Array<MenuItem> {}
 
 export interface Menues extends Array<Menu> {}
 

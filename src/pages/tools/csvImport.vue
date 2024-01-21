@@ -102,7 +102,7 @@ function saveCsv(): void {
     projectStore.setDri(typedCsv.value as myVal.DriItems)
     projectStore.fireSetDri(myId, {
       note: '',
-      users: [projectStore.appUser.userId],
+      user: projectStore.appUser.userId,
       data: typedCsv.value as myVal.DriItems
     })
 
@@ -122,7 +122,7 @@ function saveCsv(): void {
     projectStore.setDri(typedCsv.value as myVal.FctItems)
     projectStore.fireSetFct(myId, {
       note: '',
-      users: [projectStore.appUser.userId],
+      user: projectStore.appUser.userId,
       data: typedCsv.value as myVal.FctItems
     })
 
