@@ -102,7 +102,7 @@ function saveCsv(): void {
     projectStore.setDri(typedCsv.value as myVal.DriItems)
     projectStore.fireSetDri(myId, {
       note: '',
-      user: projectStore.appUser.userId,
+      userId: projectStore.appUser.userId,
       data: typedCsv.value as myVal.DriItems
     })
 
@@ -119,10 +119,10 @@ function saveCsv(): void {
   } else {
     // fctの更新
     const myId = fakerFunc.uuid()
-    projectStore.setDri(typedCsv.value as myVal.FctItems)
+    projectStore.setFct(typedCsv.value as myVal.FctItems)
     projectStore.fireSetFct(myId, {
       note: '',
-      user: projectStore.appUser.userId,
+      userId: projectStore.appUser.userId,
       data: typedCsv.value as myVal.FctItems
     })
 

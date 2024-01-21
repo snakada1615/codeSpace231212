@@ -34,7 +34,7 @@ const myArgTypes: ArgTypes = {
   // ... define other arg types as necessary ...
 }
 
-const familyAll = FakerFunc.createFamilyAll()
+const familyAll = FakerFunc.createHouse()
 const familyAll2 = {
   ...familyAll,
   familyName: ''

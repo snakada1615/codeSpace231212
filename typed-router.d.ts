@@ -49,6 +49,7 @@ declare module 'vue-router/auto/routes' {
     '/RegisterUser': RouteRecordInfo<'/RegisterUser', '/RegisterUser', Record<never, never>, Record<never, never>>,
     '/setProjectInfo': RouteRecordInfo<'/setProjectInfo', '/setProjectInfo', Record<never, never>, Record<never, never>>,
     '/setUserInfo': RouteRecordInfo<'/setUserInfo', '/setUserInfo', Record<never, never>, Record<never, never>>,
+    '/test/test01': RouteRecordInfo<'/test/test01', '/test/test01', Record<never, never>, Record<never, never>>,
     '/tools/csvImport': RouteRecordInfo<'/tools/csvImport', '/tools/csvImport', Record<never, never>, Record<never, never>>,
   }
 }

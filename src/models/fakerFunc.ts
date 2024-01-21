@@ -1,6 +1,7 @@
 import { faker } from '@faker-js/faker'
 // 全てのintefaceを読み込む
 import * as myVal from './MyInterface'
+import { uid } from 'quasar'
 
 export default class FakerFunc {
   static createFct(foodGroups: typeof myVal.sampleFood): myVal.FctItem {
@@ -98,6 +99,8 @@ export default class FakerFunc {
     const food = this.createFct(myVal.sampleFood)
     const menu = faker.helpers.arrayElement(myVal.commonMenus)
     return {
+      userId: uid(),
+      projectId: uid(),
       ...food,
       menuItemId: faker.string.uuid(),
       KeyFamily: faker.person.firstName(),
@@ -111,9 +114,7 @@ export default class FakerFunc {
 
   static createMenu(): myVal.Menu {
     return {
-      projectId: this.uuid(),
-      userId: this.uuid(),
-      items: [...Array(10)].map(() => {
+      ...Array(10).map(() => {
         return this.createMenuItem()
       })
     }
