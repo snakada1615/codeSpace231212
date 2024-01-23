@@ -1,8 +1,8 @@
 <!-- eslint-disable vue/multi-word-component-names -->
 <script setup lang="ts">
-import * as myVal from '../../models/MyInterface'
-import fireFunc from '../../models/fakerFunc'
-import { computed, ref, type PropType } from 'vue'
+// import * as myVal from '../../models/MyInterface'
+// import fireFunc from '../../models/fakerFunc'
+import { ref } from 'vue'
 const data01 = ref([
   {
     firestName: 'nanmo',
