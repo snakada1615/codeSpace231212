@@ -3,7 +3,6 @@ import * as myVal from '@/models/MyInterface'
 import { computed, defineEmits, type PropType } from 'vue'
 import { useProjectData } from '@/stores/mainStore'
 // import { ref } from 'vue'
-const myProjectData = useProjectData()
 
 const props = defineProps({
   appUser: {
@@ -82,6 +81,5 @@ const appUserComp = computed({
       lazy-rules
       :rules="[(val) => (val && val.length > 0) || 'Please fill in the town/city(optional)']"
     />
-    {{ myProjectData.appUser }}
   </q-card>
 </template>

@@ -113,10 +113,11 @@ export default class FakerFunc {
   }
 
   static createMenu(): myVal.Menu {
-    return {
-      ...Array(10).map(() => {
+    const myMenu: myVal.Menu = Array(10)
+      .fill('0')
+      .map(() => {
         return this.createMenuItem()
       })
-    }
+    return myMenu
   }
 }
