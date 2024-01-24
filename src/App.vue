@@ -5,6 +5,8 @@ import { fireFunc } from '@/models/fireFunctions'
 import LoginUser from '@/components/atoms/LoginDialog.vue'
 import RegisterDialog from './components/atoms/RegisterDialog.vue'
 import { useAuthState } from '@/stores/mainStore'
+import myToolBar from '@/components/atoms/myToolBar.vue'
+import myPages from '@/components/atoms/myPages.vue'
 
 const authState = useAuthState()
 const router = useRouter()
@@ -30,52 +32,15 @@ const registDialog = ref(false)
   <div>
     <q-layout view="hHh lpR fFf">
       <q-header elevated class="bg-secondary text-white" height-hint="50">
-        <q-toolbar>
-          <q-btn dense flat round icon="menu" @click="toggleLeftDrawer" />
+        <myToolBar
+          :toggleLeftDrawer="toggleLeftDrawer"
+          :is-logged-in="authState.isLoggedin"
+          :logOut="logOut"
+          v-model:login-dialog="loginDialog"
+          v-model:regist-dialog="registDialog"
+        />
 
-          <q-toolbar-title>
-            <q-icon name="soup_kitchen" size="1em" />
-            IFNA Nutrient App
-          </q-toolbar-title>
-
-          <!-- login/logout用のメニュー -->
-          <!-- logout -->
-          <q-btn v-if="authState.isLoggedin" flat round>
-            <q-icon name="face" />
-            <q-menu>
-              <q-list dense style="min-width: 100px">
-                <q-item clickable v-close-popup>
-                  <q-item-section @click="logOut()">logOut</q-item-section>
-                </q-item>
-                <!-- Add more items here -->
-              </q-list>
-            </q-menu>
-          </q-btn>
-
-          <!-- login -->
-          <q-btn v-if="!authState.isLoggedin" flat round>
-            <q-icon name="psychology_alt" />
-            <q-menu>
-              <q-list dense style="min-width: 100px">
-                <q-item clickable v-close-popup>
-                  <q-item-section @click="loginDialog = true">logIn</q-item-section>
-                </q-item>
-                <q-item clickable v-close-popup>
-                  <q-item-section @click="registDialog = true">register</q-item-section>
-                </q-item>
-                <!-- Add more items here -->
-              </q-list>
-            </q-menu>
-          </q-btn>
-        </q-toolbar>
-
-        <q-tabs align="left" class="bg-teal-3 text-black">
-          <q-route-tab to="/" label="home" />
-          <q-route-tab to="/setUserInfo" label="user info" />
-          <q-route-tab to="/setProjectInfo" label="Project info" />
-          <q-route-tab to="/myTest01" label="myTest01" />
-          <q-route-tab to="/feedTest" label="feedTest" />
-        </q-tabs>
+        <myPages />
       </q-header>
 
       <q-drawer show-if-above v-model="leftDrawerOpen" side="left" bordered>

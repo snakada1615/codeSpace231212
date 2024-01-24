@@ -3,7 +3,6 @@
   <div>
     <q-icon name="flag" />
     <div>halo</div>
-    <q-card>{{ projectData }}</q-card>
   </div>
 </template>
 
