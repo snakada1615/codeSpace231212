@@ -1,4 +1,6 @@
 <script setup lang="ts">
+import { useProjectData } from '@/stores/mainStore'
+
 defineProps<{
   toggleLeftDrawer: () => void
   isLoggedIn: boolean
@@ -10,6 +12,8 @@ const emits = defineEmits<{
   (e: 'update:loginDialog', value: boolean): void
   (e: 'update:registDialog', value: boolean): void
 }>()
+
+const projInfo = useProjectData()
 </script>
 
 <template>
@@ -30,6 +34,7 @@ const emits = defineEmits<{
           <q-item clickable v-close-popup>
             <q-item-section @click="logOut()">logOut</q-item-section>
           </q-item>
+          <Q-item>user: {{ projInfo.appUser.userId }}</Q-item>
           <!-- Add more items here -->
         </q-list>
       </q-menu>
