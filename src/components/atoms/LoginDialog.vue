@@ -85,7 +85,7 @@ const signInWithGoogle = (): void => {
   signInWithPopup(auth, provider)
     .then(() => {
       errMsg.value = ''
-      router.push('/feedTest')
+      router.push('/')
       closeDialog()
     })
     .catch((error: Error) => {

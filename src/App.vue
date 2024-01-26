@@ -32,6 +32,9 @@ const registDialog = ref(false)
   <div>
     <q-layout view="hHh lpR fFf">
       <q-header elevated class="bg-secondary text-white" height-hint="50">
+        <!-- Set theme color here -->
+        <meta name="theme-color" content="#008080" />
+
         <myToolBar
           :toggleLeftDrawer="toggleLeftDrawer"
           :is-logged-in="authState.isLoggedin"
