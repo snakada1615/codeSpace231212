@@ -1,0 +1,64 @@
+@startuml firstDiagram
+Alice -> Bob: Hello, Bob!
+Bob --> Alice: Hi, Alice!
+@enduml
+
+@startuml test02
+(*)-->お試し
+お試し-->(*)
+@enduml
+
+@startuml initialization
+(*)-->login
+if uid then
+ -->[true] "check currentFct"
+ if "currentFct exists" then
+   -->[true] "fetch using currentFct"
+   -->"cont"
+   -->"set FCT in store"
+ else
+   -->[false] "initialize FCT"
+   -->"set FCT in currentFct"
+   -->"set FCT in store" 
+ endif
+ if "currentDRI exists" then
+   -->[true] "fetch using currentDRI"
+   -->"cont2"
+   -->"set DRI in store"
+ else
+   -->[false] "initialize DRI"
+   -->"set FCT in currentDri"
+   -->"set DRI in store"
+ endif
+ --> "check currentProject"
+ if "projectId exists" then
+   -->[true] "fetch ProjectInfo"
+   -->"cont3"
+   -->"set ProjectInfo in store"
+ else 
+   -->[false] "set defaultValue"
+   -->"set projectId in currentProejctInfo"
+   -->"set ProjectInfo in store"  
+ endif
+
+ --> "fetch Houses using projectId"
+ if "HOUSE exists" then
+   -->[true] "set HOUSE in store"
+ else 
+   -->[false] "get defaultValue of HOUSE"
+   -->"set HOUSE in store"  
+ endif
+
+
+ --> "fetch MENU using projectId"
+ if "MENU exists" then
+   -->[true] "set MENU in store"
+ else 
+   -->[false] "get defaultValue of MENU"
+   -->"set MENU in store"  
+ endif
+
+else
+ -->[false] "go to login page"
+ 
+@enduml
