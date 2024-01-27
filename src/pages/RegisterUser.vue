@@ -25,7 +25,7 @@ const register = () => {
   createUserWithEmailAndPassword(auth, email.value, password.value) // need .value because ref()
     .then((data: UserCredential) => {
       console.log(data)
-      router.push('/feedTest') // redirect to the feed
+      router.push('/')
     })
     .catch((error: Error) => {
       console.log(error.name)
@@ -39,7 +39,7 @@ const signInWithGoogle = (): void => {
   signInWithPopup(auth, provider)
     .then((result: UserCredential) => {
       console.log(result)
-      router.push('/feedTest')
+      router.push('/')
     })
     .catch((error: Error) => {
       // Handle errors here, such as displaying a message to the user

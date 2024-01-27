@@ -33,6 +33,18 @@ export const useProjectData = defineStore('prjData', {
     driDefault: '82f6425d-def7-4094-9088-6672adfd525f' // 初期データを確保
   }),
 
+  getters: {
+    stateUserId: (state) => {
+      return state.appUser.userId
+    },
+    stateUserInfo: (state) => {
+      return state.appUser.country.length > 0 && state.appUser.name.length > 0
+    },
+    stateProjectInfo: (state) => {
+      return state.projectInfos.find()
+    }
+  },
+
   actions: {
     setUserId(val: string) {
       this.appUser.userId = val
@@ -62,6 +74,7 @@ export const useProjectData = defineStore('prjData', {
     async fireGetAllData(userId: string) {
       console.log('fireGetAppUser')
       await this.fireGetAppUser(userId)
+
       console.log('fireGetProject')
       await this.fireGetProject(userId)
       console.log('fireGetDri')
@@ -184,99 +197,8 @@ export const useProjectData = defineStore('prjData', {
     // For DRI:
     // await this.getData(userId, 'dri', myVal.DriItemsWithNote);
 
-    // async fireGetFct(userId: string) {
-    //   const fctId = this.appUser.currentDataSet.fct
-    //   if (fctId) {
-    //     const res = await fireFunc.fireGetTyped<myVal.FctItemsWithNote>('fct', fctId)
-    //     if (res) {
-    //       this.setFct(res.data)
-    //     } else {
-    //       console.log('Fct data not available in server. initializa data...')
-    //       await this.initializeFctFire(userId)
-    //     }
-    //   } else {
-    //     console.log('Fct data not available in server. initializa data...')
-    //     await this.initializeFctFire(userId)
-    //   }
-    //   // const res = await fireFunc.fireGetQueryTyped<myVal.FctItem>('fct', 'userId', userId)
-    //   // if (res) {
-    //   //   this.setFct(res)
-    //   // } else {
-    //   //   console.log('Fct data not available in server. initializa data...')
-    //   //   await this.initializeFctFire(userId)
-    //   // }
-    // },
-
-    // async initializeFctFire(userId: string) {
-    //   const fctId = this.appUser.currentDataSet.fctDefault
-    //   const res = await fireFunc.fireGetTyped<myVal.FctItems>('fct', fctId)
-    //   if (res) {
-    //     this.setFct(res)
-    //     const newFctId = FakerFunc.uuid()
-    //     await this.fireSetFct(newFctId, {
-    //       data: res,
-    //       note: '',
-    //       userId: userId
-    //     })
-    //     // appUserの更新
-    //     const newAppUser: myVal.AppUser = {
-    //       ...this.appUser,
-    //       currentDataSet: {
-    //         ...this.appUser.currentDataSet,
-    //         fct: newFctId
-    //       }
-    //     }
-    //     this.setAppUser(newAppUser)
-    //     await this.fireSetAppUser(this.appUser.userId, newAppUser)
-    //   } else {
-    //     throw new Error('no FCT data in firebase @mainStore/fireGetFct')
-    //   }
-    // },
-
-    // async fireGetDri(userId: string) {
-    //   const driId = this.appUser.currentDataSet.dri
-    //   if (driId) {
-    //     const res = await fireFunc.fireGetTyped<myVal.DriItemsWithNote>('dri', driId)
-    //     if (res) {
-    //       this.setDri(res.data)
-    //     } else {
-    //       console.log('Dri data not available in server. initializa data...')
-    //       await this.initializeDriFire(userId)
-    //     }
-    //   } else {
-    //     console.log('Fct data not available in server. initializa data...')
-    //     await this.initializeDriFire(userId)
-    //   }
-    // },
-
-    // async initializeDriFire(userId: string) {
-    //   const driId = this.appUser.currentDataSet.fctDefault
-    //   const res = await fireFunc.fireGetTyped<myVal.DriItems>('dri', driId)
-    //   if (res) {
-    //     this.setDri(res)
-    //     const newDriId = FakerFunc.uuid()
-    //     await this.fireSetDri(newDriId, {
-    //       data: res,
-    //       note: '',
-    //       userId: userId
-    //     })
-    //     // appUserの更新
-    //     const newAppUser: myVal.AppUser = {
-    //       ...this.appUser,
-    //       currentDataSet: {
-    //         ...this.appUser.currentDataSet,
-    //         dri: newDriId
-    //       }
-    //     }
-    //     this.setAppUser(newAppUser)
-    //     await this.fireSetAppUser(this.appUser.userId, newAppUser)
-    //   } else {
-    //     throw new Error('no FCT data in firebase @mainStore/fireGetFct')
-    //   }
-    // },
-
-    async fireGetHouse(userId: string) {
-      const res = await fireFunc.fireGetQueryTyped<myVal.House>('dci', 'userId', userId)
+    async fireGetHouse(projectId: string) {
+      const res = await fireFunc.fireGetQueryTyped<myVal.House>('house', 'projectId', projectId)
       if (res) {
         this.setHouses(res)
       } else {
@@ -284,8 +206,8 @@ export const useProjectData = defineStore('prjData', {
       }
     },
 
-    async fireGetMenu(userId: string) {
-      const res = await fireFunc.fireGetQueryTyped<myVal.MenuItem>('dci', 'userId', userId)
+    async fireGetMenu(projectId: string) {
+      const res = await fireFunc.fireGetQueryTyped<myVal.MenuItem>('menu', 'projectId', projectId)
       if (res) {
         this.setMenu(res)
       } else {
