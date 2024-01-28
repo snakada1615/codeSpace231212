@@ -38,16 +38,12 @@ export interface CurrentDataSet {
   fct: string
   dri: string
   project: string
-  fctDefault: string // 初期データを確保
-  driDefault: string // 初期データを確保
 }
 
 export const currentDataSetDefault = {
   fct: '',
   dri: '',
-  project: '',
-  fctDefault: '', // 初期データを確保
-  driDefault: '' // 初期データを確保
+  project: ''
 }
 
 // 現在のユーザー情報

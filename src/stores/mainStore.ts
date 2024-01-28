@@ -84,7 +84,7 @@ export const useProjectData = defineStore('prjData', {
       const defaultMenuId = FakerFunc.uuid()
 
       //  fct:
-      console.log('fireGetFct')
+      console.log('fct')
       const fctDat = await fireFunc.fireGetTyped<myVal.FctItems>('dri', currentDriId)
       if (fctDat) {
         this.setFct(fctDat)
@@ -103,8 +103,8 @@ export const useProjectData = defineStore('prjData', {
       }
 
       //  dri:
-      console.log('fireGetAppUser')
-      const driDat = await fireFunc.fireGetTyped<myVal.DriItems>('dri', currentFctId)
+      console.log('dri')
+      const driDat = await fireFunc.fireGetTyped<myVal.DriItems>('dri', currentDriId)
       if (driDat) {
         this.setDri(driDat)
         this.setAppUser([
@@ -209,134 +209,6 @@ export const useProjectData = defineStore('prjData', {
         setFunction(defaultData)
       }
     },
-
-    // async fireGetAppUser(projectId: string) {
-    //   const res = await fireFunc.fireGetQueryTyped<myVal.AppUser>('user', 'projectId', projectId)
-    //   if (res) {
-    //     this.setAppUser(res[0])
-    //   } else {
-    //     console.log('AppUser data not available in server. initializa data...')
-    //     this.setAppUser(myVal.appUserDefault)
-    //   }
-    // },
-
-    // async fireGetHouse(projectId: string) {
-    //   const res = await fireFunc.fireGetQueryTyped<myVal.House>('house', 'projectId', projectId)
-    //   if (res) {
-    //     this.setHouses(res)
-    //   } else {
-    //     this.setHouses([myVal.houseDefault])
-    //   }
-    // },
-
-    // async fireGetMenu(projectId: string) {
-    //   const res = await fireFunc.fireGetQueryTyped<myVal.MenuItem>('menu', 'projectId', projectId)
-    //   if (res) {
-    //     this.setMenu(res)
-    //   } else {
-    //     this.setMenu([{ ...myVal.menuItemDefault, projectId: myVal.projectInfoDefault.projectId }])
-    //   }
-    // },
-
-    // async fireGetProject(userId: string) {
-    //   const res = await fireFunc.fireGetQueryTyped<myVal.ProjectInfo>(
-    //     'projectInfos',
-    //     'userId',
-    //     userId
-    //   )
-    //   if (res) {
-    //     this.setProjectInfos(res)
-    //   } else {
-    //     console.log('ProjectInfo data not available in server. initializa data...')
-    //     this.setProjectInfos([myVal.projectInfoDefault])
-    //   }
-    // },
-
-    // async getDataFire(userId: string, dataType: 'fct' | 'dri', typedValue: any) {
-    //   const itemId = this.appUser.currentDataSet[dataType]
-    //   if (!itemId) {
-    //     console.log(`${dataType.toUpperCase()} data not available in server. Initializing data...`)
-    //     await this.initializeFireData(userId, dataType)
-    //     return
-    //   }
-
-    //   const res = await fireFunc.fireGetTyped<typeof typedValue>(dataType, itemId)
-    //   if (res) {
-    //     switch (dataType.toUpperCase()) {
-    //       case 'FCT':
-    //         this.setFct(res.data)
-    //         break
-    //       case 'DRI':
-    //         this.setDri(res.data)
-    //         break
-    //       default:
-    //         return
-    //     }
-    //   } else {
-    //     console.log(`${dataType.toUpperCase()} data not available in server. Initializing data...`)
-    //     await this.initializeFireData(userId, dataType)
-    //   }
-    // },
-
-    // async initializeFireData(userId: string, dataType: 'fct' | 'dri') {
-    //   // const defaultId = this.appUser.currentDataSet[`${dataType}Default`]
-    //   const defaultId = dataType === 'fct' ? this.fctDefault : this.driDefault
-    //   const res = await fireFunc.fireGetTyped<any>(dataType, defaultId)
-    //   if (!res) {
-    //     throw new Error(
-    //       `no ${dataType.toUpperCase()} data in firebase @mainStore/fireGet${dataType.toUpperCase()}`
-    //     )
-    //   }
-
-    //   switch (dataType.toUpperCase()) {
-    //     case 'FCT':
-    //       this.setFct(res.data)
-    //       break
-    //     case 'DRI':
-    //       this.setDri(res.data)
-    //       break
-    //     default:
-    //       return
-    //   }
-
-    //   const newId = FakerFunc.uuid()
-    //   switch (dataType.toUpperCase()) {
-    //     case 'FCT':
-    //       this.fireSetFct(newId, {
-    //         data: res,
-    //         note: '',
-    //         userId: userId
-    //       })
-    //       break
-    //     case 'DRI':
-    //       this.fireSetDri(newId, {
-    //         data: res,
-    //         note: '',
-    //         userId: userId
-    //       })
-    //       break
-    //     default:
-    //       return
-    //   }
-
-    //   // Update appUser
-    //   const newAppUser: myVal.AppUser = {
-    //     ...this.appUser,
-    //     currentDataSet: {
-    //       ...this.appUser.currentDataSet,
-    //       [dataType]: newId
-    //     }
-    //   }
-    //   this.setAppUser([newAppUser])
-    //   await this.fireSetAppUser(this.appUser.userId, newAppUser)
-    // },
-
-    // Usage:
-    // For FCT:
-    // await this.getData(userId, 'fct', myVal.FctItemsWithNote);
-
-    // For DRI:
-    // await this.getData(userId, 'dri', myVal.DriItemsWithNote);
 
     async fireSetFct(fctId: string, val: myVal.FctItemsWithNote) {
       await fireFunc.fireSetMergeTyped<myVal.FctItemsWithNote>('fct', fctId, val)
