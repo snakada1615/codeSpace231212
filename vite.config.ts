@@ -6,6 +6,7 @@ import vue from '@vitejs/plugin-vue'
 import vueJsx from '@vitejs/plugin-vue-jsx'
 import { quasar, transformAssetUrls } from '@quasar/vite-plugin'
 import { VitePWA } from 'vite-plugin-pwa'
+import { visualizer } from 'rollup-plugin-visualizer'
 
 // https://vitejs.dev/config/
 export default defineConfig({
@@ -17,6 +18,10 @@ export default defineConfig({
       template: { transformAssetUrls }
     }),
     vueJsx(),
+    visualizer({
+      open: true, // This will open the visualizer report in your browser after the build
+      filename: 'dist/stats.html' // Specifies the output file for the report
+    }),
     // @quasar/plugin-vite options list:
     // https://github.com/quasarframework/quasar/blob/dev/vite-plugin/index.d.ts
     quasar({
