@@ -136,6 +136,7 @@ const familyMembersDefault = sampleFamilyMemberCategory.map((item, index) => {
 
 export interface House {
   projectId: string
+  userId: string
   locationId: string
   familyId: string
   familyName: string
@@ -146,6 +147,7 @@ export interface Houses extends Array<House> {}
 
 export const houseDefault = {
   projectId: '',
+  userId: '',
   locationId: '',
   familyId: '',
   familyName: '',

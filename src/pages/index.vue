@@ -4,6 +4,7 @@
     <q-icon name="flag" />
     <div>halo</div>
     <div>{{ projectData.appUser }}</div>
+    <div>{{ projectData.menu }}</div>
   </div>
 </template>
 

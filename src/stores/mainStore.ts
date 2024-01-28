@@ -10,6 +10,7 @@ export const useAuthState = defineStore('auth', {
   state: () => ({
     isLoggedin: false
   }),
+
   actions: {
     setLoginState(val: boolean) {
       this.isLoggedin = val
@@ -23,7 +24,6 @@ export const useProjectData = defineStore('prjData', {
     appUser: myVal.appUserDefault,
     // ユーザーが取り組んでいるプロジェクトの情報
     projectInfo: myVal.projectInfoDefault,
-    projectInfos: [myVal.projectInfoDefault],
     fct: [myVal.fctItemDefault],
     dri: [myVal.driItemDefault],
     // プロジェクトで対象とする家庭の情報
@@ -39,11 +39,46 @@ export const useProjectData = defineStore('prjData', {
       return state.appUser.userId
     },
     stateUserInfo: (state) => {
-      return state.appUser.country.length > 0 && state.appUser.name.length > 0
+      return (
+        state.appUser.country.length > 0 &&
+        state.appUser.region.length > 0 &&
+        state.appUser.name.length > 0 &&
+        state.appUser.job.length > 0 &&
+        state.appUser.title.length > 0 &&
+        state.appUser.userId.length > 0
+      )
+    },
+    stateProjectInfo: (state) => {
+      return (
+        state.projectInfo.projectId.length > 0 &&
+        state.projectInfo.userId.length > 0 &&
+        state.projectInfo.location.length > 0
+      )
+    },
+    targetPopulationTotal: (state) => {
+      return state.projectInfo.targetPopulation.reduce((total, current) => {
+        return (total += current.count)
+      }, 0)
+    },
+    houseSize: (state) => {
+      return state.houses.map((house) =>
+        house.familyMembers.reduce((total, current) => {
+          return (total += current.count)
+        }, 0)
+      )
+    },
+    stateHouses: (state) => {
+      let res = true
+      state.houses.forEach((house) => {
+        if (!house.familyId || !house.projectId || !house.userId) {
+          res = false
+        }
+      })
+      return res
+    },
+    stateMenue: (state) => {
+      return state.menu.length > 0
     }
-    // stateProjectInfo: (state) => {
-    //   return state.projectInfos.find()
-    // }
   },
 
   actions: {
@@ -62,8 +97,8 @@ export const useProjectData = defineStore('prjData', {
     setCurrentDataset(val: myVal.CurrentDataSet) {
       this.appUser.currentDataSet = val
     },
-    setProjectInfos(val: myVal.ProjectInfos) {
-      this.projectInfos = val
+    setProjectInfo(val: myVal.ProjectInfo) {
+      this.projectInfo = val
     },
     setHouses(val: myVal.Houses) {
       this.houses = val
@@ -141,7 +176,7 @@ export const useProjectData = defineStore('prjData', {
         'projectInfo',
         'projectId',
         currentProjectId,
-        (projectInfo) => this.setProjectInfos(projectInfo),
+        (projectInfo) => this.setProjectInfo(projectInfo[0]),
         [
           {
             ...myVal.projectInfoDefault,
@@ -161,6 +196,7 @@ export const useProjectData = defineStore('prjData', {
         [
           {
             ...myVal.houseDefault,
+            userId: userId,
             projectId: currentProjectId,
             familyId: defaultFamilyId
           }
@@ -179,19 +215,11 @@ export const useProjectData = defineStore('prjData', {
             ...myVal.menuItemDefault,
             projectId: currentProjectId,
             KeyFamily: defaultFamilyId,
-            menuItemId: defaultMenuId
+            menuItemId: defaultMenuId,
+            userId: userId
           }
         ]
       )
-
-      // // await this.fireGetAppUser(userId)
-      // console.log('fireGetProject')
-      // await this.fireGetProject(userId)
-      // console.log('fireGetDri')
-
-      // // await this.fireGetHouse(userId)
-      // console.log('fireGetMenu')
-      // await this.fireGetMenu(userId)
     },
 
     async fireGetData<T>(
