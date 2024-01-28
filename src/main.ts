@@ -31,16 +31,16 @@ app.use(Quasar, {
 const authState = useAuthState()
 const projectData = useProjectData()
 
-auth.onAuthStateChanged((user: User | null) => {
+auth.onAuthStateChanged(async (user: User | null) => {
   if (user) {
     //    isLoggedIn.value = true // if we have a user
     authState.setLoginState(true)
     projectData.setUserId(user.uid) // keep uid in pinia
-    projectData.fireGetAllData(user.uid) // download user data
+    await projectData.fireGetAllData(user.uid) // download user data
   } else {
     //    isLoggedIn.value = false // if we do not
     authState.setLoginState(false)
-    projectData.setUserId('') // keep uid in pinia
+    projectData.setUserId('') // delete uid in pinia
   }
 })
 

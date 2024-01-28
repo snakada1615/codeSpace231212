@@ -3,6 +3,7 @@
   <div>
     <q-icon name="flag" />
     <div>halo</div>
+    <div>{{ projectData.appUser }}</div>
   </div>
 </template>
 

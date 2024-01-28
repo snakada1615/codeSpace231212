@@ -5,6 +5,15 @@ export interface DiversityState {
 
 export interface DiversityStates extends Array<DiversityState> {}
 
+export enum dataSetNames {
+  'appUser',
+  'projectInfos',
+  'fct',
+  'dri',
+  'houses',
+  'menu'
+}
+
 export interface AnswerItem {
   categoryId: string
   questionId: string

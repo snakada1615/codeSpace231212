@@ -107,11 +107,18 @@ export class fireFunc {
     }
   }
 
-  static async fireGetQueryTyped<T>(collectionId: string, key: string, val: string): Promise<T[]> {
+  static async fireGetQueryTyped<T>(
+    collectionId: string,
+    key: string,
+    val: string
+  ): Promise<T[] | null> {
     const colRef: CollectionReference = collection(db, collectionId)
     const q = query(colRef, where(key, '==', val)).withConverter(this.converter<T>())
     const snapshot = await getDocs(q)
     const res: Array<T> = []
+    if (snapshot.empty) {
+      return null
+    }
     snapshot.forEach((doc) => {
       const docData = doc.data() as T
       res.push(docData)

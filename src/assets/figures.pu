@@ -30,13 +30,22 @@ if uid then
    -->"set FCT in currentDri"
    -->"set DRI in store"
  endif
+
+ --> "fetch appUser using userId"
+ if "AppUser exists" then
+   -->[true] "set appUser in store"
+ else 
+   -->[false] "get defaultValue of appUser"
+   -->"set appUser in store"  
+ endif
+
  --> "check currentProject"
  if "projectId exists" then
    -->[true] "fetch ProjectInfo"
    -->"cont3"
    -->"set ProjectInfo in store"
  else 
-   -->[false] "set defaultValue"
+   -->[false] "get defaultValue of ProjectInfo"
    -->"set projectId in currentProejctInfo"
    -->"set ProjectInfo in store"  
  endif

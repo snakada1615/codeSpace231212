@@ -114,7 +114,7 @@ function saveCsv(): void {
         dri: myId
       }
     }
-    projectStore.setAppUser(newAppUser)
+    projectStore.setAppUser([newAppUser])
     projectStore.fireSetAppUser(projectStore.appUser.userId, newAppUser)
   } else {
     // fctの更新
@@ -134,7 +134,7 @@ function saveCsv(): void {
         fct: myId
       }
     }
-    projectStore.setAppUser(newAppUser)
+    projectStore.setAppUser([newAppUser])
     projectStore.fireSetAppUser(projectStore.appUser.userId, newAppUser)
   }
 }
