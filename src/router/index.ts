@@ -17,6 +17,7 @@ function checkParams(page: string) {
       console.log('0')
       return false
       break
+
     case myPages[1]:
       console.log('1')
       return false
