@@ -34,7 +34,7 @@ const appUserComp = computed({
       v-model="appUserComp.name"
       label="* Name"
       lazy-rules
-      :rules="[(val) => (val && val.length > 0) || 'Please fill in the name']"
+      :rules="[(val) => (val && val.length > 3) || 'Name should be longer than 3 characters']"
     />
     <q-input
       dense
@@ -43,7 +43,7 @@ const appUserComp = computed({
       v-model="appUserComp.job"
       label="Job"
       lazy-rules
-      :rules="[(val) => (val && val.length > 0) || 'Please fill in the job']"
+      :rules="[(val) => (val && val.length > 3) || 'Job should be longer than 3 characters']"
     />
     <q-input
       dense
@@ -61,7 +61,7 @@ const appUserComp = computed({
       v-model="appUserComp.country"
       label="* Country"
       lazy-rules
-      :rules="[(val) => (val && val.length > 0) || 'Please fill in the country']"
+      :rules="[(val) => (val && val.length > 3) || 'Conutry should be longer than 3 characters']"
     />
     <q-input
       dense
