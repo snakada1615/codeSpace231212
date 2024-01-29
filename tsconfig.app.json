@@ -5,9 +5,12 @@
   "compilerOptions": {
     "composite": true,
     "noEmit": true,
-    "baseUrl": ".",
+    "baseUrl": "./", // Changed from "." to "./" to match the new settings
     "paths": {
-      "@/*": ["./src/*"]
-    }
+      "@/*": ["./src/*"],
+      "*": ["types/*"] // Added this line to include custom type definitions
+    },
+    "moduleResolution": "node" // Added this line to specify module resolution strategy
+    // ... You can add more compiler options as needed
   }
 }
