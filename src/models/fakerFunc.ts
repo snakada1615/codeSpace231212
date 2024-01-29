@@ -87,6 +87,7 @@ export default class FakerFunc {
 
   static createHouse(): myVal.House {
     return {
+      userId: faker.string.uuid(),
       projectId: faker.string.uuid(),
       locationId: faker.string.uuid(),
       familyId: faker.string.uuid(),

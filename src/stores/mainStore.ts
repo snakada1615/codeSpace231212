@@ -35,49 +35,56 @@ export const useProjectData = defineStore('prjData', {
   }),
 
   getters: {
-    stateUserId: (state) => {
-      return state.appUser.userId
-    },
-    stateUserInfo: (state) => {
-      return (
-        state.appUser.country.length > 0 &&
-        state.appUser.region.length > 0 &&
-        state.appUser.name.length > 0 &&
-        state.appUser.job.length > 0 &&
-        state.appUser.title.length > 0 &&
-        state.appUser.userId.length > 0
-      )
-    },
-    stateProjectInfo: (state) => {
+    stateUserId: (state) => state.appUser.userId,
+    stateUserInfo: (state) =>
+      state.appUser.country.length > 0 &&
+      state.appUser.region.length > 0 &&
+      state.appUser.name.length > 0 &&
+      state.appUser.job.length > 0 &&
+      state.appUser.title.length > 0 &&
+      state.appUser.userId.length > 0,
+
+    stateProjectInfo(state): boolean {
       return (
         state.projectInfo.projectId.length > 0 &&
         state.projectInfo.userId.length > 0 &&
-        state.projectInfo.location.length > 0
+        state.projectInfo.location.length > 0 &&
+        this.targetPopulationTotal > 0
       )
     },
-    targetPopulationTotal: (state) => {
-      return state.projectInfo.targetPopulation.reduce((total, current) => {
-        return (total += current.count)
-      }, 0)
-    },
-    houseSize: (state) => {
-      return state.houses.map((house) =>
-        house.familyMembers.reduce((total, current) => {
-          return (total += current.count)
-        }, 0)
+
+    targetPopulationTotal: (state) =>
+      state.projectInfo.targetPopulation.reduce((total, current) => (total += current.count), 0),
+
+    houseSizes: (state) =>
+      state.houses.map((house) =>
+        house.familyMembers.reduce((total, current) => (total += current.count), 0)
+      ),
+
+    stateHouses(state): boolean {
+      const myHouseSize = this.houseSizes
+      console.log(myHouseSize)
+
+      // Check if houseSizes is not an array or is empty, return false early.
+      if (!Array.isArray(myHouseSize) || !myHouseSize.length) {
+        return false
+      }
+
+      // Ensure all houses meet the conditions
+      return state.houses.every(
+        (house, index) =>
+          house.familyId && house.projectId && house.userId && myHouseSize[index] > 0
       )
     },
-    stateHouses: (state) => {
-      let res = true
-      state.houses.forEach((house) => {
-        if (!house.familyId || !house.projectId || !house.userId) {
-          res = false
-        }
+
+    stateMenue(state): boolean {
+      return state.menu.every((menuItem) => {
+        menuItem.userId.length > 0 &&
+          menuItem.projectId.length > 0 &&
+          menuItem.KeyFamily.length > 0 &&
+          menuItem.MenuName.length > 0 &&
+          menuItem.Weight > 0
       })
-      return res
-    },
-    stateMenue: (state) => {
-      return state.menu.length > 0
     }
   },
 
