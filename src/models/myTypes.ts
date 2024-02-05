@@ -25,28 +25,34 @@ const AnswerItemZod = z.object({
   questionId: z.string(),
   optionId: z.string(),
   optionText: z.string().min(3).max(200),
-  score: z.number(),
+  score: z.number()
 })
 
-export type AnswerItem=z.infer<typeof AnswerItemZod>
+export type AnswerItem = z.infer<typeof AnswerItemZod>
 
-export interface QuestionItem {
-  categoryId: string
-  questionId: string
-  questionText: string
-}
+const QuestionItemZod = z.object({
+  categoryId: z.string(),
+  questionId: z.string(),
+  questionText: z.string().min(3).max(500)
+})
 
-export interface CategoryItem {
-  categoryId: string
-  categoryText: string
-}
+export type QuestionItem = z.infer<typeof QuestionItemZod>
+
+const CategoryItemZod = z.object({
+  categoryId: z.string(),
+  categoryText: z.string().min(3).max(200)
+})
+
+export type CategoryItem = z.infer<typeof CategoryItemZod>
 
 //現在ユーザーが利用しているデータセット
-export interface CurrentDataSet {
-  fct: string
-  dri: string
-  project: string
-}
+const CurrentDataSet = z.object({
+  fct: z.string(),
+  dri: z.string(),
+  project: z.string()
+})
+
+export type CurrentDataSet = z.infer<typeof CurrentDataSet>
 
 export const currentDataSetDefault = {
   fct: '',
@@ -55,16 +61,18 @@ export const currentDataSetDefault = {
 }
 
 // 現在のユーザー情報
-export interface AppUser {
-  userId: string
-  name: string
-  job: string
-  title: string
-  country: string
-  region: string
-  town: string
+const AppUserZod = z.object({
+  userId: z.string(),
+  name: z.string().min(3).max(200),
+  job: z.string().min(3).max(200),
+  title: z.string().min(3).max(200),
+  country: z.string().min(3).max(200),
+  region: z.string().min(3).max(200),
+  town: z.string().min(3).max(200),
   currentDataSet: CurrentDataSet
-}
+})
+
+export type AppUser = z.infer<typeof AppUserZod>
 
 export const appUserDefault = {
   userId: '',
@@ -77,17 +85,6 @@ export const appUserDefault = {
   currentDataSet: currentDataSetDefault
 }
 
-export interface ProjectInfo {
-  userId: string
-  projectName: string
-  projectId: string
-  locationId: string
-  location: string
-  targetPopulation: FamilyMembers
-}
-
-export interface ProjectInfos extends Array<ProjectInfo> {}
-
 export const sampleFamilyMemberCategory = [
   'child under 6 month',
   'child 6-23 month',
@@ -97,14 +94,20 @@ export const sampleFamilyMemberCategory = [
   'adolescent all'
 ]
 
-export interface DriItem {
-  DriId: string
-  Name: string
-  En: number
-  Fe: number
-  Pr: number
-  Va: number
-}
+const DriItemZod = z.object({
+  DriId: z.string(),
+  Name: z.string().min(3).max(200),
+  En: z.number().gt(0),
+  Fe: z.number().gt(0),
+  Pr: z.number().gt(0),
+  Va: z.number().gt(0)
+})
+
+const DriItemsZod = z.array(DriItemZod)
+
+export type DriItem = z.infer<typeof DriItemZod>
+
+export type DriItems = z.infer<typeof DriItemsZod>
 
 export const driItemDefault = {
   DriId: '',
@@ -115,24 +118,28 @@ export const driItemDefault = {
   Va: 0
 }
 
-export interface DriItems extends Array<DriItem> {}
+const DriItemsWithNoteZod = z.object({
+  data: DriItemsZod,
+  note: z.string(),
+  userId: z.string()
+})
 
-export interface DriItemsWithNote {
-  data: DriItems
-  note: string
-  userId: string
-}
+export type DriItemsWithNote = z.infer<typeof DriItemsWithNoteZod>
 
-export interface FamilyMember extends DriItem {
-  count: number
-}
+const FamilyMemberZod = DriItemZod.extend({
+  breed: z.string()
+})
+
+const FamilyMembersZod = z.array(FamilyMemberZod)
+
+export type FamilyMember = z.infer<typeof FamilyMemberZod>
+
+export type FamilyMembers = z.infer<typeof FamilyMembersZod>
 
 export const familyMemberDefault = {
   ...driItemDefault,
   count: 0
 }
-
-export interface FamilyMembers extends Array<FamilyMember> {}
 
 const familyMembersDefault = sampleFamilyMemberCategory.map((item, index) => {
   return {
@@ -142,16 +149,35 @@ const familyMembersDefault = sampleFamilyMemberCategory.map((item, index) => {
   }
 })
 
-export interface House {
-  projectId: string
-  userId: string
-  locationId: string
-  familyId: string
-  familyName: string
-  familyMembers: FamilyMembers
-}
+const ProjectInfoZod = z.object({
+  userId: z.string(),
+  projectName: z.string().min(3).max(200),
+  projectId: z.string(),
+  locationId: z.string(),
+  location: z.string().min(3).max(200),
+  targetPopulation: FamilyMembersZod
+})
 
-export interface Houses extends Array<House> {}
+const ProjectInfosZod = z.array(ProjectInfoZod)
+
+export type ProjectInfo = z.infer<typeof ProjectInfoZod>
+
+export type ProjectInfos = z.infer<typeof ProjectInfosZod>
+
+const HouseZod = z.object({
+  projectId: z.string(),
+  userId: z.string(),
+  locationId: z.string(),
+  familyId: z.string(),
+  familyName: z.string().min(3).max(200),
+  familyMembers: FamilyMembersZod
+})
+
+const HousesZod = z.array(HouseZod)
+
+export type House = z.infer<typeof HouseZod>
+
+export type Houses = z.infer<typeof HousesZod>
 
 export const houseDefault = {
   projectId: '',
@@ -171,18 +197,24 @@ export const projectInfoDefault = {
   targetPopulation: familyMembersDefault
 }
 
-export interface FctItem {
-  keyFct: string
-  FoodGroupId: string
-  FctName: string
-  FoodGroup: string
-  Carb: number
-  En: number
-  Fe: number
-  Fat: number
-  Pr: number
-  Va: number
-}
+const FctItemZod = z.object({
+  keyFct: z.string(),
+  FoodGroupId: z.string(),
+  FctName: z.string().min(3).max(200),
+  FoodGroup: z.string().min(3).max(200),
+  Carb: z.number().gt(0),
+  En: z.number().gt(0),
+  Pr: z.number().gt(0),
+  Fe: z.number().gt(0),
+  Fat: z.number().gt(0),
+  Va: z.number().gt(0)
+})
+
+const FctItemsZod = z.array(FctItemZod)
+
+export type FctItem = z.infer<typeof FctItemZod>
+
+export type FctItems = z.infer<typeof FctItemsZod>
 
 export const fctItemDefault = {
   keyFct: '',
@@ -197,14 +229,14 @@ export const fctItemDefault = {
   Va: 0
 }
 
-export interface FctItems extends Array<FctItem> {}
-
 // fct tableに検索用の付加情報を追加したもの
-export interface FctItemsWithNote {
-  data: FctItems
-  note: string
-  userId: string
-}
+const FctItemsWithNoteZod = z.object({
+  data: FctItemsZod,
+  note: z.string().min(3).max(500),
+  userId: z.string()
+})
+
+export type FctItemsWithNote = Zod.infer<typeof FctItemsWithNoteZod>
 
 export const fctItemsWIthNoteDefault = {
   data: [fctItemDefault],
@@ -218,12 +250,16 @@ export const driItemsWIthNoteDefault = {
   userId: ''
 }
 
-export interface FctStar {
-  IdStar: string
-  Star: boolean
-}
+const FctStarZod = z.object({
+  IdStar: z.string(),
+  Star: z.boolean()
+})
 
-export interface FctStars extends Array<FctStar> {}
+const FctStarsZod = z.array(FctStarZod)
+
+export type FctStar = z.infer<typeof FctStarZod>
+
+export type FctStars = z.infer<typeof FctStarsZod>
 
 export enum setDigitKey {
   energy,
@@ -232,12 +268,14 @@ export enum setDigitKey {
   iron
 }
 
-export interface FctRowItem extends FctItem {
-  NutrientValue: number
-  Star: boolean
-  Weight: number
-  MenuName: string
-}
+const FctRowItemZod = FctItemZod.extend({
+  NutrientValue: z.number().gt(0),
+  Star: z.boolean(),
+  Weight: z.number().gt(0),
+  MenuName: z.string().min(3).max(200)
+})
+
+export type FctRowItem = z.infer<typeof FctRowItemZod>
 
 export const fctRowItemDefault = {
   ...fctItemDefault,
@@ -247,11 +285,13 @@ export const fctRowItemDefault = {
   MenuName: ''
 }
 
-export interface FctAddOptions {
-  NutrientValue: number
-  Weight: number
-  MenuName: string
-}
+const FctAddOptionsZod = z.object({
+  NutrientValue: z.number().gt(0),
+  Weight: z.number().gt(0),
+  MenuName: z.string().min(3).max(200)
+})
+
+export type FctAddOptions = z.infer<typeof FctAddOptionsZod>
 
 export const sampleFood = [
   { keyFct: '001', FoodGroupId: '1', FoodGroup: 'Grains, roots and tubers', Name: 'Rice' },
@@ -309,10 +349,12 @@ export const sampleFood = [
   { keyFct: '031', FoodGroupId: '9', FoodGroup: 'oil/fat', Name: 'Maize oil' }
 ]
 
-export interface nutrientLabel {
-  label: string
-  value: keyof FctItem
-}
+const nutrientLabelZod = z.object({
+  label: z.string().min(3).max(200),
+  value: FctItemZod.keyof()
+})
+
+export type nutrientLabel = z.infer<typeof nutrientLabelZod>
 
 export const nutrientLabels: nutrientLabel[] = [
   { value: 'Carb', label: 'Carbohydrate' },
@@ -322,13 +364,23 @@ export const nutrientLabels: nutrientLabel[] = [
   { value: 'Fat', label: 'Fat' }
 ]
 
-export interface MenuItem extends FctRowItem {
-  userId: string
-  projectId: string
-  KeyFamily: string
-  menuItemId: string
-  Date: Date
-}
+const MenuItemZod = FctRowItemZod.extend({
+  userId: z.string(),
+  projectId: z.string(),
+  KeyFamily: z.string().min(3).max(200),
+  menuItemId: z.string(),
+  Date: z.date()
+})
+
+const MenuItemsZod = z.array(MenuItemZod)
+
+const MenuesZod = z.array(MenuItemsZod)
+
+export type MenuItem = z.infer<typeof MenuItemZod>
+
+export type Menu = z.infer<typeof MenuItemsZod>
+
+export type Menues = z.infer<typeof MenuesZod>
 
 export const menuItemDefault = {
   ...fctRowItemDefault,
@@ -344,10 +396,6 @@ export const menuItemDefault = {
 //   userId: string
 //   items: Array<MenuItem>
 // }
-
-export interface Menu extends Array<MenuItem> {}
-
-export interface Menues extends Array<Menu> {}
 
 export const commonMenus: string[] = [
   '1st meal',

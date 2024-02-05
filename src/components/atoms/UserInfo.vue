@@ -6,18 +6,19 @@ import { computed, defineEmits, type PropType } from 'vue'
 
 const props = defineProps({
   appUser: {
-    type: Object as PropType<myVal.AppUser>,
+    type: Object as PropType<myVal.AppUser | null>,
     required: true
   }
 })
 
 const emits = defineEmits<{
-  (e: 'update:appUser', value: myVal.AppUser): void
+  (e: 'update:appUser', value: myVal.AppUser | null): void
 }>()
 
 const appUserComp = computed({
   get() {
-    return props.appUser
+    const res = props.appUser ? props.appUser : myVal.appUserDefault
+    return res
   },
   set(val) {
     emits('update:appUser', val)
@@ -81,5 +82,6 @@ const appUserComp = computed({
       lazy-rules
       :rules="[(val) => (val && val.length > 0) || 'Please fill in the town/city(optional)']"
     />
+    <q-btn class="q-ma-sm" label="Save it" dense />
   </q-card>
 </template>

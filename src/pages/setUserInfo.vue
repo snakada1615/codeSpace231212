@@ -17,7 +17,10 @@ const appUserStore = computed({
 </script>
 
 <template>
-  <q-card>
-    <userInfo v-model:app-user="appUserStore" />
-  </q-card>
+  <div>
+    <q-card v-if="appUserStore.userId">
+      <userInfo v-model:app-user="appUserStore" />
+    </q-card>
+    <p v-else>you don't have userId. please start from login again</p>
+  </div>
 </template>
