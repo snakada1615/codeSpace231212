@@ -1,11 +1,11 @@
 import z from 'zod'
 
-const DiversityZod = z.object({
+export const DiversityZod = z.object({
   name: z.string().min(3).max(40),
   status: z.boolean()
 })
 
-const DiversityStatesZod = z.array(DiversityZod)
+export const DiversityStatesZod = z.array(DiversityZod)
 
 export type DiversityState = z.infer<typeof DiversityZod>
 
@@ -20,7 +20,7 @@ export enum dataSetNames {
   'menu'
 }
 
-const AnswerItemZod = z.object({
+export const AnswerItemZod = z.object({
   categoryId: z.string(),
   questionId: z.string(),
   optionId: z.string(),
@@ -30,7 +30,7 @@ const AnswerItemZod = z.object({
 
 export type AnswerItem = z.infer<typeof AnswerItemZod>
 
-const QuestionItemZod = z.object({
+export const QuestionItemZod = z.object({
   categoryId: z.string(),
   questionId: z.string(),
   questionText: z.string().min(3).max(500)
@@ -38,7 +38,7 @@ const QuestionItemZod = z.object({
 
 export type QuestionItem = z.infer<typeof QuestionItemZod>
 
-const CategoryItemZod = z.object({
+export const CategoryItemZod = z.object({
   categoryId: z.string(),
   categoryText: z.string().min(3).max(200)
 })
@@ -61,7 +61,7 @@ export const currentDataSetDefault = {
 }
 
 // 現在のユーザー情報
-const AppUserZod = z.object({
+export const AppUserZod = z.object({
   userId: z.string(),
   name: z.string().min(3).max(200),
   job: z.string().min(3).max(200),
@@ -94,7 +94,7 @@ export const sampleFamilyMemberCategory = [
   'adolescent all'
 ]
 
-const DriItemZod = z.object({
+export const DriItemZod = z.object({
   DriId: z.string(),
   Name: z.string().min(3).max(200),
   En: z.number().gt(0),
@@ -103,7 +103,7 @@ const DriItemZod = z.object({
   Va: z.number().gt(0)
 })
 
-const DriItemsZod = z.array(DriItemZod)
+export const DriItemsZod = z.array(DriItemZod)
 
 export type DriItem = z.infer<typeof DriItemZod>
 
@@ -118,7 +118,7 @@ export const driItemDefault = {
   Va: 0
 }
 
-const DriItemsWithNoteZod = z.object({
+export const DriItemsWithNoteZod = z.object({
   data: DriItemsZod,
   note: z.string(),
   userId: z.string()
@@ -126,11 +126,11 @@ const DriItemsWithNoteZod = z.object({
 
 export type DriItemsWithNote = z.infer<typeof DriItemsWithNoteZod>
 
-const FamilyMemberZod = DriItemZod.extend({
+export const FamilyMemberZod = DriItemZod.extend({
   breed: z.string()
 })
 
-const FamilyMembersZod = z.array(FamilyMemberZod)
+export const FamilyMembersZod = z.array(FamilyMemberZod)
 
 export type FamilyMember = z.infer<typeof FamilyMemberZod>
 
@@ -141,7 +141,7 @@ export const familyMemberDefault = {
   count: 0
 }
 
-const familyMembersDefault = sampleFamilyMemberCategory.map((item, index) => {
+export const familyMembersDefault = sampleFamilyMemberCategory.map((item, index) => {
   return {
     ...familyMemberDefault,
     DriId: String(index),
@@ -149,7 +149,7 @@ const familyMembersDefault = sampleFamilyMemberCategory.map((item, index) => {
   }
 })
 
-const ProjectInfoZod = z.object({
+export const ProjectInfoZod = z.object({
   userId: z.string(),
   projectName: z.string().min(3).max(200),
   projectId: z.string(),
@@ -158,13 +158,13 @@ const ProjectInfoZod = z.object({
   targetPopulation: FamilyMembersZod
 })
 
-const ProjectInfosZod = z.array(ProjectInfoZod)
+export const ProjectInfosZod = z.array(ProjectInfoZod)
 
 export type ProjectInfo = z.infer<typeof ProjectInfoZod>
 
 export type ProjectInfos = z.infer<typeof ProjectInfosZod>
 
-const HouseZod = z.object({
+export const HouseZod = z.object({
   projectId: z.string(),
   userId: z.string(),
   locationId: z.string(),
@@ -173,7 +173,7 @@ const HouseZod = z.object({
   familyMembers: FamilyMembersZod
 })
 
-const HousesZod = z.array(HouseZod)
+export const HousesZod = z.array(HouseZod)
 
 export type House = z.infer<typeof HouseZod>
 
@@ -197,7 +197,7 @@ export const projectInfoDefault = {
   targetPopulation: familyMembersDefault
 }
 
-const FctItemZod = z.object({
+export const FctItemZod = z.object({
   keyFct: z.string(),
   FoodGroupId: z.string(),
   FctName: z.string().min(3).max(200),
@@ -210,7 +210,7 @@ const FctItemZod = z.object({
   Va: z.number().gt(0)
 })
 
-const FctItemsZod = z.array(FctItemZod)
+export const FctItemsZod = z.array(FctItemZod)
 
 export type FctItem = z.infer<typeof FctItemZod>
 
@@ -230,7 +230,7 @@ export const fctItemDefault = {
 }
 
 // fct tableに検索用の付加情報を追加したもの
-const FctItemsWithNoteZod = z.object({
+export const FctItemsWithNoteZod = z.object({
   data: FctItemsZod,
   note: z.string().min(3).max(500),
   userId: z.string()
@@ -250,12 +250,12 @@ export const driItemsWIthNoteDefault = {
   userId: ''
 }
 
-const FctStarZod = z.object({
+export const FctStarZod = z.object({
   IdStar: z.string(),
   Star: z.boolean()
 })
 
-const FctStarsZod = z.array(FctStarZod)
+export const FctStarsZod = z.array(FctStarZod)
 
 export type FctStar = z.infer<typeof FctStarZod>
 
@@ -268,7 +268,7 @@ export enum setDigitKey {
   iron
 }
 
-const FctRowItemZod = FctItemZod.extend({
+export const FctRowItemZod = FctItemZod.extend({
   NutrientValue: z.number().gt(0),
   Star: z.boolean(),
   Weight: z.number().gt(0),
@@ -285,7 +285,7 @@ export const fctRowItemDefault = {
   MenuName: ''
 }
 
-const FctAddOptionsZod = z.object({
+export const FctAddOptionsZod = z.object({
   NutrientValue: z.number().gt(0),
   Weight: z.number().gt(0),
   MenuName: z.string().min(3).max(200)
@@ -349,7 +349,7 @@ export const sampleFood = [
   { keyFct: '031', FoodGroupId: '9', FoodGroup: 'oil/fat', Name: 'Maize oil' }
 ]
 
-const nutrientLabelZod = z.object({
+export const nutrientLabelZod = z.object({
   label: z.string().min(3).max(200),
   value: FctItemZod.keyof()
 })
@@ -364,7 +364,7 @@ export const nutrientLabels: nutrientLabel[] = [
   { value: 'Fat', label: 'Fat' }
 ]
 
-const MenuItemZod = FctRowItemZod.extend({
+export const MenuItemZod = FctRowItemZod.extend({
   userId: z.string(),
   projectId: z.string(),
   KeyFamily: z.string().min(3).max(200),
@@ -372,9 +372,9 @@ const MenuItemZod = FctRowItemZod.extend({
   Date: z.date()
 })
 
-const MenuItemsZod = z.array(MenuItemZod)
+export const MenuItemsZod = z.array(MenuItemZod)
 
-const MenuesZod = z.array(MenuItemsZod)
+export const MenuesZod = z.array(MenuItemsZod)
 
 export type MenuItem = z.infer<typeof MenuItemZod>
 

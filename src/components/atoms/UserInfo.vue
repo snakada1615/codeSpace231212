@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import * as myVal from '@/models/MyInterface'
+import * as myVal from '@/models/myTypes'
 import { computed, defineEmits, type PropType } from 'vue'
 // import { useProjectData } from '@/stores/mainStore'
 // import { ref } from 'vue'
@@ -24,6 +24,19 @@ const appUserComp = computed({
     emits('update:appUser', val)
   }
 })
+
+function isValidValue(
+  val: number | string | null,
+  key: 'name' | 'job' | 'title' | 'country' | 'region' | 'town'
+): boolean | string {
+  const result = myVal.AppUserZod.shape[key].safeParse(val)
+  if (result.success) {
+    return true // Or some validation logic that returns a boolean
+  } else {
+    console.log(result.error.errors)
+    return result.error.errors.map((e) => e.message).join(', ')
+  }
+}
 </script>
 
 <template>
@@ -35,7 +48,7 @@ const appUserComp = computed({
       v-model="appUserComp.name"
       label="* Name"
       lazy-rules
-      :rules="[(val) => (val && val.length > 3) || 'Name should be longer than 3 characters']"
+      :rules="[(v) => isValidValue(v, 'name')]"
     />
     <q-input
       dense
@@ -44,7 +57,7 @@ const appUserComp = computed({
       v-model="appUserComp.job"
       label="Job"
       lazy-rules
-      :rules="[(val) => (val && val.length > 3) || 'Job should be longer than 3 characters']"
+      :rules="[(v) => isValidValue(v, 'job')]"
     />
     <q-input
       dense
@@ -53,7 +66,7 @@ const appUserComp = computed({
       v-model="appUserComp.title"
       label="Title"
       lazy-rules
-      :rules="[(val) => (val && val.length > 0) || 'Please fill in the title']"
+      :rules="[(v) => isValidValue(v, 'title')]"
     />
     <q-input
       dense
@@ -62,7 +75,7 @@ const appUserComp = computed({
       v-model="appUserComp.country"
       label="* Country"
       lazy-rules
-      :rules="[(val) => (val && val.length > 3) || 'Conutry should be longer than 3 characters']"
+      :rules="[(v) => isValidValue(v, 'country')]"
     />
     <q-input
       dense
@@ -71,7 +84,7 @@ const appUserComp = computed({
       v-model="appUserComp.region"
       label="* region"
       lazy-rules
-      :rules="[(val) => (val && val.length > 0) || 'Please fill in the region(optional)']"
+      :rules="[(v) => isValidValue(v, 'region')]"
     />
     <q-input
       dense
@@ -80,7 +93,7 @@ const appUserComp = computed({
       v-model="appUserComp.town"
       label="* town/city"
       lazy-rules
-      :rules="[(val) => (val && val.length > 0) || 'Please fill in the town/city(optional)']"
+      :rules="[(v) => isValidValue(v, 'town')]"
     />
     <q-btn class="q-ma-sm" label="Save it" dense />
   </q-card>
