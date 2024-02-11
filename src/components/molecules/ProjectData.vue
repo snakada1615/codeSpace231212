@@ -1,11 +1,11 @@
 <script setup lang="ts">
-import * as myVal from '@/models/MyInterface'
+import * as myVal from '@/models/myTypes'
 import { computed, type PropType } from 'vue'
 import DriSelect from '@/components/atoms/DriSelect.vue'
 
 const props = defineProps({
   projectInfo: {
-    type: Object as PropType<myVal.ProjectInfo>,
+    type: Object as PropType<myVal.ProjectInfo | null>,
     required: true
   }
 })
@@ -15,13 +15,17 @@ const emits = defineEmits<{
   (e: 'saveProjectInfo', value: myVal.ProjectInfo): void
 }>()
 
+const projectInfoComputed = computed(() => {
+  return props.projectInfo || myVal.projectInfoDefault
+})
+
 const familyMembersComputed = computed({
   get() {
-    return props.projectInfo.targetPopulation
+    return projectInfoComputed.value.targetPopulation
   },
   set(val) {
     const res = {
-      ...props.projectInfo,
+      ...projectInfoComputed.value,
       familyMembers: val
     }
     emits('update:projectInfo', res)
@@ -29,7 +33,7 @@ const familyMembersComputed = computed({
 })
 
 const totalFamilySize = computed(() => {
-  return props.projectInfo.targetPopulation.reduce((sum, current) => {
+  return projectInfoComputed.value.targetPopulation.reduce((sum, current) => {
     sum += current.count
     return sum
   }, 0)
@@ -37,11 +41,11 @@ const totalFamilySize = computed(() => {
 
 const locationComputed = computed({
   get() {
-    return props.projectInfo.location
+    return projectInfoComputed.value.location
   },
   set(val) {
     const res = {
-      ...props.projectInfo,
+      ...projectInfoComputed.value,
       location: val
     }
     emits('update:projectInfo', res)
@@ -50,11 +54,11 @@ const locationComputed = computed({
 
 const projectNameComputed = computed({
   get() {
-    return props.projectInfo.projectName
+    return projectInfoComputed.value.projectName
   },
   set(val) {
     const res = {
-      ...props.projectInfo,
+      ...projectInfoComputed.value,
       projectName: val
     }
     emits('update:projectInfo', res)
@@ -62,8 +66,8 @@ const projectNameComputed = computed({
 })
 
 const addProjectInfo = () => {
-  console.log(props.projectInfo)
-  emits('saveProjectInfo', props.projectInfo)
+  console.log(projectInfoComputed.value)
+  emits('saveProjectInfo', projectInfoComputed.value)
 }
 
 const nameRules = computed(() => {

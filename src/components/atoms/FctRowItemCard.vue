@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import * as myVal from 'src/models/MyInterface'
+import * as myVal from 'src/models/myTypes'
 import { computed, type ComputedRef, type PropType, ref } from 'vue'
 import type { QTableProps } from 'quasar'
 
@@ -26,6 +26,9 @@ const emits = defineEmits<{
   (e: 'update:star', value: boolean): void
   (e: 'update:fctAddOptions', value: myVal.FctAddOptions): void
 }>()
+
+// fctSelectedItemに追加要素（fctAppOptions）を付与
+const fctAddOptionsRef = ref<myVal.FctAddOptions>(props.fctAddOptions)
 
 // menuItem.Star更新
 const onChangeStar = (value: boolean): void => {
@@ -73,18 +76,31 @@ function filterMenu(val: string, update: (cb: () => void) => void) {
   })
 }
 
-// fctSelectedItemに追加要素（fctAppOptions）を付与
-const fctAddOptionsRef = ref<myVal.FctAddOptions>(props.fctAddOptions)
-
 // table col定義
 // 列の定義
 const columnsMenuItem: QTableProps['columns'] = [
+  {
+    name: 'star',
+    required: true,
+    label: 'star',
+    align: 'left',
+    field: 'Star',
+    sortable: true
+  },
   {
     name: 'commodity',
     required: true,
     label: 'Commodity',
     align: 'left',
     field: 'FctName',
+    sortable: true
+  },
+  {
+    name: 'Menu',
+    required: true,
+    label: 'Menu',
+    align: 'left',
+    field: 'MenuName',
     sortable: true
   },
   {
@@ -162,65 +178,61 @@ const allRule = computed(() => menuRules.value && weightRules.value)
       dense
       :rows="[rowsMenuItem]"
       :columns="columnsMenuItem"
+    >
+      <template v-slot:body-cell-star="elem">
+        <!-- <div v-if="props.row.star">wef</div>
+        <div v-else>false</div> -->
+        <q-td :props="elem">
+          <q-checkbox
+            dense
+            size="sm"
+            :model-value="elem.row.Star"
+            color="teal"
+            class="q-mt-md q-ml-md justify-center"
+            checked-icon="star"
+            unchecked-icon="star_border"
+            @update:model-value="onChangeStar"
+          />
+        </q-td>
+      </template>
+      <template v-slot:body-cell-Menu="elem">
+        <q-td :props="elem" :style="{ maxWidth: '100px' }">
+          <q-select
+            dense
+            hide-bottom-space
+            v-model:model-value="fctAddOptionsRef.MenuName"
+            use-input
+            use-chips
+            @new-value="addNewMenuName"
+            :options="menuNames"
+            @filter="filterMenu"
+            :error="!menuRules"
+            error-message="'please set menu name'"
+          />
+        </q-td>
+      </template>
+      <template v-slot:body-cell-Wt="elem">
+        <q-td :props="elem" :style="{ maxWidth: '60px' }">
+          <q-input
+            type="number"
+            debounce="500"
+            dense
+            v-model.number="fctAddOptionsRef.Weight"
+            error-message="only number is allowed"
+            :error="!weightRules"
+          ></q-input>
+        </q-td>
+      </template>
+    </q-table>
+
+    <q-btn
+      round
+      ripple
+      color="primary"
+      icon="add"
+      size="sm"
+      :disable="!allRule"
+      @click="onFctAddOptions"
     />
-    <div class="row bg-grey-4">
-      <div class="col-1 text-center">
-        <div>add</div>
-      </div>
-      <div class="col-6 text-center">MenuName</div>
-      <div class="col text-center">Weight</div>
-      <div class="col text-center">Star</div>
-    </div>
-    <div class="row flex-center text-center">
-      <div class="col-1">
-        <q-btn
-          round
-          ripple
-          color="primary"
-          icon="add"
-          size="sm"
-          :disable="!allRule"
-          @click="onFctAddOptions"
-        />
-      </div>
-      <div class="col-6">
-        <q-select
-          dense
-          hide-bottom-space
-          v-model:model-value="fctAddOptionsRef.MenuName"
-          use-input
-          use-chips
-          @new-value="addNewMenuName"
-          :options="menuNames"
-          @filter="filterMenu"
-          :error="!menuRules"
-          error-message="'please set menu name'"
-        />
-      </div>
-      <div class="col">
-        <q-input
-          type="number"
-          debounce="500"
-          dense
-          v-model.number="fctAddOptionsRef.Weight"
-          error-message="only number is allowed"
-          :error="!weightRules"
-        ></q-input>
-      </div>
-      <div class="col">
-        <q-checkbox
-          dense
-          size="sm"
-          :model-value="props.star"
-          label="mark as favorite"
-          color="teal"
-          class="q-mt-md q-ml-md justify-center"
-          checked-icon="star"
-          unchecked-icon="star_border"
-          indeterminate-icon="help"
-          @update:model-value="onChangeStar"
-        />
-      </div>
-    </div>
   </q-card>
 </template>

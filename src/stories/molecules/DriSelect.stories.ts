@@ -49,3 +49,19 @@ export const Primary: Story = {
     familyMembers
   }
 }
+
+export const Secondary: Story = {
+  render: (args) => ({
+    components: { DriSelect },
+    setup() {
+      return { args }
+    },
+    template: '<DriSelect v-bind="args" @update:familyMembers="onUpdateFamilyMember"/>',
+    methods: {
+      onUpdateFamilyMember: action('onUpdateFamilyMember')
+    }
+  }),
+  args: {
+    familyMembers: null
+  }
+}

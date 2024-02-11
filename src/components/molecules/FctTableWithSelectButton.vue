@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import FctTable from '../atoms/FctTableSingleNutrient.vue'
 import FctRowItemCard from '@/components/atoms/FctRowItemCard.vue'
-import * as myVal from 'src/models/MyInterface'
+import * as myVal from 'src/models/myTypes'
 import { ref, computed, type PropType } from 'vue'
 
 const props = defineProps({
@@ -11,10 +11,9 @@ const props = defineProps({
   },
 
   fctFavoriteList: {
-    type: Object as PropType<myVal.FctStars>,
+    type: Object as PropType<myVal.FctStars | []>,
     required: true
   },
-
   commonMenus: {
     type: Object as PropType<typeof myVal.commonMenus>,
     required: true
@@ -26,18 +25,18 @@ const emits = defineEmits<{
   (e: 'newFctRowItem', value: myVal.FctRowItem): void
 }>()
 
-let selectedFct = ref<myVal.FctItem>({
-  keyFct: '',
-  FoodGroupId: '',
-  FctName: '',
-  FoodGroup: '',
-  Carb: 0,
-  En: 0,
-  Fe: 0,
-  Fat: 0,
-  Pr: 0,
-  Va: 0
+let selectedFct = ref<myVal.FctItem>(myVal.fctItemDefault)
+
+const fctFavoriteListDefault = props.fct.map((item) => {
+  return {
+    IdStar: item.keyFct,
+    Star: false
+  }
 })
+
+const fctFavoriteListComputed = computed(() =>
+  props.fctFavoriteList.length === 0 ? fctFavoriteListDefault : props.fctFavoriteList
+)
 
 function onFctSelected(val: myVal.FctRowItem) {
   // menuItem.value = val
@@ -47,7 +46,8 @@ function onFctSelected(val: myVal.FctRowItem) {
 const starComputed = computed({
   get() {
     return (
-      props.fctFavoriteList.find((item) => item.IdStar === selectedFct.value.keyFct)?.Star || false
+      fctFavoriteListComputed.value.find((item) => item.IdStar === selectedFct.value.keyFct)
+        ?.Star || false
     )
   },
   set(val) {
@@ -62,7 +62,7 @@ const fctAddOptions = ref<myVal.FctAddOptions>({
 })
 
 const onUpdateFctStar = (val: boolean) => {
-  const res: myVal.FctStars = props.fctFavoriteList.map((item) => {
+  const res: myVal.FctStars = fctFavoriteListComputed.value.map((item) => {
     return {
       IdStar: item.IdStar,
       Star: item.IdStar === selectedFct.value.keyFct ? val : item.Star
@@ -84,7 +84,7 @@ const onAddNewFctRowItem = (val: myVal.FctAddOptions) => {
   <q-card>
     <FctTable
       :fct="props.fct"
-      :fctFavoriteList="props.fctFavoriteList"
+      :fctFavoriteList="fctFavoriteListComputed"
       @row-click="onFctSelected"
     />
     <FctRowItemCard

@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import FctTableWithSelectButtonVue from './FctTableWithSelectButton.vue'
 import menuTable from '../atoms/menuTable.vue'
-import * as myVal from 'src/models/MyInterface'
+import * as myVal from 'src/models/myTypes'
 import { computed, type PropType } from 'vue'
 
 const props = defineProps({
@@ -11,12 +11,12 @@ const props = defineProps({
   },
 
   fctFavoriteList: {
-    type: Object as PropType<myVal.FctStars>,
+    type: Object as PropType<myVal.FctStars | null>,
     required: true
   },
 
   menu: {
-    type: Object as PropType<myVal.Menu>,
+    type: Object as PropType<myVal.Menu | []>,
     required: true
   }
 })
@@ -30,8 +30,15 @@ const myMenu = computed<myVal.Menu>(() => {
   return props.menu
 })
 
+const fctStarDefault: myVal.FctStars = props.fct.map((item) => {
+  return {
+    IdStar: item.keyFct,
+    Star: false
+  }
+})
+
 const fctFavoriteListComp = computed({
-  get: () => props.fctFavoriteList,
+  get: () => props.fctFavoriteList || fctStarDefault,
   set: (val: myVal.FctStars) => {
     emits('update:fctFavoriteList', val)
   }

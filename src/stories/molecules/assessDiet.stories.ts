@@ -64,3 +64,23 @@ export const Primary: Story = {
     menu: myMenu
   }
 }
+
+export const Secondary: Story = {
+  render: (args) => ({
+    components: { assessDietVue },
+    setup() {
+      return { args }
+    },
+    template:
+      '<assessDietVue v-bind="args" @addMenuItem = "onAddMenuItem" @update:fctFavoriteList = "onUpdateFctFavoriteList" />',
+    methods: {
+      onAddMenuItem: action('addMenuItem'),
+      onUpdateFctFavoriteList: action('onUpdateFctFavoriteList')
+    }
+  }),
+  args: {
+    fct: myFct,
+    fctFavoriteList: null,
+    menu: []
+  }
+}

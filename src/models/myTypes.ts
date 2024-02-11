@@ -11,6 +11,11 @@ export type DiversityState = z.infer<typeof DiversityZod>
 
 export type DiversityStates = z.infer<typeof DiversityStatesZod>
 
+export const diversityStateDefault = {
+  name: '',
+  status: false
+}
+
 export enum dataSetNames {
   'appUser',
   'projectInfos',
@@ -127,7 +132,7 @@ export const DriItemsWithNoteZod = z.object({
 export type DriItemsWithNote = z.infer<typeof DriItemsWithNoteZod>
 
 export const FamilyMemberZod = DriItemZod.extend({
-  breed: z.string()
+  count: z.number()
 })
 
 export const FamilyMembersZod = z.array(FamilyMemberZod)

@@ -1,7 +1,7 @@
 import type { Meta, StoryObj, ArgTypes } from '@storybook/vue3'
 import { action } from '@storybook/addon-actions'
 import FctTableWithSelectButtonVue from '@/components/molecules/FctTableWithSelectButton.vue'
-import * as myVal from '@/models/MyInterface'
+import * as myVal from '@/models/myTypes'
 import FakerFunc from '@/models/fakerFunc'
 
 const myFct: myVal.FctItems = FakerFunc.createFcts()
@@ -45,6 +45,26 @@ export default meta
 const commonMenus = myVal.commonMenus
 
 type Story = StoryObj<typeof FctTableWithSelectButtonVue>
+
+export const First: Story = {
+  render: (args) => ({
+    components: { FctTableWithSelectButtonVue },
+    setup() {
+      return { args }
+    },
+    template:
+      '<FctTableWithSelectButtonVue v-bind="args" @newFctRowItem="onUpdateFctRowItem" @update:fctFavoriteList="onUpdateFctFavoriteList" />',
+    methods: {
+      onUpdateFctRowItem: action('newFctRowItem'),
+      onUpdateFctFavoriteList: action('update:fctFavoriteList')
+    }
+  }),
+  args: {
+    fct: myFct,
+    fctFavoriteList: [],
+    commonMenus
+  }
+}
 
 export const Second: Story = {
   render: (args) => ({

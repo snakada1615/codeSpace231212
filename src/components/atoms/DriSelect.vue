@@ -3,11 +3,11 @@ import { computed, type PropType } from 'vue'
 import type { QTableProps } from 'quasar'
 import myFunc from '@/models/MyFunctions'
 // 全てのintefaceを読み込む
-import * as myVal from '@/models/MyInterface'
+import * as myVal from '@/models/myTypes'
 
 const props = defineProps({
   familyMembers: {
-    type: Object as PropType<myVal.FamilyMembers>,
+    type: Object as PropType<myVal.FamilyMembers | null>,
     required: true
   }
 })
@@ -48,7 +48,7 @@ const columnsDri: QTableProps['columns'] = [
 ]
 
 const rowsFamilyMember = computed<myVal.FamilyMembers>(() => {
-  return props.familyMembers
+  return props.familyMembers || myVal.familyMembersDefault
 })
 
 const columnsFamilyMember: QTableProps['columns'] = [
@@ -80,7 +80,7 @@ const nutrientSum = computed(() => {
   type NutrientKey = 'En' | 'Pr' | 'Va' | 'Fe'
 
   // Assuming `props.familyMembers` is reactive this will trigger the computed property when changed
-  const res = props.familyMembers.reduce(
+  const res = rowsFamilyMember.value.reduce(
     (sum, current) => {
       sum.En += current.En * current.count
       sum.Pr += current.Pr * current.count
