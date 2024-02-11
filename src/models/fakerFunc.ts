@@ -1,6 +1,6 @@
 import { faker } from '@faker-js/faker'
 // 全てのintefaceを読み込む
-import * as myVal from './MyInterface'
+import * as myVal from './myTypes'
 import { uid } from 'quasar'
 
 export default class FakerFunc {

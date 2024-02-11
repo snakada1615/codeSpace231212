@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import type { PropType } from 'vue'
-import { type DiversityStates } from 'src/models/MyInterface'
+import { type DiversityStates } from 'src/models/myTypes'
 
 defineProps({
   diversityStates: {

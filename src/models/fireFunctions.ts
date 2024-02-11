@@ -19,7 +19,7 @@ import {
   QueryDocumentSnapshot,
   type DocumentData
 } from 'firebase/firestore'
-import * as myVal from '@/models/MyInterface'
+import * as myVal from '@/models/myTypes'
 import type { CollectionReference } from 'firebase/firestore/lite'
 
 // For Firebase JS SDK v7.20.0 and later, measurementId is optional

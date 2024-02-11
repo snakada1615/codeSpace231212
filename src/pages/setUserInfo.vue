@@ -1,5 +1,5 @@
 <script setup lang="ts">
-// import * as myVal from '../models/MyInterface'
+// import * as myVal from '../models/myTypes'
 import { computed } from 'vue'
 import userInfo from '../components/atoms/UserInfo.vue'
 import { useProjectData } from '../stores/mainStore'

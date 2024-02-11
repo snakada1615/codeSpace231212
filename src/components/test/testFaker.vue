@@ -3,7 +3,7 @@ import { ref } from 'vue'
 import { faker } from '@faker-js/faker'
 import type { SexType } from '@faker-js/faker'
 import FakerFunc from 'src/models/fakerFunc'
-import * as models from 'src/models/MyInterface'
+import * as models from 'src/models/myTypes'
 
 type favoriteFood = 'cereal' | 'meat' | 'vegetable'
 

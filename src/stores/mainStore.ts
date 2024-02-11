@@ -2,7 +2,7 @@
 
 // import { ref } from 'vue'
 import { defineStore } from 'pinia'
-import * as myVal from '@/models/MyInterface'
+import * as myVal from '@/models/myTypes'
 import { fireFunc } from '@/models/fireFunctions'
 import FakerFunc from '@/models/fakerFunc'
 

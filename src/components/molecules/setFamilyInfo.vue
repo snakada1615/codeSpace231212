@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import * as myVal from 'src/models/MyInterface'
+import * as myVal from 'src/models/myTypes'
 import { computed, ref, type PropType } from 'vue'
 import DriSelect from '../atoms/DriSelect.vue'
 

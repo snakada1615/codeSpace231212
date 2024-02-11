@@ -1,7 +1,7 @@
 import assessDietVue from '@/components/molecules/assessDiet.vue'
 import type { Meta, StoryObj, ArgTypes } from '@storybook/vue3'
 import { action } from '@storybook/addon-actions'
-import * as myVal from 'src/models/MyInterface'
+import * as myVal from 'src/models/myTypes'
 import FakerFunc from '@/models/fakerFunc'
 import { faker } from '@faker-js/faker'
 

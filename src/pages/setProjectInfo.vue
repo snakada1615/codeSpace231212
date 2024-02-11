@@ -2,7 +2,7 @@
 import { computed, type WritableComputedRef } from 'vue'
 import projectData from '../components/molecules/ProjectData.vue'
 import { useProjectData } from '../stores/mainStore'
-import * as myVal from '../models/MyInterface'
+import * as myVal from '../models/myTypes'
 
 const myProjectData = useProjectData()
 

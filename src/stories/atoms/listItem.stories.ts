@@ -1,7 +1,7 @@
 // Replace vue3 with vue if you are using Storybook for Vue 2
 import type { Meta, StoryObj } from '@storybook/vue3'
 import listItem from 'src/components/atoms/ListItem.vue'
-import { type DiversityStates } from 'src/models/MyInterface'
+import { type DiversityStates } from 'src/models/myTypes'
 
 const myItem: DiversityStates = [
   {

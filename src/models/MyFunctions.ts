@@ -1,5 +1,5 @@
 // 全てのintefaceを読み込む
-// import * as myVal from './MyInterface'
+// import * as myVal from './myTypes'
 
 // 定数のエクスポート
 export const PI = 3.14

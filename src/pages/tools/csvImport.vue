@@ -46,7 +46,7 @@
 <script setup lang="ts">
 import { type Ref, ref, computed } from 'vue'
 import Papa from 'papaparse'
-import * as myVal from '../../models/MyInterface'
+import * as myVal from '../../models/myTypes'
 import myFunc from '../../models/MyFunctions'
 import { useProjectData } from '../../stores/mainStore'
 const projectStore = useProjectData()

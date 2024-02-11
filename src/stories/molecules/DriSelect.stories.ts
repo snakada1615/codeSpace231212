@@ -1,7 +1,7 @@
 // Replace vue3 with vue if you are using Storybook for Vue 2
 import type { Meta, StoryObj, ArgTypes } from '@storybook/vue3'
 import DriSelect from 'src/components/atoms/DriSelect.vue'
-import * as myVal from '@/models/MyInterface'
+import * as myVal from '@/models/myTypes'
 import { action } from '@storybook/addon-actions'
 import FakerFunc from '@/models/fakerFunc'
 

@@ -3,8 +3,8 @@ import { action } from '@storybook/addon-actions'
 import projectData from '@/components/molecules/ProjectData.vue'
 import FakerFunc from '@/models/fakerFunc'
 // import { faker } from '@faker-js/faker'
-import * as myVal from '@/models/MyInterface'
-// import * as myVal from '@/models/MyInterface';
+import * as myVal from '@/models/myTypes'
+// import * as myVal from '@/models/myTypes';
 // import FakerFunc from '@/models/fakerFunc';
 // Define the ArgTypes for the storybook without using the generic
 const myArgTypes: ArgTypes = {

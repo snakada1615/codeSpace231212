@@ -1,6 +1,6 @@
 import type { Meta, StoryObj } from '@storybook/vue3'
 import menuTableVue from '@/components/atoms/menuTable.vue'
-import * as myVal from '@/models/MyInterface'
+import * as myVal from '@/models/myTypes'
 import FakerFunc from '@/models/fakerFunc'
 
 const myMenu: myVal.Menu = FakerFunc.createMenu()

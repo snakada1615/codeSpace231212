@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import UserInfo from '@/components/atoms/UserInfo.vue'
 import { ref } from 'vue'
-import * as myVal from '@/models/MyInterface'
+import * as myVal from '@/models/myTypes'
 
 function newError() {
   throw new Error('i am new error')

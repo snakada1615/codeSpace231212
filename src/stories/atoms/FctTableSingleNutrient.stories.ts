@@ -1,7 +1,7 @@
 import type { Meta, StoryObj, ArgTypes } from '@storybook/vue3'
 import { action } from '@storybook/addon-actions'
 import FctTableVue from '@/components/atoms/FctTableSingleNutrient.vue'
-import * as myVal from '@/models/MyInterface'
+import * as myVal from '@/models/myTypes'
 import FakerFunc from '@/models/fakerFunc'
 
 const myFct: myVal.FctItems = FakerFunc.createFcts()

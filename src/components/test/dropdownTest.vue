@@ -16,7 +16,7 @@
 
 <script setup lang="ts">
 import { ref } from 'vue'
-import * as myVal from 'src/models/MyInterface'
+import * as myVal from 'src/models/myTypes'
 
 const stringOptions = myVal.commonMenus
 const menuName = ref(null)
