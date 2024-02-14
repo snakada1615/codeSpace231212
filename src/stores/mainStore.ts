@@ -18,73 +18,109 @@ export const useAuthState = defineStore('auth', {
   }
 })
 
+interface PiniaState {
+  // 現在利用しているユーザーの情報
+  appUser: myVal.AppUser
+  // ユーザーが取り組んでいるプロジェクトの情報
+  projectInfo: myVal.ProjectInfo | myVal.ProjectInfoBlank
+  fct: myVal.FctItems | null
+  dri: myVal.DriItems | null
+  // プロジェクトで対象とする家庭の情報
+  houses: myVal.Houses | myVal.HousesBlank
+  // 各家庭での食事調査結果
+  menu: myVal.Menu | myVal.MenuBlank
+  // デフォルトで使うデータベース名
+  currentDataSet: myVal.CurrentDataSet
+}
+
 export const useProjectData = defineStore('prjData', {
-  state: () => ({
+  state: (): PiniaState => ({
     // 現在利用しているユーザーの情報
     appUser: myVal.appUserDefault,
     // ユーザーが取り組んでいるプロジェクトの情報
     projectInfo: myVal.projectInfoDefault,
-    fct: [myVal.fctItemDefault],
-    dri: [myVal.driItemDefault],
+    fct: [],
+    dri: [],
     // プロジェクトで対象とする家庭の情報
-    houses: [myVal.houseDefault],
+    houses: [],
     // 各家庭での食事調査結果
-    menu: [myVal.menuItemDefault],
-    fctDefault: 'f530f2c6-d107-47c4-b246-237427d77279', // 初期データを確保
-    driDefault: '82f6425d-def7-4094-9088-6672adfd525f' // 初期データを確保
+    menu: [],
+    currentDataSet: {
+      fct: 'f530f2c6-d107-47c4-b246-237427d77279',
+      dri: '82f6425d-def7-4094-9088-6672adfd525f',
+      project: ''
+    }
   }),
 
   getters: {
-    stateUserId: (state) => state.appUser.userId,
-    stateUserInfo: (state) =>
-      state.appUser.country.length > 0 &&
-      state.appUser.region.length > 0 &&
-      state.appUser.name.length > 0 &&
-      state.appUser.job.length > 0 &&
-      state.appUser.title.length > 0 &&
-      state.appUser.userId.length > 0,
+    stateUserId: (state) => {
+      if (state.appUser && typeof state.appUser === 'object') {
+        return !!state.appUser.userId || false
+      }
+      return false
+      // state.appUser.state.appUser.userId? true:false
+    },
+    stateUserInfo(state) {
+      const result = myVal.AppUserZod.safeParse(state.appUser)
+      if (result.success) {
+        return true // Or some validation logic that returns a boolean
+      } else {
+        return result.error.errors.map((e) => e.message).join(', ')
+      }
+    },
 
-    stateProjectInfo(state): boolean {
-      return (
-        state.projectInfo.projectId.length > 0 &&
-        state.projectInfo.userId.length > 0 &&
-        state.projectInfo.location.length > 0 &&
-        this.targetPopulationTotal > 0
+    stateProjectInfo(state) {
+      const result = myVal.ProjectInfoZod.safeParse(state.projectInfo)
+      if (result.success) {
+        return true // Or some validation logic that returns a boolean
+      } else {
+        return result.error.errors.map((e) => e.message).join(', ')
+      }
+    },
+
+    targetPopulationTotal: (state) => {
+      if (!state.projectInfo) {
+        return 0
+      }
+      return state.projectInfo.targetPopulation.reduce(
+        (total, current) => (total += current.count),
+        0
       )
     },
 
-    targetPopulationTotal: (state) =>
-      state.projectInfo.targetPopulation.reduce((total, current) => (total += current.count), 0),
-
-    houseSizes: (state) =>
-      state.houses.map((house) =>
+    houseSizes: (state) => {
+      if (!state.houses) {
+        return 0
+      }
+      return state.houses.map((house) =>
         house.familyMembers.reduce((total, current) => (total += current.count), 0)
-      ),
+      )
+    },
 
-    stateHouses(state): boolean {
+    stateHouses(state) {
       const myHouseSize = this.houseSizes
-      console.log(myHouseSize)
 
       // Check if houseSizes is not an array or is empty, return false early.
       if (!Array.isArray(myHouseSize) || !myHouseSize.length) {
-        return false
+        return 'no house registered'
       }
 
       // Ensure all houses meet the conditions
-      return state.houses.every(
-        (house, index) =>
-          house.familyId && house.projectId && house.userId && myHouseSize[index] > 0
-      )
+      const result = myVal.HousesZod.safeParse(state.houses)
+      if (result.success) {
+        return true // Or some validation logic that returns a boolean
+      } else {
+        return result.error.errors.map((e) => e.message).join(', ')
+      }
     },
 
-    stateMenue(state): boolean {
-      return state.menu.every((menuItem) => {
-        menuItem.userId.length > 0 &&
-          menuItem.projectId.length > 0 &&
-          menuItem.KeyFamily.length > 0 &&
-          menuItem.MenuName.length > 0 &&
-          menuItem.Weight > 0
-      })
+    stateMenu(state) {
+      const result = myVal.MenuItemsZod.safeParse(state.menu)
+      if (result.success) {
+        return true // Or some validation logic that returns a boolean
+      } else {
+        return result.error.errors.map((e) => e.message).join(', ')
+      }
     }
   },
 
@@ -102,9 +138,9 @@ export const useProjectData = defineStore('prjData', {
       this.appUser = val[0]
     },
     setCurrentDataset(val: myVal.CurrentDataSet) {
-      this.appUser.currentDataSet = val
+      this.currentDataSet = val
     },
-    setProjectInfo(val: myVal.ProjectInfo) {
+    setProjectInfo(val: myVal.ProjectInfo | myVal.ProjectInfoBlank) {
       this.projectInfo = val
     },
     setHouses(val: myVal.Houses) {
@@ -113,52 +149,49 @@ export const useProjectData = defineStore('prjData', {
     setMenu(val: myVal.Menu) {
       this.menu = val
     },
+    async fireSetFct(fctId: string, val: myVal.FctItemsWithNote) {
+      await fireFunc.fireSetMergeTyped<myVal.FctItemsWithNote>('fct', fctId, val)
+    },
+
+    async fireSetDri(driId: string, val: myVal.DriItemsWithNote) {
+      await fireFunc.fireSetMergeTyped<myVal.DriItemsWithNote>('dri', driId, val)
+    },
+
+    async fireSetAppUser(userId: string, val: myVal.AppUser) {
+      await fireFunc.fireSetMergeTyped<myVal.AppUser>('user', userId, val)
+    },
 
     async fireGetAllData(userId: string) {
       this.setUserId(userId)
-      // await this.getDataFire(userId, 'fct', myVal.driItemsWIthNoteDefault)
-      // await this.getDataFire(userId, 'dri', myVal.fctItemsWIthNoteDefault)
 
-      const currentFctId = this.appUser.currentDataSet.fct || this.fctDefault
-      const currentDriId = this.appUser.currentDataSet.dri || this.driDefault
-      const currentProjectId = this.appUser.currentDataSet.project || FakerFunc.uuid()
+      const currentFctId = this.currentDataSet.fct
+      const currentDriId = this.currentDataSet.dri
+      const currentProjectId = this.currentDataSet.project || FakerFunc.uuid()
       const defaultFamilyId = FakerFunc.uuid()
       const defaultMenuId = FakerFunc.uuid()
 
       //  fct:
-      console.log('fct')
-      const fctDat = await fireFunc.fireGetTyped<myVal.FctItems>('dri', currentDriId)
+      console.log('...fetching fct')
+      const fctDat = await fireFunc.fireGetTyped<myVal.FctItems>('fct', currentFctId)
       if (fctDat) {
         this.setFct(fctDat)
-        this.setAppUser([
-          // appUserにfctIdを記録しておく必要がある
-          {
-            ...this.appUser,
-            currentDataSet: {
-              ...this.appUser.currentDataSet,
-              fct: currentFctId
-            }
-          }
-        ])
+        this.setCurrentDataset({
+          ...this.currentDataSet,
+          fct: currentFctId
+        })
       } else {
         throw new Error('no FCT data available in fireStore')
       }
 
       //  dri:
-      console.log('dri')
+      console.log('...fetching dri')
       const driDat = await fireFunc.fireGetTyped<myVal.DriItems>('dri', currentDriId)
       if (driDat) {
         this.setDri(driDat)
-        this.setAppUser([
-          // appUserにdriIdを記録しておく必要がある
-          {
-            ...this.appUser,
-            currentDataSet: {
-              ...this.appUser.currentDataSet,
-              dri: currentDriId
-            }
-          }
-        ])
+        this.setCurrentDataset({
+          ...this.currentDataSet,
+          dri: currentDriId
+        })
       } else {
         throw new Error('no DRI data available in fireStore')
       }
@@ -243,18 +276,6 @@ export const useProjectData = defineStore('prjData', {
         console.log(`${collectionName} data not available in server. Initializing data...`)
         setFunction(defaultData)
       }
-    },
-
-    async fireSetFct(fctId: string, val: myVal.FctItemsWithNote) {
-      await fireFunc.fireSetMergeTyped<myVal.FctItemsWithNote>('fct', fctId, val)
-    },
-
-    async fireSetDri(driId: string, val: myVal.DriItemsWithNote) {
-      await fireFunc.fireSetMergeTyped<myVal.DriItemsWithNote>('dri', driId, val)
-    },
-
-    async fireSetAppUser(userId: string, val: myVal.AppUser) {
-      await fireFunc.fireSetMergeTyped<myVal.AppUser>('user', userId, val)
     }
   }
 })

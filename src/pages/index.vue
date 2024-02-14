@@ -3,8 +3,8 @@
   <div>
     <q-icon name="flag" />
     <div>halo</div>
-    <div>{{ projectData.appUser }}</div>
-    <div>{{ projectData.menu }}</div>
+    <div>stateUserId:{{ projectData.stateUserId }}</div>
+    <div>stateUserInfo:{{ projectData.stateUserInfo }}</div>
   </div>
 </template>
 

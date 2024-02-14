@@ -73,11 +73,12 @@ export const AppUserZod = z.object({
   title: z.string().min(3).max(200),
   country: z.string().min(3).max(200),
   region: z.string().min(3).max(200),
-  town: z.string().min(3).max(200),
-  currentDataSet: CurrentDataSet
+  town: z.string().min(3).max(200).optional()
 })
 
 export type AppUser = z.infer<typeof AppUserZod>
+
+export type AppUserBlanc = typeof appUserDefault
 
 export const appUserDefault = {
   userId: '',
@@ -86,8 +87,7 @@ export const appUserDefault = {
   title: '',
   country: '',
   region: '',
-  town: '',
-  currentDataSet: currentDataSetDefault
+  town: ''
 }
 
 export const sampleFamilyMemberCategory = [
@@ -117,10 +117,10 @@ export type DriItems = z.infer<typeof DriItemsZod>
 export const driItemDefault = {
   DriId: '',
   Name: '',
-  En: 0,
-  Fe: 0,
-  Pr: 0,
-  Va: 0
+  En: 1,
+  Fe: 1,
+  Pr: 1,
+  Va: 1
 }
 
 export const DriItemsWithNoteZod = z.object({
@@ -140,6 +140,10 @@ export const FamilyMembersZod = z.array(FamilyMemberZod)
 export type FamilyMember = z.infer<typeof FamilyMemberZod>
 
 export type FamilyMembers = z.infer<typeof FamilyMembersZod>
+
+export type FamilyMemberBlank = typeof familyMemberDefault
+
+export type FamilyMembersBlank = typeof familyMembersDefault
 
 export const familyMemberDefault = {
   ...driItemDefault,
@@ -163,11 +167,22 @@ export const ProjectInfoZod = z.object({
   targetPopulation: FamilyMembersZod
 })
 
+export const projectInfoDefault = {
+  userId: '',
+  projectName: '',
+  projectId: '',
+  locationId: '',
+  location: '',
+  targetPopulation: familyMembersDefault
+}
+
 export const ProjectInfosZod = z.array(ProjectInfoZod)
 
 export type ProjectInfo = z.infer<typeof ProjectInfoZod>
 
 export type ProjectInfos = z.infer<typeof ProjectInfosZod>
+
+export type ProjectInfoBlank = typeof projectInfoDefault
 
 export const HouseZod = z.object({
   projectId: z.string(),
@@ -184,6 +199,10 @@ export type House = z.infer<typeof HouseZod>
 
 export type Houses = z.infer<typeof HousesZod>
 
+export type HouseBlank = typeof houseDefault
+
+export type HousesBlank = HouseBlank[]
+
 export const houseDefault = {
   projectId: '',
   userId: '',
@@ -191,15 +210,6 @@ export const houseDefault = {
   familyId: '',
   familyName: '',
   familyMembers: familyMembersDefault
-}
-
-export const projectInfoDefault = {
-  userId: '',
-  projectName: '',
-  projectId: '',
-  locationId: '',
-  location: '',
-  targetPopulation: familyMembersDefault
 }
 
 export const FctItemZod = z.object({
@@ -226,12 +236,12 @@ export const fctItemDefault = {
   FoodGroupId: '',
   FctName: '',
   FoodGroup: '',
-  Carb: 0,
-  En: 0,
-  Fe: 0,
-  Fat: 0,
-  Pr: 0,
-  Va: 0
+  Carb: 1,
+  En: 1,
+  Fe: 1,
+  Fat: 1,
+  Pr: 1,
+  Va: 1
 }
 
 // fct tableに検索用の付加情報を追加したもの
@@ -379,13 +389,15 @@ export const MenuItemZod = FctRowItemZod.extend({
 
 export const MenuItemsZod = z.array(MenuItemZod)
 
-export const MenuesZod = z.array(MenuItemsZod)
+// export const MenuesZod = z.array(MenuItemsZod)
 
 export type MenuItem = z.infer<typeof MenuItemZod>
 
 export type Menu = z.infer<typeof MenuItemsZod>
 
-export type Menues = z.infer<typeof MenuesZod>
+export type MenuBlank = typeof menuDefault
+
+// export type Menues = z.infer<typeof MenuesZod>
 
 export const menuItemDefault = {
   ...fctRowItemDefault,
@@ -395,6 +407,17 @@ export const menuItemDefault = {
   userId: '',
   Date: new Date()
 }
+
+export const menuDefault = [
+  {
+    ...fctRowItemDefault,
+    menuItemId: '',
+    KeyFamily: '',
+    projectId: '',
+    userId: '',
+    Date: new Date()
+  }
+]
 
 // export interface Menu {
 //   projectId: string
@@ -412,7 +435,7 @@ export const commonMenus: string[] = [
   '3rd snack'
 ]
 
-export type AllProjectData = AppUser | Houses | Menues
+export type AllProjectData = AppUser | Houses | Menu
 
 export enum projectDataType {
   'appUser',

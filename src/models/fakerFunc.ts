@@ -96,6 +96,17 @@ export default class FakerFunc {
     }
   }
 
+  static createProject(): myVal.ProjectInfo {
+    return {
+      userId: faker.string.uuid(),
+      projectName: faker.company.name(),
+      projectId: faker.string.uuid(),
+      locationId: faker.string.uuid(),
+      location: faker.location.city(),
+      targetPopulation: this.createFamilyMembers()
+    }
+  }
+
   static createMenuItem(): myVal.MenuItem {
     const food = this.createFct(myVal.sampleFood)
     const menu = faker.helpers.arrayElement(myVal.commonMenus)

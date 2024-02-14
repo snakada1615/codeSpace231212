@@ -6,7 +6,7 @@ import { action } from '@storybook/addon-actions'
 import FakerFunc from '@/models/fakerFunc'
 
 const familyMembers: myVal.FamilyMembers = FakerFunc.createFamilyMembers()
-
+const familyMembers2 = myVal.familyMembersDefault
 // Define the ArgTypes for the storybook without using the generic
 const myArgTypes: ArgTypes = {
   'update:familyMembers': {
@@ -62,6 +62,6 @@ export const Secondary: Story = {
     }
   }),
   args: {
-    familyMembers: null
+    familyMembers: familyMembers2
   }
 }

@@ -4,21 +4,22 @@ import { computed, defineEmits, type PropType } from 'vue'
 // import { useProjectData } from '@/stores/mainStore'
 // import { ref } from 'vue'
 
+type AppUserBlanc = typeof myVal.appUserDefault
+
 const props = defineProps({
   appUser: {
-    type: Object as PropType<myVal.AppUser | null>,
+    type: Object as PropType<myVal.AppUser | AppUserBlanc>,
     required: true
   }
 })
 
 const emits = defineEmits<{
-  (e: 'update:appUser', value: myVal.AppUser | null): void
+  (e: 'update:appUser', value: myVal.AppUser): void
 }>()
 
 const appUserComp = computed({
   get() {
-    const res = props.appUser ? props.appUser : myVal.appUserDefault
-    return res
+    return props.appUser
   },
   set(val) {
     emits('update:appUser', val)

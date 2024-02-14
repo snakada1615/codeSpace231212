@@ -7,7 +7,7 @@ import * as myVal from '@/models/myTypes'
 
 const props = defineProps({
   familyMembers: {
-    type: Object as PropType<myVal.FamilyMembers | null>,
+    type: Object as PropType<myVal.FamilyMembers | myVal.FamilyMembersBlank>,
     required: true
   }
 })
@@ -47,8 +47,8 @@ const columnsDri: QTableProps['columns'] = [
   }
 ]
 
-const rowsFamilyMember = computed<myVal.FamilyMembers>(() => {
-  return props.familyMembers || myVal.familyMembersDefault
+const rowsFamilyMember = computed<myVal.FamilyMembers | myVal.FamilyMembersBlank>(() => {
+  return props.familyMembers
 })
 
 const columnsFamilyMember: QTableProps['columns'] = [
@@ -112,6 +112,7 @@ const nutrientSum = computed(() => {
   <!-- FamilyMemberの構成決定 -->
   <q-card class="bg-grey-2 q-pa-sm">
     <q-table
+      v-if="rowsFamilyMember"
       class="my-sticky-header-table q-my-md"
       :table-header-style="{ backgroundColor: 'DarkSeaGreen' }"
       flat
@@ -142,8 +143,8 @@ const nutrientSum = computed(() => {
     </q-table>
 
     <!-- 家族合計での栄養必要量 -->
-    <q-card class="q-my-sm">{{ props.familyMembers }}</q-card>
-    <q-card>{{ nutrientSum }}</q-card>
+    <!-- <q-card class="q-my-sm">{{ props.familyMembers }}</q-card>
+    <q-card>{{ nutrientSum }}</q-card> -->
     <q-table
       class="my-sticky-header-table"
       :table-header-style="{ backgroundColor: 'DarkSeaGreen' }"

@@ -5,7 +5,7 @@ import DriSelect from '@/components/atoms/DriSelect.vue'
 
 const props = defineProps({
   projectInfo: {
-    type: Object as PropType<myVal.ProjectInfo | null>,
+    type: Object as PropType<myVal.ProjectInfo | myVal.ProjectInfoBlank>,
     required: true
   }
 })
@@ -78,6 +78,19 @@ const nameRules = computed(() => {
 const numberRules = computed(() => {
   return totalFamilySize.value > 0
 })
+
+function isValidValue(
+  val: number | string | null,
+  key: 'projectName' | 'projectId' | 'locationId' | 'location' | 'targetPopulation'
+): boolean | string {
+  const result = myVal.ProjectInfoZod.shape[key].safeParse(val)
+  if (result.success) {
+    return true // Or some validation logic that returns a boolean
+  } else {
+    console.log(result.error.errors)
+    return result.error.errors.map((e) => e.message).join(', ')
+  }
+}
 </script>
 
 <template>
@@ -90,8 +103,7 @@ const numberRules = computed(() => {
           class="q-px-sm"
           filled
           dense
-          :error="!nameRules"
-          error-message="'location name should be longer than 2 letters'"
+          :rules="[(v) => isValidValue(v, 'location')]"
         >
           <template v-slot:prepend>
             <q-icon name="flag" />
@@ -105,8 +117,7 @@ const numberRules = computed(() => {
           class="q-px-sm"
           filled
           dense
-          :error="!nameRules"
-          error-message="'Project name should be longer than 2 letters'"
+          :rules="[(v) => isValidValue(v, 'projectName')]"
         >
           <template v-slot:prepend>
             <q-icon name="edit_note" />

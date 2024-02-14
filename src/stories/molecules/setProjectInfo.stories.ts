@@ -27,7 +27,14 @@ const myArgTypes: ArgTypes = {
   // ... define other arg types as necessary ...
 }
 
-const projectInfoDat = myVal.projectInfoDefault
+const projectInfoDat = FakerFunc.createProject()
+
+const ProjectInfo2 = {
+  ...projectInfoDat,
+  location: 'okayama',
+  projectName: 'myProject1',
+  targetPopulation: myVal.familyMembersDefault
+}
 
 const meta: Meta<typeof projectData> = {
   title: 'app/molecules/ProjectData',
@@ -54,13 +61,6 @@ export const First: Story = {
   args: {
     projectInfo: projectInfoDat
   }
-}
-
-const ProjectInfo2 = {
-  ...projectInfoDat,
-  location: 'okayama',
-  projectName: 'myProject1',
-  familyMembers: FakerFunc.createFamilyMembers()
 }
 
 export const Second: Story = {
