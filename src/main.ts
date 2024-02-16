@@ -13,10 +13,6 @@ import '@quasar/extras/material-icons/material-icons.css'
 // Import Quasar css
 import 'quasar/src/css/index.sass'
 
-// IMport firebase
-// import firebase from 'firebase/compat/app'
-// import { auth } from '@/models/fireFunctions'
-
 import App from './App.vue'
 import router from './router'
 

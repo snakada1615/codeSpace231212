@@ -1,17 +1,17 @@
 <script lang="ts" setup>
-import * as myVal from 'src/models/myTypes'
+import * as myVal from '@/models/myTypes'
 import { computed, type PropType } from 'vue'
 import DriSelect from '../atoms/DriSelect.vue'
 
 const props = defineProps({
   house: {
-    type: Object as PropType<myVal.House | myVal.HouseBlank | null>,
+    type: Object as PropType<myVal.House | myVal.HouseBlank>,
     required: true
   }
 })
 
 const houseComputed = computed(() => {
-  if (props.house === null) {
+  if (!props.house) {
     return myVal.houseDefault
   } else {
     return props.house

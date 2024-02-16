@@ -217,6 +217,8 @@ export const houseDefault = {
   familyMembers: familyMembersDefault
 }
 
+export const housesDefault = [houseDefault]
+
 export const FctItemZod = z.object({
   keyFct: z.string(),
   FoodGroupId: z.string(),

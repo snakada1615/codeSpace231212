@@ -39,4 +39,5 @@ const selectedHouse = ref({ lebel: '', value: 0 })
 <template>
   <q-select :options="housesInfo" v-model="selectedHouse" />
   <setFamilyInfo :disabled="myProjectData.houses.length === 0" v-model:house="currentHouse" />
+  {{ myProjectData }}
 </template>

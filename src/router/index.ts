@@ -14,12 +14,10 @@ const myPages = ['setUserInfo', 'setProjectInfo']
 function checkParams(page: string) {
   switch (page.slice(1)) {
     case myPages[0]:
-      console.log('0')
       return false
       break
 
     case myPages[1]:
-      console.log('1')
       return false
       break
 
@@ -35,7 +33,6 @@ router.beforeEach(
     const authState = useAuthState()
     const isLoggedIn = authState.isLoggedin
     const allowedPath = ['index', 'test', 'login', 'ErrorPage']
-    console.log(checkParams(to.path))
 
     // Check if the current path is allowed
     const allowed =
