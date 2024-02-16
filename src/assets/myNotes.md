@@ -245,3 +245,68 @@ You can also modify the validation functions to return the validation messages s
 Remember to replace the console logs and errors with the actual logic that updates the UI accordingly. This might include setting error state variables or directly manipulating the DOM to show error messages.
 
 By following these steps, you should be able to validate each field in your form individually using a Zod schema.
+
+---
+
+To force overwrite the `current-branch` with the contents of `new-branch` using `git merge`, you can use the following steps:
+
+**Warning: Proceed with caution as this will overwrite changes in `current-branch`. Any changes that are not in `new-branch` will be lost.**
+
+1. Checkout to the `current-branch`:
+
+   ```bash
+   git checkout current-branch
+   ```
+
+2. Perform a merge with the `new-branch` using the `ours` merge strategy. This strategy will resolve any conflict by keeping the content of the branch that you have currently checked out (`current-branch`), essentially ignoring all changes from `new-branch`.
+
+   ```bash
+   git merge -s ours new-branch
+   ```
+
+3. Now, the `current-branch` effectively has precedence over the changes from `new-branch`, but we need to actually get the content from `new-branch`. To do so, we'll perform a hard reset to the `new-branch`.
+
+   ```bash
+   git reset --hard new-branch
+   ```
+
+This set of commands will point `current-branch` to the same commit as `new-branch`, thus making `current-branch` an exact copy of `new-branch` and forcing an overwrite of any conflicting changes.
+
+## Remember that if others are working on the same repository, forcibly rewriting history with these kinds of operations can cause significant disruption to their workflows. Always coordinate with your team before performing such actions.
+
+---
+
+No, the above method is designed to be used locally on your branch within your local repository. If you want to overwrite a remote branch with the state of another branch, you'll use a combination of local operations and a force push.
+
+Here's how you can do it:
+
+1. Checkout to the `new-branch` which has the desired state you want to push.
+
+   ```bash
+   git checkout new-branch
+   ```
+
+2. Ensure your local `new-branch` is up to date with the remote.
+
+   ```bash
+   git pull origin new-branch
+   ```
+
+3. Force push `new-branch` to `current-branch` on the remote repository.
+   ```bash
+   git push origin +new-branch:current-branch
+   ```
+   The `+` sign before the `new-branch` tells Git to force the push.
+
+This command says: "Take the current state of `new-branch` and force it onto `current-branch` on the remote repository."
+
+**Please note**: This is a destructive action that will overwrite the `current-branch` in the remote repository, replacing its history and content with that of `new-branch`. Any changes on the `current-branch` that are not in `new-branch` will be lost.
+
+Always make sure you understand the consequences of this action:
+
+- Other people's work might be based on `current-branch` and force pushing will disrupt their workflow.
+- Any branches that were branched off from `current-branch` after the divergence point with `new-branch` will have conflicts when they next try to merge or rebase.
+
+It is best practice to coordinate with your team when you force push changes to a shared repository.
+
+---

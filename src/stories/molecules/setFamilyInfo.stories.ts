@@ -64,8 +64,7 @@ export const First: Story = {
     }
   }),
   args: {
-    familyAll,
-    location
+    house: familyAll
   }
 }
 
@@ -83,7 +82,6 @@ export const Second: Story = {
     }
   }),
   args: {
-    familyAll: familyAll2,
-    location
+    house: familyAll2
   }
 }

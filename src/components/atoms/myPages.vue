@@ -11,6 +11,7 @@ const projectData = useProjectData()
       label="Project info"
       v-if="projectData.stateUserInfo === true"
     />
+    <q-route-tab to="/SetHouses" label="Family info" />
     <q-route-tab to="/myTest01" label="myTest01" />
   </q-tabs>
 </template>

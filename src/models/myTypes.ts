@@ -1,5 +1,10 @@
 import z from 'zod'
 
+// Define dynamic keys as a ZodObject with ZodRecord for index signature
+const dynamicKeys = z.object({
+  additionalInfo: z.record(z.union([z.string(), z.number(), z.boolean()]))
+})
+
 export const DiversityZod = z.object({
   name: z.string().min(3).max(40),
   status: z.boolean()

@@ -19,7 +19,9 @@ const houseComputed = computed(() => {
 })
 
 const emits = defineEmits<{
+  (e: 'submit', value: myVal.House | myVal.HouseBlank | null): void
   (e: 'update:house', value: myVal.House): void
+  (e: 'saveFamilyAll', value: myVal.House): void
 }>()
 
 let elemIdKey: 'familyName' | 'locationId'
