@@ -2,6 +2,7 @@
 import { createRouter, createWebHistory } from 'vue-router/auto'
 import { type NavigationGuardNext, type RouteLocationNormalized } from 'vue-router'
 import { useAuthState } from '@/stores/mainStore'
+import { Dialog } from 'quasar'
 
 // Guard function
 const router = createRouter({
@@ -41,7 +42,7 @@ router.beforeEach(
 
     // Redirect to home if the user is not logged in and trying to access a restricted path
     if (!allowed && !isLoggedIn) {
-      alert('You have to login first to use this app')
+      Dialog.create({ message: 'You have to login first to use this app' })
       next({ path: '/' })
     } else {
       next() // Proceed if the path is allowed or if the user is logged in

@@ -15,6 +15,7 @@ import {
   signInWithPopup,
   type UserCredential
 } from 'firebase/auth'
+import { Dialog } from 'quasar'
 import { useRouter } from 'vue-router' // import router
 const email = ref('')
 const password = ref('')
@@ -29,7 +30,7 @@ const register = () => {
     })
     .catch((error: Error) => {
       console.log(error.name)
-      alert(error.message)
+      Dialog.create({ message: error.message })
     })
 }
 

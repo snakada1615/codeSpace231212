@@ -2,7 +2,7 @@ import './assets/main.css'
 
 import { createApp } from 'vue'
 import { createPinia } from 'pinia'
-import { Quasar, Dialog, Notify } from 'quasar'
+import { Quasar, Dialog, Notify, Loading } from 'quasar'
 import { auth } from '@/models/fireFunctions'
 import { type User } from 'firebase/auth'
 import { useAuthState, useProjectData } from '@/stores/mainStore'
@@ -23,8 +23,9 @@ app.use(router)
 app.use(Quasar, {
   plugins: {
     Dialog,
-    Notify
-  } // import Quasar plugins and add here
+    Notify,
+    Loading
+  }
 })
 
 const authState = useAuthState()

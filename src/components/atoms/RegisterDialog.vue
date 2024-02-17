@@ -27,6 +27,7 @@ import {
   signInWithPopup,
   type UserCredential
 } from 'firebase/auth'
+import { Dialog } from 'quasar'
 import { useRouter } from 'vue-router' // import router
 // import { useProjectData } from '@/stores/mainStore'
 // const projectData = useProjectData()
@@ -63,7 +64,7 @@ const register = () => {
     })
     .catch((error: Error) => {
       console.log(error.name)
-      alert(error.message)
+      Dialog.create({ message: error.message })
     })
 }
 

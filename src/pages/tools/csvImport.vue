@@ -51,6 +51,7 @@ import myFunc from '../../models/MyFunctions'
 import { useProjectData } from '../../stores/mainStore'
 const projectStore = useProjectData()
 import fakerFunc from '../../models/fakerFunc'
+import { Dialog } from 'quasar'
 
 const isFiletypeCorrect = ref(false)
 
@@ -106,16 +107,13 @@ function saveCsv(): void {
       data: typedCsv.value as myVal.DriItems
     })
 
-    // appUserの更新
-    const newAppUser: myVal.AppUser = {
-      ...projectStore.appUser,
-      currentDataSet: {
-        ...projectStore.appUser.currentDataSet,
-        dri: myId
-      }
+    // currentDataSetの更新
+    const currentData: myVal.CurrentDataSet = {
+      ...projectStore.currentDataSet,
+      dri: myId
     }
-    projectStore.setAppUser([newAppUser])
-    projectStore.fireSetAppUser(projectStore.appUser.userId, newAppUser)
+    projectStore.setCurrentDataset(currentData)
+    projectStore.fireSetCurrentDataSet(projectStore.appUser.userId, currentData)
   } else {
     // fctの更新
     const myId = fakerFunc.uuid()
@@ -126,16 +124,13 @@ function saveCsv(): void {
       data: typedCsv.value as myVal.FctItems
     })
 
-    // appUserの更新
-    const newAppUser: myVal.AppUser = {
-      ...projectStore.appUser,
-      currentDataSet: {
-        ...projectStore.appUser.currentDataSet,
-        fct: myId
-      }
+    // currentDataSetの更新
+    const currentData: myVal.CurrentDataSet = {
+      ...projectStore.currentDataSet,
+      fct: myId
     }
-    projectStore.setAppUser([newAppUser])
-    projectStore.fireSetAppUser(projectStore.appUser.userId, newAppUser)
+    projectStore.setCurrentDataset(currentData)
+    projectStore.fireSetCurrentDataSet(projectStore.appUser.userId, currentData)
   }
 }
 
@@ -223,11 +218,12 @@ const processFile = (): void => {
         // ファイルの型チェック
         isFiletypeCorrect.value = typeCheck(refKey.value.value)
         if (!isFiletypeCorrect.value) {
-          alert(
-            'data type is invalid for DRI type. it must include columns [ ' +
+          Dialog.create({
+            message:
+              'data type is invalid for DRI type. it must include columns [ ' +
               refKey.value.value +
               ']'
-          )
+          })
           return
         }
 

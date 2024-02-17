@@ -26,7 +26,9 @@ import {
   signInWithPopup,
   signInWithEmailAndPassword
 } from 'firebase/auth'
+import { Loading } from 'quasar' //splash screen
 import { useRouter } from 'vue-router' // import router
+import { Dialog } from 'quasar'
 // import { useProjectData } from '@/stores/mainStore'
 // const projectData = useProjectData()
 
@@ -54,44 +56,59 @@ const closeDialog = () => {
   emits('update:openDialog', false)
 }
 
-const signIn = () => {
-  // we also renamed this method
-  signInWithEmailAndPassword(auth, email.value, password.value) // THIS LINE CHANGED
-    .then(() => {
-      errMsg.value = ''
-      router.push('/')
-      closeDialog()
-    })
-    .catch((error) => {
-      switch (error.name) {
-        case 'auth/invalid-email':
-          errMsg.value = 'Invalid email'
-          break
-        case 'auth/user-not-found':
-          errMsg.value = 'No account with that email was found'
-          break
-        case 'auth/wrong-password':
-          errMsg.value = 'Incorrect password'
-          break
-        default:
-          errMsg.value = 'Email or password was incorrect'
-          break
-      }
-    })
+const signIn = async (): Promise<void> => {
+  try {
+    Loading.show({
+      message: 'Accessing remote database. Please wait...',
+      boxClass: 'bg-grey-2 text-grey-9',
+      spinnerColor: 'primary'
+    }) //splash
+    await signInWithEmailAndPassword(auth, email.value, password.value) // THIS LINE CHANGED
+    Loading.hide() //splash
+    errMsg.value = ''
+    router.push('/')
+    closeDialog()
+  } catch (error: any) {
+    Loading.hide() //splash
+    switch (error.name) {
+      case 'auth/invalid-email':
+        errMsg.value = 'Invalid email'
+        break
+      case 'auth/user-not-found':
+        errMsg.value = 'No account with that email was found'
+        break
+      case 'auth/wrong-password':
+        errMsg.value = 'Incorrect password'
+        break
+      default:
+        errMsg.value = 'Email or password was incorrect'
+        break
+    }
+    console.error(error)
+    Dialog.create(error.message)
+    Dialog.create({ message: 'app will use stored user-data' })
+  }
 }
-const signInWithGoogle = (): void => {
-  const provider: GoogleAuthProvider = new GoogleAuthProvider()
-
-  signInWithPopup(auth, provider)
-    .then(() => {
-      errMsg.value = ''
-      router.push('/')
-      closeDialog()
-    })
-    .catch((error: Error) => {
-      // Handle errors here, such as displaying a message to the user
-      console.error(error)
-      alert(error.message)
-    })
+const signInWithGoogle = async (): Promise<void> => {
+  try {
+    Loading.show({
+      message: 'Accessing remote database. Please wait...',
+      boxClass: 'bg-grey-2 text-grey-9',
+      spinnerColor: 'primary'
+    }) //splash
+    const provider: GoogleAuthProvider = new GoogleAuthProvider()
+    await signInWithPopup(auth, provider)
+    Loading.hide() //splash
+    errMsg.value = ''
+    router.push('/')
+    closeDialog()
+  } catch (error: any) {
+    // Error type can be any or specific based on what signInWithPopup throws.
+    // Handle errors here, such as displaying a message to the user
+    Loading.hide() //splash
+    console.error(error)
+    Dialog.create(error.message)
+    Dialog.create({ message: 'app will use stored user-data' })
+  }
 }
 </script>

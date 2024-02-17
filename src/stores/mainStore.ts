@@ -31,6 +31,8 @@ interface PiniaState {
   menu: myVal.Menu | myVal.MenuBlank
   // デフォルトで使うデータベース名
   currentDataSet: myVal.CurrentDataSet
+  // loading時のsplash画面表示
+  loading: boolean
 }
 
 export const useProjectData = defineStore('prjData', {
@@ -49,7 +51,8 @@ export const useProjectData = defineStore('prjData', {
       fct: 'f530f2c6-d107-47c4-b246-237427d77279',
       dri: '82f6425d-def7-4094-9088-6672adfd525f',
       project: ''
-    }
+    },
+    loading: false
   }),
 
   getters: {
@@ -149,6 +152,10 @@ export const useProjectData = defineStore('prjData', {
     setMenu(val: myVal.Menu) {
       this.menu = val
     },
+    async fireSetCurrentDataSet(userId: string, val: myVal.CurrentDataSet) {
+      await fireFunc.fireSetMergeTyped<myVal.CurrentDataSet>('user', userId, val)
+    },
+
     async fireSetFct(fctId: string, val: myVal.FctItemsWithNote) {
       await fireFunc.fireSetMergeTyped<myVal.FctItemsWithNote>('fct', fctId, val)
     },
