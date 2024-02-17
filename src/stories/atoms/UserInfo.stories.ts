@@ -42,19 +42,3 @@ export const First: Story = {
     appUser
   }
 }
-
-export const Second: Story = {
-  render: (args) => ({
-    components: { userInfo },
-    setup() {
-      return { args }
-    },
-    template: '<userInfo v-bind="args" @update:ProjectInfo= "function1"/>',
-    methods: {
-      function1: action('update:ProjectInfo')
-    }
-  }),
-  args: {
-    appUser: null
-  }
-}

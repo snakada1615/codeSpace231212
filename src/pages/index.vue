@@ -3,11 +3,13 @@
   <div>
     <q-icon name="flag" />
     <div>halo</div>
-    <div>{{ projectData.houses }}</div>
+    <JsonTreeView :json="JSON.stringify(projectData)" :maxDepth="4" />
   </div>
 </template>
 
 <script setup lang="ts">
 import { useProjectData } from '../stores/mainStore'
+import { JsonTreeView } from 'json-tree-view-vue3'
+import 'json-tree-view-vue3/dist/style.css'
 const projectData = useProjectData()
 </script>
