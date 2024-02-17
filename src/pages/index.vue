@@ -3,8 +3,7 @@
   <div>
     <q-icon name="flag" />
     <div>halo</div>
-    <div>stateUserId:{{ projectData.stateUserId }}</div>
-    <div>stateUserInfo:{{ projectData.stateUserInfo }}</div>
+    <div>{{ projectData.houses }}</div>
   </div>
 </template>
 
