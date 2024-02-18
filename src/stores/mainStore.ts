@@ -182,9 +182,9 @@ export const useProjectData = defineStore('prjData', {
 
       //  fct:
       console.log('...fetching fct')
-      const fctDat = await fireFunc.fireGetTyped<myVal.FctItems>('fct', currentFctId)
+      const fctDat = await fireFunc.fireGetTyped<myVal.FctItemsWithNote>('fct', currentFctId)
       if (fctDat) {
-        this.setFct(fctDat)
+        this.setFct(fctDat.data)
         this.setCurrentDataset({
           ...this.currentDataSet,
           fct: currentFctId
@@ -195,9 +195,9 @@ export const useProjectData = defineStore('prjData', {
 
       //  dri:
       console.log('...fetching dri')
-      const driDat = await fireFunc.fireGetTyped<myVal.DriItems>('dri', currentDriId)
+      const driDat = await fireFunc.fireGetTyped<myVal.DriItemsWithNote>('dri', currentDriId)
       if (driDat) {
-        this.setDri(driDat)
+        this.setDri(driDat.data)
         this.setCurrentDataset({
           ...this.currentDataSet,
           dri: currentDriId
@@ -222,6 +222,21 @@ export const useProjectData = defineStore('prjData', {
 
       // project:
       console.log('fireGetProject')
+      // targetPopulationの初期値をあらかじめ設定しておく
+      const targetPopulationTemp = (): myVal.FamilyMembers => {
+        let res = { ...this.projectInfo.targetPopulation }
+        if (this.dri) {
+          res = {
+            ...this.dri.map((item) => {
+              return {
+                ...item,
+                count: 0
+              }
+            })
+          }
+        }
+        return res
+      }
       await this.fireGetData<myVal.ProjectInfo>(
         'projectInfo',
         'projectId',
@@ -231,7 +246,8 @@ export const useProjectData = defineStore('prjData', {
           {
             ...myVal.projectInfoDefault,
             userId: userId,
-            projectId: currentProjectId
+            projectId: currentProjectId,
+            targetPopulation: { ...targetPopulationTemp() }
           }
         ]
       )
@@ -248,7 +264,8 @@ export const useProjectData = defineStore('prjData', {
             ...myVal.houseDefault,
             userId: userId,
             projectId: currentProjectId,
-            familyId: defaultFamilyId
+            familyId: defaultFamilyId,
+            familyMembers: { ...targetPopulationTemp() }
           }
         ]
       )
