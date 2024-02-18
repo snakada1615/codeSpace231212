@@ -48,9 +48,9 @@ export const useProjectData = defineStore('prjData', {
     // 各家庭での食事調査結果
     menu: [],
     currentDataSet: {
+      ...myVal.currentDataSetDefault,
       fct: 'f530f2c6-d107-47c4-b246-237427d77279',
-      dri: '82f6425d-def7-4094-9088-6672adfd525f',
-      project: ''
+      dri: '82f6425d-def7-4094-9088-6672adfd525f'
     },
     loading: false
   }),
@@ -79,6 +79,22 @@ export const useProjectData = defineStore('prjData', {
       } else {
         return result.error.errors.map((e) => e.message).join(', ')
       }
+    },
+
+    stateHouseInfo(state) {
+      const currentHouse = state.houses.find(
+        (item) => item.familyId === state.currentDataSet.family
+      )
+      if (!currentHouse) {
+        return false
+      }
+      if (!myVal.HouseZod.safeParse(currentHouse)) {
+        return false
+      }
+      if (currentHouse.familyMembers.reduce((accum, current) => current.count + accum, 0) <= 0) {
+        return false
+      }
+      return true
     },
 
     familyMembersDefault: (state) => {
@@ -208,16 +224,6 @@ export const useProjectData = defineStore('prjData', {
 
       //  fct:
       console.log('...fetching fct')
-      // const fctDat = await fireFunc.fireGetTyped<myVal.FctItemsWithNote>('fct', currentFctId)
-      // if (fctDat) {
-      //   this.setFct(fctDat.data)
-      // this.setCurrentDataset({
-      //   ...this.currentDataSet,
-      //   fct: currentFctId
-      // })
-      // } else {
-      //   throw new Error('no FCT data available in fireStore')
-      // }
       await this.fireGetData<myVal.FctItemsWithNote>(
         'fct',
         'fctId',
@@ -225,6 +231,8 @@ export const useProjectData = defineStore('prjData', {
         (userData) => this.setFct(userData[0].data),
         [{ data: [myVal.fctItemDefault], userId: '', note: '', fctId: '' }]
       )
+      console.log('fct')
+      console.log(myVal.FctItemsZod.safeParse(this.fct))
       this.setCurrentDataset({
         ...this.currentDataSet,
         fct: currentFctId
@@ -232,16 +240,6 @@ export const useProjectData = defineStore('prjData', {
 
       //  dri:
       console.log('...fetching dri')
-      // const driDat = await fireFunc.fireGetTyped<myVal.DriItemsWithNote>('dri', currentDriId)
-      // if (driDat) {
-      //   this.setDri(driDat.data)
-      //   this.setCurrentDataset({
-      //     ...this.currentDataSet,
-      //     dri: currentDriId
-      //   })
-      // } else {
-      //   throw new Error('no DRI data available in fireStore')
-      // }
       await this.fireGetData<myVal.DriItemsWithNote>(
         'dri',
         'driId',

@@ -22,6 +22,7 @@ import {
 import { Loading } from 'quasar'
 import * as myVal from '@/models/myTypes'
 import type { CollectionReference } from 'firebase/firestore/lite'
+import { ZodSchema } from 'zod'
 
 // For Firebase JS SDK v7.20.0 and later, measurementId is optional
 const firebaseConfig = {
@@ -53,7 +54,9 @@ function splash(val: boolean, mes?: string) {
 }
 
 export class fireFunc {
-  private static converter = <T>(): FirestoreDataConverter<T> => ({
+  private static converter = <T>(
+    isOfTypeT: (data: any) => data is T
+  ): FirestoreDataConverter<T> => ({
     toFirestore: (data: WithFieldValue<T>): WithFieldValue<DocumentData> => {
       if (data === null || typeof data !== 'object') {
         throw new Error('data to send firestore must be an object / error in toFIrestore')
@@ -65,6 +68,18 @@ export class fireFunc {
       return data as T
     }
   })
+  // 基本となるvaridator
+  private static createIsOfTypeT = <T>(schema: ZodSchema<T>): ((data: any) => data is T) => {
+    return (data: any): data is T => schema.safeParse(data).success
+  }
+
+  // Create type guards using their respective Zod schemas
+  private static isFctItem = this.createIsOfTypeT<myVal.FctItem>(myVal.FctItemZod)
+  private static isDriItem = this.createIsOfTypeT<myVal.DriItem>(myVal.DriItemZod)
+
+  // Then use these type guards within your converter instantiation
+  private static fctItemConverter = this.converter<myVal.FctItem>(this.isFctItem)
+  private static driItemConverter = this.converter<myVal.DriItem>(this.isDriItem)
 
   static async getCurrentUser(): Promise<User | null> {
     return new Promise((resolve, reject) => {

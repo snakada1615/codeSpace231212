@@ -46,6 +46,15 @@ const newFamilyName = ref('')
 
 const newLocation = ref('')
 
+function changeCurrentHouse(val: typeof selectedHouse) {
+  const res = val.value.value > 0 ? currentHouse.value.familyId : ''
+  const current = myProjectData.currentDataSet
+  myProjectData.setCurrentDataset({
+    ...current,
+    family: res
+  })
+}
+
 function isValidValue(
   val: number | string | null,
   key: 'locationId' | 'familyName'
@@ -122,9 +131,8 @@ function addNewHouse() {
       v-model="selectedHouse"
       label="current Family"
       style="max-width: 350px"
-      color="lime-11"
-      bg-color="green"
       filled
+      @update:model-value="changeCurrentHouse"
     />
     <div v-else>
       <div class="row">

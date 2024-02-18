@@ -59,6 +59,10 @@ export type CategoryItem = z.infer<typeof CategoryItemZod>
 const CurrentDataSet = z.object({
   fct: z.string(),
   dri: z.string(),
+  family: z.string(),
+  menu: z.string(),
+  nutrient: z.string(),
+  crop: z.string(),
   project: z.string()
 })
 
@@ -67,6 +71,10 @@ export type CurrentDataSet = z.infer<typeof CurrentDataSet>
 export const currentDataSetDefault = {
   fct: '',
   dri: '',
+  family: '',
+  menu: '',
+  nutrient: '',
+  crop: '',
   project: ''
 }
 
@@ -107,10 +115,10 @@ export const sampleFamilyMemberCategory = [
 export const DriItemZod = z.object({
   DriId: z.string(),
   Name: z.string().min(3).max(200),
-  En: z.number().gt(0),
-  Fe: z.number().gt(0),
-  Pr: z.number().gt(0),
-  Va: z.number().gt(0)
+  En: z.number().gte(0),
+  Fe: z.number().gte(0),
+  Pr: z.number().gte(0),
+  Va: z.number().gte(0)
 })
 
 export const DriItemsZod = z.array(DriItemZod)
@@ -237,12 +245,12 @@ export const FctItemZod = z.object({
   FoodGroupId: z.string(),
   FctName: z.string().min(3).max(200),
   FoodGroup: z.string().min(3).max(200),
-  Carb: z.number().gt(0),
-  En: z.number().gt(0),
-  Pr: z.number().gt(0),
-  Fe: z.number().gt(0),
-  Fat: z.number().gt(0),
-  Va: z.number().gt(0)
+  Carb: z.number().gte(0),
+  En: z.number().gte(0),
+  Pr: z.number().gte(0),
+  Fe: z.number().gte(0),
+  Fat: z.number().gte(0),
+  Va: z.number().gte(0)
 })
 
 export const FctItemsZod = z.array(FctItemZod)
@@ -305,9 +313,9 @@ export enum setDigitKey {
 }
 
 export const FctRowItemZod = FctItemZod.extend({
-  NutrientValue: z.number().gt(0),
+  NutrientValue: z.number().gte(0),
   Star: z.boolean(),
-  Weight: z.number().gt(0),
+  Weight: z.number().gte(0),
   MenuName: z.string().min(3).max(200)
 })
 
@@ -322,8 +330,8 @@ export const fctRowItemDefault = {
 }
 
 export const FctAddOptionsZod = z.object({
-  NutrientValue: z.number().gt(0),
-  Weight: z.number().gt(0),
+  NutrientValue: z.number().gte(0),
+  Weight: z.number().gte(0),
   MenuName: z.string().min(3).max(200)
 })
 

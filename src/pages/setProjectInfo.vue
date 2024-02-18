@@ -18,5 +18,6 @@ const projectInfoStore: WritableComputedRef<myVal.ProjectInfo> = computed({
 console.log(projectInfoStore)
 </script>
 <template>
+  {{ myProjectData.stateProjectInfo }}
   <projectData v-model:projectInfo="projectInfoStore" />
 </template>
