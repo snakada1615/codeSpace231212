@@ -106,6 +106,12 @@ const nutrientSum = computed(() => {
     }
   })
 })
+
+const familySize = computed(() => {
+  return rowsFamilyMember.value.reduce((accum, current) => {
+    return accum + current.count
+  }, 0)
+})
 </script>
 
 <template>
@@ -114,7 +120,9 @@ const nutrientSum = computed(() => {
     <q-table
       v-if="rowsFamilyMember"
       class="my-sticky-header-table q-my-md"
-      :table-header-style="{ backgroundColor: 'DarkSeaGreen' }"
+      :table-header-style="
+        familySize > 0 ? { backgroundColor: 'DarkSeaGreen' } : { backgroundColor: 'orangered' }
+      "
       flat
       bordered
       dense

@@ -7,6 +7,10 @@ const props = defineProps({
   house: {
     type: Object as PropType<myVal.House | myVal.HouseBlank>,
     required: true
+  },
+  currentHouseNames: {
+    type: Object as PropType<String[]>,
+    required: true
   }
 })
 
@@ -40,15 +44,28 @@ function updateHouse(val: string | number | null, elemId: typeof elemIdKey) {
   emits('update:house', res)
 }
 
+function countWord(parent: String[], child: string) {
+  let count = 0
+  parent.map((item) => {
+    if (item.toLowerCase() === child.toLowerCase()) {
+      count++
+    }
+  })
+  return count
+}
+
 function isValidValue(
   val: number | string | null,
   key: 'locationId' | 'familyName'
 ): boolean | string {
   const result = myVal.HouseZod.shape[key].safeParse(val)
   if (result.success) {
+    if (key === 'familyName' && countWord(props.currentHouseNames, String(val) || '') > 1) {
+      return 'Please set unique family name'
+    }
     return true // Or some validation logic that returns a boolean
   } else {
-    console.log(result.error.errors)
+    // console.log(result.error.errors)
     return result.error.errors.map((e) => e.message).join(', ')
   }
 }
@@ -56,7 +73,7 @@ function isValidValue(
 <template>
   <q-card class="q-pt-md">
     <div class="row">
-      <div class="col-5">
+      <div class="col">
         <q-input
           :model-value="houseComputed.locationId"
           @update:model-value="(newValue) => updateHouse(newValue, 'locationId')"
@@ -64,7 +81,6 @@ function isValidValue(
           class="q-px-sm"
           filled
           dense
-          lazy-rules
           :rules="[(v) => isValidValue(v, 'locationId')]"
         >
           <template v-slot:prepend>
@@ -72,15 +88,13 @@ function isValidValue(
           </template>
         </q-input>
       </div>
-      <div class="col-5">
+      <div class="col">
         <q-input
           :model-value="houseComputed.familyName"
           @update:model-value="(newValue) => updateHouse(newValue, 'familyName')"
           label="family name"
-          class="q-px-sm"
           filled
           dense
-          lazy-rules
           :rules="[(v) => isValidValue(v, 'familyName')]"
         >
           <template v-slot:prepend>

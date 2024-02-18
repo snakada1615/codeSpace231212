@@ -132,25 +132,28 @@ export const useProjectData = defineStore('prjData', {
       this.appUser.userId = val
     },
     setFct(val: myVal.FctItems) {
-      this.fct = val
+      this.fct = JSON.parse(JSON.stringify(val))
     },
     setDri(val: myVal.DriItems) {
-      this.dri = val
+      this.dri = JSON.parse(JSON.stringify(val))
     },
     setAppUser(val: myVal.AppUser[]) {
       this.appUser = val[0]
     },
     setCurrentDataset(val: myVal.CurrentDataSet) {
-      this.currentDataSet = val
+      this.currentDataSet = JSON.parse(JSON.stringify(val))
     },
     setProjectInfo(val: myVal.ProjectInfo | myVal.ProjectInfoBlank) {
-      this.projectInfo = val
+      this.projectInfo = JSON.parse(JSON.stringify(val))
     },
     setHouses(val: myVal.Houses) {
-      this.houses = val
+      this.houses = JSON.parse(JSON.stringify(val))
+    },
+    addNewHouse(val: myVal.House) {
+      this.houses.push(JSON.parse(JSON.stringify(val)))
     },
     setMenu(val: myVal.Menu) {
-      this.menu = val
+      this.menu = JSON.parse(JSON.stringify(val))
     },
     async fireSetCurrentDataSet(userId: string, val: myVal.CurrentDataSet) {
       await fireFunc.fireSetMergeTyped<myVal.CurrentDataSet>('user', userId, val)

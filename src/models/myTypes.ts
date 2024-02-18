@@ -155,6 +155,18 @@ export const familyMemberDefault = {
   count: 0
 }
 
+// export const familyMemberDefault = (val?: DriItem): FamilyMember => {
+//   return {
+//     DriId: val?.DriId || '',
+//     Name: val?.Name || '',
+//     En: val?.En || 1,
+//     Pr: val?.Pr || 1,
+//     Va: val?.Va || 1,
+//     Fe: val?.Fe || 1,
+//     count: 0
+//   }
+// }
+
 export const familyMembersDefault = sampleFamilyMemberCategory.map((item, index) => {
   return {
     ...familyMemberDefault,
@@ -192,7 +204,7 @@ export type ProjectInfoBlank = typeof projectInfoDefault
 export const HouseZod = z.object({
   projectId: z.string(),
   userId: z.string(),
-  locationId: z.string(),
+  locationId: z.string().min(3).max(200),
   familyId: z.string(),
   familyName: z.string().min(3).max(200),
   familyMembers: FamilyMembersZod
@@ -213,7 +225,7 @@ export const houseDefault = {
   userId: '',
   locationId: '',
   familyId: '',
-  familyName: '',
+  familyName: 'family01',
   familyMembers: familyMembersDefault
 }
 

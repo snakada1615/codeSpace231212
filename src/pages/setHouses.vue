@@ -4,6 +4,8 @@ import setFamilyInfo from '@/components/molecules/setFamilyInfo.vue'
 import { useProjectData } from '../stores/mainStore'
 import * as myVal from '../models/myTypes'
 import { ref } from 'vue'
+import { JsonTreeView } from 'json-tree-view-vue3'
+import FakerFunc from '@/models/fakerFunc'
 
 const myProjectData = useProjectData()
 
@@ -32,12 +34,145 @@ const currentHouse: WritableComputedRef<myVal.House> = computed({
     )
   }
 })
-console.log(housesInfo)
 
-const selectedHouse = ref({ lebel: '', value: 0 })
+const selectedHouse = ref({
+  label: 'select family',
+  value: -1
+})
+
+const addNewFlag = ref(false)
+
+const newFamilyName = ref('')
+
+const newLocation = ref('')
+
+function isValidValue(
+  val: number | string | null,
+  key: 'locationId' | 'familyName'
+): boolean | string {
+  const result = myVal.HouseZod.shape[key].safeParse(val)
+  if (result.success) {
+    if (
+      key === 'familyName' &&
+      housesInfo.value.map((item) => item.label).includes(String(val) || '')
+    ) {
+      return 'Please set unique family name'
+    }
+    return true // Or some validation logic that returns a boolean
+  } else {
+    // console.error(result.error.errors)
+    return result.error.errors.map((e) => e.message).join(', ')
+  }
+}
+
+const stateFamilyName = computed(() => {
+  if (isValidValue(newFamilyName.value, 'familyName') === true) {
+    return true
+  }
+  return false
+})
+
+const stateLocation = computed(() => {
+  if (isValidValue(newLocation.value, 'locationId') === true) {
+    return true
+  }
+  return false
+})
+
+function modeChange() {
+  selectedHouse.value = {
+    label: 'select family',
+    value: -1
+  }
+  newLocation.value = ''
+  newFamilyName.value = ''
+}
+
+function addNewHouse() {
+  const res: myVal.House = {
+    ...myVal.houseDefault,
+    userId: myProjectData.appUser.userId,
+    projectId: myProjectData.projectInfo.projectId,
+    locationId: newLocation.value,
+    familyId: FakerFunc.uuid(),
+    familyName: newFamilyName.value
+  }
+  console.log(myVal.houseDefault)
+  console.log(res)
+  myProjectData.addNewHouse(res)
+  addNewFlag.value = false
+  selectedHouse.value = {
+    label: newFamilyName.value,
+    value: housesInfo.value.length - 1
+  }
+}
 </script>
+
 <template>
-  <q-select :options="housesInfo" v-model="selectedHouse" />
-  <setFamilyInfo :disabled="myProjectData.houses.length === 0" v-model:house="currentHouse" />
-  {{ myProjectData }}
+  <q-card>
+    <q-toggle
+      v-model="addNewFlag"
+      color="green"
+      label="Add new family"
+      @update:model-value="modeChange"
+    />
+    <q-select
+      v-if="!addNewFlag"
+      :options="housesInfo"
+      v-model="selectedHouse"
+      label="current Family"
+      style="max-width: 350px"
+      color="lime-11"
+      bg-color="green"
+      filled
+    />
+    <div v-else>
+      <div class="row">
+        <div class="col">
+          <q-input
+            v-model:model-value="newLocation"
+            label="new location"
+            class="q-px-sm"
+            filled
+            dense
+            :rules="[(v) => isValidValue(v, 'locationId')]"
+          >
+            <template v-slot:prepend>
+              <q-icon name="flag" />
+            </template>
+          </q-input>
+        </div>
+        <div class="col">
+          <q-input
+            v-model:model-value="newFamilyName"
+            label="new familyName"
+            filled
+            dense
+            :rules="[(v) => isValidValue(v, 'familyName')]"
+          >
+            <template v-slot:prepend>
+              <q-icon name="face" />
+            </template>
+          </q-input>
+        </div>
+        <div class="col">
+          <q-btn
+            icon="add"
+            round
+            class="q-ml-md"
+            color="green"
+            @click="addNewHouse"
+            :disable="!stateFamilyName || !stateLocation"
+          />
+        </div>
+      </div>
+    </div>
+    <setFamilyInfo
+      v-if="currentHouse && !addNewFlag"
+      v-model:house="currentHouse"
+      :currentHouseNames="housesInfo.map((item) => item.label)"
+    />
+    {{ currentHouse }}
+    <JsonTreeView :json="JSON.stringify(myProjectData.houses)" :maxDepth="4" />
+  </q-card>
 </template>
