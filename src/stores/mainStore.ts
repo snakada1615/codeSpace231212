@@ -231,10 +231,16 @@ export const useProjectData = defineStore('prjData', {
           {
             ...myVal.projectInfoDefault,
             userId: userId,
-            projectId: currentProjectId
+            projectId: currentProjectId,
+            targetPopulation: {
+              ...myVal.familyMembersDefault(this.dri || [])
+            }
           }
         ]
       )
+      console.log(this.dri)
+      console.log(myVal.familyMembersDefault(this.dri || []))
+      console.log(this.projectInfo)
 
       // House:
       console.log('fireGetHouse')
@@ -248,7 +254,10 @@ export const useProjectData = defineStore('prjData', {
             ...myVal.houseDefault,
             userId: userId,
             projectId: currentProjectId,
-            familyId: defaultFamilyId
+            familyId: defaultFamilyId,
+            familyMembers: {
+              ...myVal.familyMembersDefault()
+            }
           }
         ]
       )

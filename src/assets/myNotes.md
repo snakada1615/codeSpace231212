@@ -310,3 +310,56 @@ Always make sure you understand the consequences of this action:
 It is best practice to coordinate with your team when you force push changes to a shared repository.
 
 ---
+
+The expressions `JSON.parse(JSON.stringify(val))` and `{...val}` are both used to create a new value based on the existing value `val`, but they work in different ways and have different capabilities and limitations.
+
+**Using `JSON.parse(JSON.stringify(val))`:**
+
+1. **Deep Copy**: This method creates a deep clone of the object `val`. It means that if `val` contains nested objects or arrays, those will be recursively copied into a completely new object.
+2. **Loss of Data Types**: Non-JSON-compatible values such as functions, `undefined`, and date objects will not be copied or will be converted to a compatible type (for instance, dates become strings).
+3. **Performance**: It is typically slower than shallow copying because it involves serialization and deserialization of the data.
+4. **Throws Errors on Circular References**: If `val` contains circular references (objects referencing themselves directly or indirectly), `JSON.stringify` will throw an error.
+5. **Not Suitable for Objects with Methods**: Instances of classes will lose their methods and prototype chain after serialization/deserialization and will only remain plain objects with their properties.
+
+**Example using `JSON.parse(JSON.stringify(val))`:**
+
+```javascript
+const original = {
+  a: 1,
+  b: { c: 2 }
+}
+
+const cloned = JSON.parse(JSON.stringify(original))
+
+console.log(cloned) // {a: 1, b: {c: 2}}
+```
+
+**Using `{...val}`:**
+
+1. **Shallow Copy**: The spread syntax `{...val}` creates a shallow copy of `val`. It copies all enumerable own properties from `val` to a new object.
+2. **Preserves Data Types**: Since it doesn't involve stringify/parse cycle, types like functions, `undefined`, and date objects are preserved.
+3. **Performance**: Generally faster than deep cloning because no serialization is involved.
+4. **Doesn't Handle Circular References**: This method doesn't specifically handle circular references; it simply copies properties as-is at one level deep.
+5. **Suitable for Simple Cloning**: Useful when you simply want a new object with the same top-level properties, but does not suffice for nested objects.
+
+**Example using `{...val}`:**
+
+```javascript
+const original = {
+  a: 1,
+  b: { c: 2 }
+}
+
+const shallowCopy = { ...original }
+
+console.log(shallowCopy) // {a: 1, b: {c: 2}} - Note that `b` is still a reference to the same object
+```
+
+In this example, modifying `shallowCopy.b.c` would also affect `original.b.c` because the internal object referenced by `b` is shared between `original` and `shallowCopy`.
+
+In summary:
+
+- Use `JSON.parse(JSON.stringify(val))` if you need a deep clone and your object is safely serializable to JSON (no functions, no circular references, etc.).
+- Use `{...val}` when you want a quick shallow copy of an object where nested references are not a concern or desired.
+
+---

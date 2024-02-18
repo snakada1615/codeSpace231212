@@ -146,34 +146,53 @@ export type FamilyMember = z.infer<typeof FamilyMemberZod>
 
 export type FamilyMembers = z.infer<typeof FamilyMembersZod>
 
-export type FamilyMemberBlank = typeof familyMemberDefault
+export type FamilyMemberBlank = FamilyMemberDefaultType
 
-export type FamilyMembersBlank = typeof familyMembersDefault
+export type FamilyMembersBlank = FamilyMemberDefaultType[]
 
-export const familyMemberDefault = {
-  ...driItemDefault,
-  count: 0
-}
-
-// export const familyMemberDefault = (val?: DriItem): FamilyMember => {
-//   return {
-//     DriId: val?.DriId || '',
-//     Name: val?.Name || '',
-//     En: val?.En || 1,
-//     Pr: val?.Pr || 1,
-//     Va: val?.Va || 1,
-//     Fe: val?.Fe || 1,
-//     count: 0
-//   }
+// export const familyMemberDefault = {
+//   ...driItemDefault,
+//   count: 0
 // }
 
-export const familyMembersDefault = sampleFamilyMemberCategory.map((item, index) => {
+export const familyMemberDefault = (val?: DriItem) => {
   return {
-    ...familyMemberDefault,
-    DriId: String(index),
-    Name: item
+    DriId: val?.DriId || '',
+    Name: val?.Name || '',
+    En: val?.En || 1,
+    Pr: val?.Pr || 1,
+    Va: val?.Va || 1,
+    Fe: val?.Fe || 1,
+    count: 0
   }
-})
+}
+
+interface FamilyMemberDefaultType {
+  DriId: string
+  Name: string
+  En: number
+  Pr: number
+  Va: number
+  Fe: number
+  count: number
+}
+
+export const familyMembersDefault = (val?: DriItems): FamilyMemberDefaultType[] => {
+  let res = sampleFamilyMemberCategory.map((item, index) => {
+    return {
+      ...familyMemberDefault(),
+      DriId: String(index),
+      Name: item
+    }
+  })
+  console.log(val)
+  if (val && val.length > 0) {
+    res = val.map((item) => {
+      return familyMemberDefault(item)
+    })
+  }
+  return res
+}
 
 export const ProjectInfoZod = z.object({
   userId: z.string(),
@@ -190,7 +209,7 @@ export const projectInfoDefault = {
   projectId: '',
   locationId: '',
   location: '',
-  targetPopulation: familyMembersDefault
+  targetPopulation: familyMembersDefault()
 }
 
 export const ProjectInfosZod = z.array(ProjectInfoZod)
@@ -226,7 +245,7 @@ export const houseDefault = {
   locationId: '',
   familyId: '',
   familyName: 'family01',
-  familyMembers: familyMembersDefault
+  familyMembers: familyMembersDefault()
 }
 
 export const housesDefault = [houseDefault]
