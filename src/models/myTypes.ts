@@ -131,7 +131,8 @@ export const driItemDefault = {
 export const DriItemsWithNoteZod = z.object({
   data: DriItemsZod,
   note: z.string(),
-  userId: z.string()
+  userId: z.string(),
+  driId: z.string()
 })
 
 export type DriItemsWithNote = z.infer<typeof DriItemsWithNoteZod>
@@ -267,7 +268,8 @@ export const fctItemDefault = {
 export const FctItemsWithNoteZod = z.object({
   data: FctItemsZod,
   note: z.string().min(3).max(500),
-  userId: z.string()
+  userId: z.string(),
+  fctId: z.string()
 })
 
 export type FctItemsWithNote = Zod.infer<typeof FctItemsWithNoteZod>

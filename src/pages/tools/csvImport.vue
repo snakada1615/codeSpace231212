@@ -104,7 +104,8 @@ function saveCsv(): void {
     projectStore.fireSetDri(myId, {
       note: '',
       userId: projectStore.appUser.userId,
-      data: typedCsv.value as myVal.DriItems
+      data: typedCsv.value as myVal.DriItems,
+      driId: myId
     })
 
     // currentDataSetの更新
@@ -121,7 +122,8 @@ function saveCsv(): void {
     projectStore.fireSetFct(myId, {
       note: '',
       userId: projectStore.appUser.userId,
-      data: typedCsv.value as myVal.FctItems
+      data: typedCsv.value as myVal.FctItems,
+      fctId: myId
     })
 
     // currentDataSetの更新
@@ -133,69 +135,6 @@ function saveCsv(): void {
     projectStore.fireSetCurrentDataSet(projectStore.appUser.userId, currentData)
   }
 }
-
-// // Define a type for the handler functions in the project store
-// type SetItemFunction<T> = (item: T) => void;
-// type FireSetItemFunction<T> = (id: string, item: T) => void;
-
-// // Define a generic type for AppUser that can accommodate various data set types
-// interface AppUserGeneric<T> {
-//   userId: string;
-//   currentDataSet: {
-//     dri?: string; // Assuming 'dri' is just one possible data set key
-//     [key: string]: any; // Other data set keys with unknown property names
-//   };
-// }
-
-// interface SaveCsvParams<T> {
-//   typedCsvValue: T;               // The actual CSV value parsed with the correct type
-//   setItem: SetItemFunction<T>;    // Function to set the item in the store
-//   fireSetItem: FireSetItemFunction<T>; // Function to trigger/fire the set item action
-//   dataTypeKey: keyof AppUserGeneric<T>; // The key under which to store the ID in the currentDataSet object
-// }
-
-// const saveCsv2 = <T>(params: SaveCsvParams<T>): void => {
-//   const { typedCsvValue, setItem, fireSetItem, dataTypeKey } = params;
-
-//   // Generate a unique ID for the new data set entry
-//   const myId = fakerFunc.uuid();
-
-//   // Update the project store with the new data set
-//   setItem(typedCsvValue);
-//   fireSetItem(myId, {
-//     note: '',
-//     users: [projectStore.appUser.userId],
-//     data: typedCsvValue,
-//   });
-
-//   // Update the appUser with the new data set ID
-//   const newAppUser: AppUserGeneric<T> = {
-//     ...projectStore.appUser,
-//     currentDataSet: {
-//       ...projectStore.appUser.currentDataSet,
-//       [dataTypeKey]: myId,
-//     },
-//   };
-
-//   projectStore.setAppUser(newAppUser);
-//   projectStore.fireSetAppUser(projectStore.appUser.userId, newAppUser);
-// };
-
-// // Usage example for DRIItems
-// saveCsv({
-//   typedCsvValue: typedCsv.value as myVal.DriItems,
-//   setItem: projectStore.setDri,
-//   fireSetItem: projectStore.fireSetDri,
-//   dataTypeKey: 'dri',
-// });
-
-// // Usage example for FCTItems
-// saveCsv({
-//   typedCsvValue: typedCsv.value as myVal.FCTItems,
-//   setItem: projectStore.setFct,
-//   fireSetItem: projectStore.fireSetFct,
-//   dataTypeKey: 'fct',
-// });
 
 const processFile = (): void => {
   if (!uploadedFile.value) return

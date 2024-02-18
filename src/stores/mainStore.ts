@@ -81,8 +81,30 @@ export const useProjectData = defineStore('prjData', {
       }
     },
 
+    familyMembersDefault: (state) => {
+      if (state.dri && state.dri.length > 0) {
+        return state.dri.map((item) => {
+          return {
+            ...item,
+            count: 0
+          }
+        })
+      } else {
+        return myVal.sampleFamilyMemberCategory.map((item, index) => {
+          return {
+            ...myVal.familyMemberDefault,
+            DriId: String(index),
+            Name: item
+          }
+        })
+      }
+    },
+
     targetPopulationTotal: (state) => {
       if (!state.projectInfo) {
+        return 0
+      }
+      if (!state.projectInfo.targetPopulation) {
         return 0
       }
       return state.projectInfo.targetPopulation.reduce(
@@ -92,7 +114,7 @@ export const useProjectData = defineStore('prjData', {
     },
 
     houseSizes: (state) => {
-      if (!state.houses) {
+      if (!state.houses || !state.houses[0].familyMembers) {
         return 0
       }
       return state.houses.map((house) =>
@@ -131,8 +153,12 @@ export const useProjectData = defineStore('prjData', {
     setUserId(val: string) {
       this.appUser.userId = val
     },
-    setFct(val: myVal.FctItems) {
-      this.fct = JSON.parse(JSON.stringify(val))
+    setFct(val: myVal.FctItems | myVal.FctItemsWithNote) {
+      if (Array.isArray(val)) {
+        this.fct = JSON.parse(JSON.stringify(val))
+      } else {
+        this.fct = JSON.parse(JSON.stringify(val.data))
+      }
     },
     setDri(val: myVal.DriItems) {
       this.dri = JSON.parse(JSON.stringify(val))
@@ -182,29 +208,51 @@ export const useProjectData = defineStore('prjData', {
 
       //  fct:
       console.log('...fetching fct')
-      const fctDat = await fireFunc.fireGetTyped<myVal.FctItemsWithNote>('fct', currentFctId)
-      if (fctDat) {
-        this.setFct(fctDat.data)
-        this.setCurrentDataset({
-          ...this.currentDataSet,
-          fct: currentFctId
-        })
-      } else {
-        throw new Error('no FCT data available in fireStore')
-      }
+      // const fctDat = await fireFunc.fireGetTyped<myVal.FctItemsWithNote>('fct', currentFctId)
+      // if (fctDat) {
+      //   this.setFct(fctDat.data)
+      // this.setCurrentDataset({
+      //   ...this.currentDataSet,
+      //   fct: currentFctId
+      // })
+      // } else {
+      //   throw new Error('no FCT data available in fireStore')
+      // }
+      await this.fireGetData<myVal.FctItemsWithNote>(
+        'fct',
+        'fctId',
+        currentFctId,
+        (userData) => this.setFct(userData[0].data),
+        [{ data: [myVal.fctItemDefault], userId: '', note: '', fctId: '' }]
+      )
+      this.setCurrentDataset({
+        ...this.currentDataSet,
+        fct: currentFctId
+      })
 
       //  dri:
       console.log('...fetching dri')
-      const driDat = await fireFunc.fireGetTyped<myVal.DriItemsWithNote>('dri', currentDriId)
-      if (driDat) {
-        this.setDri(driDat.data)
-        this.setCurrentDataset({
-          ...this.currentDataSet,
-          dri: currentDriId
-        })
-      } else {
-        throw new Error('no DRI data available in fireStore')
-      }
+      // const driDat = await fireFunc.fireGetTyped<myVal.DriItemsWithNote>('dri', currentDriId)
+      // if (driDat) {
+      //   this.setDri(driDat.data)
+      //   this.setCurrentDataset({
+      //     ...this.currentDataSet,
+      //     dri: currentDriId
+      //   })
+      // } else {
+      //   throw new Error('no DRI data available in fireStore')
+      // }
+      await this.fireGetData<myVal.DriItemsWithNote>(
+        'dri',
+        'driId',
+        currentDriId,
+        (userData) => this.setDri(userData[0].data),
+        [{ data: [myVal.driItemDefault], userId: '', note: '', driId: '' }]
+      )
+      this.setCurrentDataset({
+        ...this.currentDataSet,
+        dri: currentDriId
+      })
 
       //  AppUser:
       await this.fireGetData<myVal.AppUser>(
@@ -222,21 +270,9 @@ export const useProjectData = defineStore('prjData', {
 
       // project:
       console.log('fireGetProject')
-      // targetPopulationの初期値をあらかじめ設定しておく
-      const targetPopulationTemp = (): myVal.FamilyMembers => {
-        let res = { ...this.projectInfo.targetPopulation }
-        if (this.dri) {
-          res = {
-            ...this.dri.map((item) => {
-              return {
-                ...item,
-                count: 0
-              }
-            })
-          }
-        }
-        return res
-      }
+      // targetPopulationの初期値をあらかじめ設定しておく(thisが使えないため)
+      const targetPopulationTemp = this.familyMembersDefault
+
       await this.fireGetData<myVal.ProjectInfo>(
         'projectInfo',
         'projectId',
@@ -247,7 +283,7 @@ export const useProjectData = defineStore('prjData', {
             ...myVal.projectInfoDefault,
             userId: userId,
             projectId: currentProjectId,
-            targetPopulation: { ...targetPopulationTemp() }
+            targetPopulation: [...targetPopulationTemp]
           }
         ]
       )
@@ -265,7 +301,7 @@ export const useProjectData = defineStore('prjData', {
             userId: userId,
             projectId: currentProjectId,
             familyId: defaultFamilyId,
-            familyMembers: { ...targetPopulationTemp() }
+            familyMembers: [...targetPopulationTemp]
           }
         ]
       )
@@ -300,6 +336,12 @@ export const useProjectData = defineStore('prjData', {
       if (res && res.length > 0) {
         setFunction(res)
       } else {
+        if (collectionName === 'fct') {
+          throw new Error('no FCT data available in fireStore')
+        }
+        if (collectionName === 'dri') {
+          throw new Error('no DRI data available in fireStore')
+        }
         console.log(`${collectionName} data not available in server. Initializing data...`)
         setFunction(defaultData)
       }

@@ -3,7 +3,7 @@
   <div>
     <q-icon name="flag" />
     <div>halo</div>
-    <JsonTreeView :json="JSON.stringify(projectData.projectInfo)" :maxDepth="4" />
+    <JsonTreeView :json="JSON.stringify(projectData)" :maxDepth="4" />
   </div>
 </template>
 
