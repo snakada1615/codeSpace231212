@@ -53,19 +53,35 @@ function splash(val: boolean, mes?: string) {
   }
 }
 
+interface ConverterMap {
+  [key: string]: FirestoreDataConverter<any>
+  FctItem: FirestoreDataConverter<myVal.FctItemsWithNote>
+  DriItem: FirestoreDataConverter<myVal.DriItemsWithNote>
+  AppUser: FirestoreDataConverter<myVal.AppUser>
+  ProjectInfo: FirestoreDataConverter<myVal.ProjectInfo>
+  House: FirestoreDataConverter<myVal.House>
+  Menu: FirestoreDataConverter<myVal.Menu>
+  // other specific converters
+}
+
 export class fireFunc {
+  // ここからwithConverter更新版 --------------------------------------------
   private static converter = <T>(
     isOfTypeT: (data: any) => data is T
   ): FirestoreDataConverter<T> => ({
     toFirestore: (data: WithFieldValue<T>): WithFieldValue<DocumentData> => {
-      if (data === null || typeof data !== 'object') {
-        throw new Error('data to send firestore must be an object / error in toFIrestore')
+      if (!isOfTypeT(data)) {
+        throw new Error('Provided data does not match expected type.')
       }
+      // The data object has been validated and can be spread into the resulting object
       return { ...data } as WithFieldValue<DocumentData>
     },
     fromFirestore: (snapshot: QueryDocumentSnapshot): T => {
       const data = snapshot.data()
-      return data as T
+      if (!isOfTypeT(data)) {
+        throw new Error('Data from Firestore does not match expected type.')
+      }
+      return data
     }
   })
   // 基本となるvaridator
@@ -74,12 +90,40 @@ export class fireFunc {
   }
 
   // Create type guards using their respective Zod schemas
-  private static isFctItem = this.createIsOfTypeT<myVal.FctItem>(myVal.FctItemZod)
-  private static isDriItem = this.createIsOfTypeT<myVal.DriItem>(myVal.DriItemZod)
+  private static isFctItem = this.createIsOfTypeT<myVal.FctItemsWithNote>(myVal.FctItemsWithNoteZod)
+  private static isDriItem = this.createIsOfTypeT<myVal.DriItemsWithNote>(myVal.DriItemsWithNoteZod)
+  private static isAppUser = this.createIsOfTypeT<myVal.AppUser>(myVal.AppUserZod)
+  private static isProjectInfo = this.createIsOfTypeT<myVal.ProjectInfo>(myVal.ProjectInfoZod)
+  private static isHouse = this.createIsOfTypeT<myVal.House>(myVal.HouseZod)
+  private static isMenu = this.createIsOfTypeT<myVal.Menu>(myVal.MenuItemsZod)
 
   // Then use these type guards within your converter instantiation
-  private static fctItemConverter = this.converter<myVal.FctItem>(this.isFctItem)
-  private static driItemConverter = this.converter<myVal.DriItem>(this.isDriItem)
+  private static fctItemConverter = this.converter<myVal.FctItemsWithNote>(this.isFctItem)
+  private static driItemConverter = this.converter<myVal.DriItemsWithNote>(this.isDriItem)
+  private static appUseronverter = this.converter<myVal.AppUser>(this.isAppUser)
+  private static ProjectInfoConverter = this.converter<myVal.ProjectInfo>(this.isProjectInfo)
+  private static houseConverter = this.converter<myVal.House>(this.isHouse)
+  private static menuConverter = this.converter<myVal.Menu>(this.isMenu)
+
+  private static converters: ConverterMap = {
+    FctItem: this.fctItemConverter,
+    DriItem: this.driItemConverter,
+    AppUser: this.appUseronverter,
+    ProjectInfo: this.ProjectInfoConverter,
+    House: this.houseConverter,
+    Menu: this.menuConverter
+    // More converters can be added here
+  }
+
+  private static getTypeConverter<T>(typeName: string): FirestoreDataConverter<T> {
+    const converter = this.converters[typeName] as FirestoreDataConverter<T>
+    if (!converter) {
+      throw new Error(`Converter for type "${typeName}" is not found.`)
+    }
+    return converter
+  }
+
+  // ここまでwithConverter更新版 --------------------------------------------
 
   static async getCurrentUser(): Promise<User | null> {
     return new Promise((resolve, reject) => {
@@ -153,8 +197,14 @@ export class fireFunc {
     }
   }
 
-  static async fireGetTyped<T>(collectionId: string, docId: string): Promise<T | null> {
-    const docRef = doc(db, collectionId, docId).withConverter(this.converter<T>())
+  static async fireGetTyped<T>(
+    collectionId: string,
+    docId: string,
+    typeName: string
+  ): Promise<T | null> {
+    const converter = this.getTypeConverter<T>(typeName)
+    const docRef = doc(db, collectionId, docId).withConverter(converter)
+
     try {
       splash(true)
       const snapshot = await getDoc(docRef)
@@ -174,10 +224,12 @@ export class fireFunc {
   static async fireGetQueryTyped<T>(
     collectionId: string,
     key: string,
-    val: string
+    val: string,
+    typeName: string
   ): Promise<T[] | null> {
+    const converter = this.getTypeConverter<T>(typeName)
     const colRef: CollectionReference = collection(db, collectionId)
-    const q = query(colRef, where(key, '==', val)).withConverter(this.converter<T>())
+    const q = query(colRef, where(key, '==', val)).withConverter(converter)
     try {
       splash(true)
       const snapshot = await getDocs(q)
@@ -198,10 +250,9 @@ export class fireFunc {
     }
   }
 
-  static async fireSetTyped<T>(collectionId: string, docId: string, val: T) {
-    const docRef: DocumentReference<T> = doc(db, collectionId, docId).withConverter(
-      this.converter<T>()
-    )
+  static async fireSetTyped<T>(collectionId: string, docId: string, val: T, typeName: string) {
+    const converter = this.getTypeConverter<T>(typeName)
+    const docRef: DocumentReference<T> = doc(db, collectionId, docId).withConverter(converter)
     try {
       splash(true)
       await setDoc(docRef, val)
@@ -212,10 +263,9 @@ export class fireFunc {
     }
   }
 
-  static async fireSetMergeTyped<T>(collectionId: string, docId: string, val: T) {
-    const docRef: DocumentReference<T> = doc(db, collectionId, docId).withConverter(
-      this.converter<T>()
-    )
+  static async fireSetMergeTyped<T>(collectionId: string, docId: string, val: T, typeName: string) {
+    const converter = this.getTypeConverter<T>(typeName)
+    const docRef: DocumentReference<T> = doc(db, collectionId, docId).withConverter(converter)
     try {
       splash(true)
       await setDoc(docRef, val, { merge: true })

@@ -197,20 +197,20 @@ export const useProjectData = defineStore('prjData', {
     setMenu(val: myVal.Menu) {
       this.menu = JSON.parse(JSON.stringify(val))
     },
-    async fireSetCurrentDataSet(userId: string, val: myVal.CurrentDataSet) {
-      await fireFunc.fireSetMergeTyped<myVal.CurrentDataSet>('user', userId, val)
-    },
+    // async fireSetCurrentDataSet(userId: string, val: myVal.CurrentDataSet) {
+    //   await fireFunc.fireSetMergeTyped<myVal.CurrentDataSet>('user', userId, val)
+    // },
 
     async fireSetFct(fctId: string, val: myVal.FctItemsWithNote) {
-      await fireFunc.fireSetMergeTyped<myVal.FctItemsWithNote>('fct', fctId, val)
+      await fireFunc.fireSetMergeTyped<myVal.FctItemsWithNote>('fct', fctId, val, 'FctItem')
     },
 
     async fireSetDri(driId: string, val: myVal.DriItemsWithNote) {
-      await fireFunc.fireSetMergeTyped<myVal.DriItemsWithNote>('dri', driId, val)
+      await fireFunc.fireSetMergeTyped<myVal.DriItemsWithNote>('dri', driId, val, 'DriItem')
     },
 
     async fireSetAppUser(userId: string, val: myVal.AppUser) {
-      await fireFunc.fireSetMergeTyped<myVal.AppUser>('user', userId, val)
+      await fireFunc.fireSetMergeTyped<myVal.AppUser>('user', userId, val, 'AppUser')
     },
 
     async fireGetAllData(userId: string) {
@@ -228,6 +228,7 @@ export const useProjectData = defineStore('prjData', {
         'fct',
         'fctId',
         currentFctId,
+        'FctItem',
         (userData) => this.setFct(userData[0].data),
         [{ data: [myVal.fctItemDefault], userId: '', note: '', fctId: '' }]
       )
@@ -244,6 +245,7 @@ export const useProjectData = defineStore('prjData', {
         'dri',
         'driId',
         currentDriId,
+        'DriItem',
         (userData) => this.setDri(userData[0].data),
         [{ data: [myVal.driItemDefault], userId: '', note: '', driId: '' }]
       )
@@ -257,6 +259,7 @@ export const useProjectData = defineStore('prjData', {
         'user',
         'userId',
         userId,
+        'AppUser',
         (userData) => this.setAppUser(userData),
         [
           {
@@ -275,6 +278,7 @@ export const useProjectData = defineStore('prjData', {
         'projectInfo',
         'projectId',
         currentProjectId,
+        'ProjectInfo',
         (projectInfo) => this.setProjectInfo(projectInfo[0]),
         [
           {
@@ -292,6 +296,7 @@ export const useProjectData = defineStore('prjData', {
         'house',
         'projectId',
         currentProjectId,
+        'House',
         (houseData) => this.setHouses(houseData), // houseData is already an array.
         [
           {
@@ -310,6 +315,7 @@ export const useProjectData = defineStore('prjData', {
         'menu',
         'projectId',
         currentProjectId,
+        'Menu',
         (menu) => this.setMenu(menu), // houseData is already an array.
         [
           {
@@ -327,10 +333,16 @@ export const useProjectData = defineStore('prjData', {
       collectionName: string,
       fieldName: string,
       fieldValue: string,
+      typeName: string,
       setFunction: (data: T[]) => void, //戻り値を処理する関数を指定
       defaultData: T[]
     ) {
-      const res = await fireFunc.fireGetQueryTyped<T>(collectionName, fieldName, fieldValue) // queryなので戻り値は常にT[]
+      const res = await fireFunc.fireGetQueryTyped<T>(
+        collectionName,
+        fieldName,
+        fieldValue,
+        typeName
+      ) // queryなので戻り値は常にT[]
       if (res && res.length > 0) {
         setFunction(res)
       } else {

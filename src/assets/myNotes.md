@@ -310,3 +310,166 @@ Always make sure you understand the consequences of this action:
 It is best practice to coordinate with your team when you force push changes to a shared repository.
 
 ---
+
+To make use of generics `<T>` along with a type validation library like Zod, you'll have to create a generic type guard that can accept any Zod schema as an argument and then use that schema to validate whether the data is of type `T`. Here’s how you might implement such a function:
+
+```typescript
+import { ZodSchema } from 'zod'
+
+function createIsOfTypeT<T>(schema: ZodSchema<T>): (data: any) => data is T {
+  return (data: any): data is T => {
+    return schema.safeParse(data).success
+  }
+}
+```
+
+With this function in place, you can use it to create specific type guards for your `FctItem` and `DriItem` by passing their respective Zod schemas.
+
+Here's an example of how you could set up your converters for `FctItem` and `DriItem` using their Zod schemas:
+
+```typescript
+// Import the necessary Zod libraries and your schemas
+import { ZodSchema } from 'zod'
+import { FctItemsZodSchema, DriItemsZodSchema } from './path-to-your-zod-schemas'
+
+// Your existing FirestoreDataConverter that accepts a type guard
+const converter = <T>(isOfTypeT: (data: any) => data is T): FirestoreDataConverter<T> => ({
+  //...
+})
+
+// Create type guards using their respective Zod schemas
+const isFctItem = createIsOfTypeT<FctItem>(FctItemsZodSchema)
+const isDriItem = createIsOfTypeT<DriItem>(DriItemsZodSchema)
+
+// Then use these type guards within your converter instantiation
+const fctItemConverter = converter<FctItem>(isFctItem)
+const driItemConverter = converter<DriItem>(isDriItem)
+```
+
+When you want to use your converters, provide them to the `.withConverter()` method for your queries or document references. For instance:
+
+```typescript
+const fctItemRef = doc(firestoreDb, 'fctItems', itemId).withConverter(fctItemConverter)
+
+const driItemRef = doc(firestoreDb, 'driItems', itemId).withConverter(driItemConverter)
+```
+
+Using this pattern, each converter is now equipped with a specific type guard powered by Zod to perform runtime checks, ensuring type safety without duplicating validation logic in multiple places.
+
+---
+
+The issue seems to arise from using `this.converter2<T>(this.fctItemConverter)` which doesn't align with how `converter2` is defined. The `converter2` function expects a type guard `(data: any) => data is T`, but `this.fctItemConverter` is already an instance of `FirestoreDataConverter`. Here is the corrected code:
+
+```typescript
+import { FirestoreDataConverter, QueryDocumentSnapshot, WithFieldValue, DocumentData, doc, getDoc } from '@firebase/firestore';
+import { ZodSchema } from 'zod';
+import * as myVal from './myVal'; // Replace './myVal' with the correct path where FctItem and DriItem are defined
+
+// Assuming splash is a function you have defined elsewhere:
+function splash(show: boolean): void {
+  // Some splash behavior
+}
+
+// Revised code below:
+
+private static converter2<T>(isOfTypeT: (data: any) => data is T): FirestoreDataConverter<T> {
+  return {
+    toFirestore(data: WithFieldValue<T>): WithFieldValue<DocumentData> {
+      if (data === null || typeof data !== 'object') {
+        throw new Error('Data to send to Firestore must be an object / error in toFirestore');
+      }
+      return {...data} as WithFieldValue<DocumentData>;
+    },
+    fromFirestore(snapshot: QueryDocumentSnapshot): T {
+      const data = snapshot.data();
+      if (!isOfTypeT(data)) {
+        throw new Error('Data from Firestore does not match expected type.');
+      }
+      return data;
+    }
+  };
+}
+
+// Basic validator
+private static createIsOfTypeT<T>(schema: ZodSchema<T>): ((data: any) => data is T) {
+  return (data: any): data is T => schema.safeParse(data).success;
+}
+
+// Create type guards using their respective Zod schemas
+private static isFctItem = this.createIsOfTypeT(myVal.FctItemZod);
+private static isDriItem = this.createIsOfTypeT(myVal.DriItemZod);
+
+// Then use these type guards within your converter instantiation
+private static fctItemConverter = this.converter2(this.isFctItem);
+private static driItemConverter = this.converter2(this.isDriItem);
+
+static async fireGetTyped2<T>(collectionId: string, docId: string): Promise<T | null> {
+  let converter;
+  if (this.isFctItem({})) { // Check if T matches FctItem
+    converter = this.fctItemConverter as FirestoreDataConverter<T>;
+  } else if (this.isDriItem({})) { // Check if T matches DriItem
+    converter = this.driItemConverter as FirestoreDataConverter<T>;
+  } else {
+    throw new Error(`Converter for the specified type T is not found.`);
+  }
+
+  const docRef = doc(db, collectionId, docId).withConverter(converter);
+
+  try {
+    splash(true);
+    const snapshot = await getDoc(docRef);
+    splash(false);
+
+    if (snapshot.exists()) {
+      return snapshot.data();
+    } else {
+      return null;
+    }
+  } catch (error) {
+    splash(false);
+    console.error(error);
+    return null;
+  }
+}
+```
+
+In the above correction:
+
+- The `converter2` function is now directly returning the converter object without being wrapped in another arrow function.
+- Type checks have been added in the `fromFirestore` method of both converters to ensure the fetched data conforms to the expected type.
+- Within `fireGetTyped2`, we determine which converter to use based on which type guard passes. In this example, I've used dummy objects `{}` to illustrate how you might select an appropriate converter. However, this may not be the correct logic for your use case—you'd have to implement logic that determines the type of `T` to choose the correct converter.
+- I replaced `this.converter2<T>(this.fctItemConverter)` with a conditional assignment to the `converter` variable because you can't use a converter instance (`fctItemConverter`) as an argument for `converter2`.
+
+Make sure that `db` is correctly instantiated and that `myVal.FctItem`, `myVal.DriItem`, `myVal.FctItemZod`, and `myVal.DriItemZod` are properly imported or defined.
+
+---
+
+Yes, you can add a type guard check within the `toFirestore` method. Here's how you can modify the converter to include that check:
+
+```typescript
+private static converter2<T>(isOfTypeT: (data: any) => data is T): FirestoreDataConverter<T> {
+  return {
+    toFirestore(data: WithFieldValue<T>): WithFieldValue<DocumentData> {
+      if (!isOfTypeT(data)) {
+        throw new Error('Provided data does not match expected type.');
+      }
+      // The data object has been validated and can be spread into the resulting object
+      return {...data} as WithFieldValue<DocumentData>;
+    },
+    fromFirestore(snapshot: QueryDocumentSnapshot): T {
+      const data = snapshot.data();
+      if (!isOfTypeT(data)) {
+        throw new Error('Data from Firestore does not match expected type.');
+      }
+      // The data object has been validated and matches type T
+      return data;
+    }
+  };
+}
+```
+
+With this modification, both `toFirestore` and `fromFirestore` methods now ensure that the data being handled confirms to type `T`. Calls to `toFirestore` will throw an error if trying to send data to Firestore that does not pass the type guard, providing a stricter check on outgoing as well as incoming Firestore data.
+
+Please note that it is often the case that data being sent to Firestore may have additional fields such as `FieldValue`s for server timestamps, which might not strictly conform to the schema of `T`. In such cases, the type guard should be defined in a way that allows these special Firestore types for the write operations to succeed.
+
+---
