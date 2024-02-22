@@ -49,8 +49,8 @@ export const useProjectData = defineStore('prjData', {
     menu: [],
     currentDataSet: {
       ...myVal.currentDataSetDefault,
-      fct: 'f530f2c6-d107-47c4-b246-237427d77279',
-      dri: '82f6425d-def7-4094-9088-6672adfd525f'
+      fct: 'ffd78be6-b2c5-40aa-9704-50332044569c',
+      dri: '5139dec2-f340-46bd-aed4-57670991bab7'
     },
     loading: false
   }),
@@ -197,9 +197,14 @@ export const useProjectData = defineStore('prjData', {
     setMenu(val: myVal.Menu) {
       this.menu = JSON.parse(JSON.stringify(val))
     },
-    // async fireSetCurrentDataSet(userId: string, val: myVal.CurrentDataSet) {
-    //   await fireFunc.fireSetMergeTyped<myVal.CurrentDataSet>('user', userId, val)
-    // },
+    async fireSetCurrentDataset(userId: string, val: myVal.CurrentDataSet) {
+      await fireFunc.fireSetMergeTyped<myVal.CurrentDataSet>(
+        'userId',
+        userId,
+        val,
+        'CurrentDataset'
+      )
+    },
 
     async fireSetFct(fctId: string, val: myVal.FctItemsWithNote) {
       await fireFunc.fireSetMergeTyped<myVal.FctItemsWithNote>('fct', fctId, val, 'FctItem')

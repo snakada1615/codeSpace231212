@@ -10,6 +10,11 @@ export function add(x: number, y: number): number {
   return x + y
 }
 
+interface MyType {
+  [key: string]: any
+  // ... other explicitly typed properties
+}
+
 export default class myFunc {
   // 配列から一意の値を抽出
   static uniq<T>(array: Array<T>): Array<T> {
@@ -52,6 +57,24 @@ export default class myFunc {
   }
 
   static convertToTypedArray<T>(data: any[]): T[] {
-    return data.map((item) => item as T)
+    return data.map((item): T => item as T)
+  }
+
+  // array of Objectに型を設定する (shallow object用)
+  static setTypeToArrayObj(data: any[], refData: object): Partial<MyType> {
+    return data.map((item) => {
+      const resItem = { ...item }
+      for (const key in refData) {
+        const key2 = key as keyof typeof refData
+        if (typeof refData[key2] === 'number') {
+          if (!isNaN(+item[key])) {
+            resItem[key] = +item[key]
+          } else {
+            new Error('data type mismatch')
+          }
+        }
+      }
+      return resItem
+    })
   }
 }

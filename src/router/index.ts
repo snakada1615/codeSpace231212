@@ -33,7 +33,7 @@ router.beforeEach(
   (to: RouteLocationNormalized, from: RouteLocationNormalized, next: NavigationGuardNext) => {
     const authState = useAuthState()
     const isLoggedIn = authState.isLoggedin
-    const allowedPath = ['index', 'test', 'login', 'ErrorPage']
+    const allowedPath = ['index', 'test', 'login', 'ErrorPage', 'tool']
 
     // Check if the current path is allowed
     const allowed =

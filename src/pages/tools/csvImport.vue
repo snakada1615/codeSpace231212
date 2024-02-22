@@ -1,6 +1,5 @@
 <template>
   <div class="q-pa-md">
-    {{ projectStore.appUser }}
     <div class="row">
       <div class="col">
         <q-file
@@ -69,6 +68,18 @@ interface CsvRow {
 // 読み込んだCSVファイル全体の生データを入れる変数（Array of Object）
 let csvArray: Ref<CsvRow[]> = ref([]) // Example initialization
 
+// 必要なフィールドのみ抽出
+function csvArrayExtracted<T extends object>(items: T[], keysToExtract: (keyof T)[]): Partial<T>[] {
+  return items.map((item) => {
+    return keysToExtract.reduce((accumulator: Partial<T>, key) => {
+      if (key in item) {
+        accumulator[key] = item[key]
+      }
+      return accumulator
+    }, {} as Partial<T>)
+  })
+}
+
 // 読み込んだCSVファイルの型チェックを行うためのkey一覧。q-selectのv-modelにつなげてドロップダウンで選択（DRI/FCT）
 let csvKeys = computed(() => {
   return Object.keys(csvArray.value[0])
@@ -113,11 +124,14 @@ function saveCsv(): void {
       ...projectStore.currentDataSet,
       dri: myId
     }
+
     projectStore.setCurrentDataset(currentData)
-    projectStore.fireSetCurrentDataSet(projectStore.appUser.userId, currentData)
+    projectStore.fireSetCurrentDataset(projectStore.appUser.userId, currentData)
   } else {
     // fctの更新
     const myId = fakerFunc.uuid()
+    console.log(typedCsv.value)
+
     projectStore.setFct(typedCsv.value as myVal.FctItems)
     projectStore.fireSetFct(myId, {
       note: '',
@@ -132,7 +146,7 @@ function saveCsv(): void {
       fct: myId
     }
     projectStore.setCurrentDataset(currentData)
-    projectStore.fireSetCurrentDataSet(projectStore.appUser.userId, currentData)
+    projectStore.fireSetCurrentDataset(projectStore.appUser.userId, currentData)
   }
 }
 
@@ -158,15 +172,37 @@ const processFile = (): void => {
         isFiletypeCorrect.value = typeCheck(refKey.value.value)
         if (!isFiletypeCorrect.value) {
           Dialog.create({
-            message:
-              'data type is invalid for DRI type. it must include columns [ ' +
-              refKey.value.value +
-              ']'
+            message: 'data type is invalid. it must include columns [ ' + refKey.value.value + ']'
           })
           return
         }
 
-        typedCsv.value = myFunc.convertToTypedArray<myVal.DriItem>(csvArray.value)
+        // ファイルに型をつけて、該当する列を抽出
+        if (refKey.value.label === 'FCT') {
+          const res = myFunc.setTypeToArrayObj(csvArray.value, myVal.fctItemDefault)
+          typedCsv.value = csvArrayExtracted(res as myVal.FctItems, [
+            'keyFct',
+            'FoodGroupId',
+            'FctName',
+            'FoodGroup',
+            'Carb',
+            'En',
+            'Fe',
+            'Fat',
+            'Pr',
+            'Va'
+          ]) as myVal.FctItems
+        } else {
+          const res = myFunc.setTypeToArrayObj(csvArray.value, myVal.driItemDefault)
+          typedCsv.value = csvArrayExtracted(res as myVal.DriItems, [
+            'DriId',
+            'Name',
+            'En',
+            'Fe',
+            'Pr',
+            'Va'
+          ]) as myVal.DriItems
+        }
       },
       error: (error: Error) => {
         isFiletypeCorrect.value = false

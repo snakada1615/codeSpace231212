@@ -56,7 +56,8 @@ export const CategoryItemZod = z.object({
 export type CategoryItem = z.infer<typeof CategoryItemZod>
 
 //現在ユーザーが利用しているデータセット
-const CurrentDataSet = z.object({
+export const CurrentDataSetZod = z.object({
+  userId: z.string(),
   fct: z.string(),
   dri: z.string(),
   family: z.string(),
@@ -66,9 +67,10 @@ const CurrentDataSet = z.object({
   project: z.string()
 })
 
-export type CurrentDataSet = z.infer<typeof CurrentDataSet>
+export type CurrentDataSet = z.infer<typeof CurrentDataSetZod>
 
 export const currentDataSetDefault = {
+  userId: '',
   fct: '',
   dri: '',
   family: '',
@@ -275,7 +277,7 @@ export const fctItemDefault = {
 // fct tableに検索用の付加情報を追加したもの
 export const FctItemsWithNoteZod = z.object({
   data: FctItemsZod,
-  note: z.string().min(3).max(500),
+  note: z.string(),
   userId: z.string(),
   fctId: z.string()
 })

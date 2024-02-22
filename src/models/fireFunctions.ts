@@ -61,6 +61,7 @@ interface ConverterMap {
   ProjectInfo: FirestoreDataConverter<myVal.ProjectInfo>
   House: FirestoreDataConverter<myVal.House>
   Menu: FirestoreDataConverter<myVal.Menu>
+  CurrentDataSet: FirestoreDataConverter<myVal.CurrentDataSet>
   // other specific converters
 }
 
@@ -96,6 +97,9 @@ export class fireFunc {
   private static isProjectInfo = this.createIsOfTypeT<myVal.ProjectInfo>(myVal.ProjectInfoZod)
   private static isHouse = this.createIsOfTypeT<myVal.House>(myVal.HouseZod)
   private static isMenu = this.createIsOfTypeT<myVal.Menu>(myVal.MenuItemsZod)
+  private static isCurrentDataSet = this.createIsOfTypeT<myVal.CurrentDataSet>(
+    myVal.CurrentDataSetZod
+  )
 
   // Then use these type guards within your converter instantiation
   private static fctItemConverter = this.converter<myVal.FctItemsWithNote>(this.isFctItem)
@@ -104,6 +108,9 @@ export class fireFunc {
   private static ProjectInfoConverter = this.converter<myVal.ProjectInfo>(this.isProjectInfo)
   private static houseConverter = this.converter<myVal.House>(this.isHouse)
   private static menuConverter = this.converter<myVal.Menu>(this.isMenu)
+  private static currentDataSetConverter = this.converter<myVal.CurrentDataSet>(
+    this.isCurrentDataSet
+  )
 
   private static converters: ConverterMap = {
     FctItem: this.fctItemConverter,
@@ -111,7 +118,8 @@ export class fireFunc {
     AppUser: this.appUseronverter,
     ProjectInfo: this.ProjectInfoConverter,
     House: this.houseConverter,
-    Menu: this.menuConverter
+    Menu: this.menuConverter,
+    CurrentDataSet: this.currentDataSetConverter
     // More converters can be added here
   }
 
@@ -268,7 +276,9 @@ export class fireFunc {
     const docRef: DocumentReference<T> = doc(db, collectionId, docId).withConverter(converter)
     try {
       splash(true)
+      console.log(val)
       await setDoc(docRef, val, { merge: true })
+      console.log('done')
       splash(false)
     } catch (error) {
       splash(false)
