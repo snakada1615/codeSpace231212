@@ -164,11 +164,11 @@ export class fireFunc {
   }
 
   static async fireGetQuery(collectionId: string, key: string, val: string) {
+    splash(true)
     const colRef: CollectionReference = collection(db, collectionId)
 
     const q = query(colRef, where(key, '==', val))
     try {
-      splash(true)
       const snapshot = await getDocs(q)
       splash(false)
       const res: Array<myVal.AllProjectData> = []
@@ -184,8 +184,8 @@ export class fireFunc {
   }
 
   static async fireSet(collectionId: string, docId: string, val: object) {
+    splash(true)
     try {
-      splash(true)
       await setDoc(doc(db, collectionId, docId), val)
       splash(false)
     } catch (error) {
@@ -195,13 +195,57 @@ export class fireFunc {
   }
 
   static async fireSetMerge(collectionId: string, docId: string, val: object) {
+    splash(true)
     try {
-      splash(true)
       await setDoc(doc(db, collectionId, docId), val, { merge: true })
       splash(false)
     } catch (error) {
       splash(false)
       console.log(error)
+    }
+  }
+
+  static async fireDuplicateDocument(
+    sourceCol: string,
+    sourceDoc: string,
+    targetCol: string,
+    targetDoc: string,
+    message?: string
+  ) {
+    const sourcePath = sourceCol + '/' + sourceDoc
+    const targetPath = targetCol + '/' + targetDoc
+    splash(true, message || `copying from ${sourcePath} to ${targetPath}`)
+    try {
+      // Reference the source document
+      const sourceDocRef = doc(db, sourcePath)
+
+      // Get the source document
+      const sourceDocSnapshot = await getDoc(sourceDocRef)
+
+      // Ensure the document exists
+      if (!sourceDocSnapshot.exists()) {
+        console.log('Source document does not exist')
+        return null
+      }
+
+      // Retrieve the data from the source document
+      const sourceData = sourceDocSnapshot.data()
+
+      // Reference the target document (this will create a new document)
+      const targetDocRef = doc(db, targetPath)
+
+      // Set the data in the target document (duplicating the document)
+      await setDoc(targetDocRef, sourceData)
+      splash(false)
+      console.log(`Document was duplicated from ${sourcePath} to ${targetPath}`)
+      return {
+        id: targetDoc,
+        data: sourceDocSnapshot.data()
+      }
+    } catch (error) {
+      splash(false)
+      console.error('Error duplicating document:', error)
+      return null
     }
   }
 
@@ -233,13 +277,14 @@ export class fireFunc {
     collectionId: string,
     key: string,
     val: string,
-    typeName: string
+    typeName: string,
+    message?: string
   ): Promise<T[] | null> {
     const converter = this.getTypeConverter<T>(typeName)
     const colRef: CollectionReference = collection(db, collectionId)
     const q = query(colRef, where(key, '==', val)).withConverter(converter)
     try {
-      splash(true)
+      splash(true, message || 'dwonloading data...')
       const snapshot = await getDocs(q)
       splash(false)
       const res: Array<T> = []
@@ -271,11 +316,17 @@ export class fireFunc {
     }
   }
 
-  static async fireSetMergeTyped<T>(collectionId: string, docId: string, val: T, typeName: string) {
+  static async fireSetMergeTyped<T>(
+    collectionId: string,
+    docId: string,
+    val: T,
+    typeName: string,
+    message?: string
+  ) {
+    splash(true, message || `uploading ${typeName} data to fireStore...`)
     const converter = this.getTypeConverter<T>(typeName)
     const docRef: DocumentReference<T> = doc(db, collectionId, docId).withConverter(converter)
     try {
-      splash(true)
       console.log(val)
       await setDoc(docRef, val, { merge: true })
       console.log('done')

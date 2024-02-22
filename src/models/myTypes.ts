@@ -57,6 +57,7 @@ export type CategoryItem = z.infer<typeof CategoryItemZod>
 
 //現在ユーザーが利用しているデータセット
 export const CurrentDataSetZod = z.object({
+  currentDataSetId: z.string(),
   userId: z.string(),
   fct: z.string(),
   dri: z.string(),
@@ -70,6 +71,7 @@ export const CurrentDataSetZod = z.object({
 export type CurrentDataSet = z.infer<typeof CurrentDataSetZod>
 
 export const currentDataSetDefault = {
+  currentDataSetId: '',
   userId: '',
   fct: '',
   dri: '',
@@ -79,6 +81,8 @@ export const currentDataSetDefault = {
   crop: '',
   project: ''
 }
+
+export type CurrentDataSetBlank = typeof currentDataSetDefault
 
 // 現在のユーザー情報
 export const AppUserZod = z.object({
@@ -165,18 +169,6 @@ export const familyMemberDefault = {
   ...driItemDefault,
   count: 0
 }
-
-// export const familyMemberDefault = (val?: DriItem): FamilyMember => {
-//   return {
-//     DriId: val?.DriId || '',
-//     Name: val?.Name || '',
-//     En: val?.En || 1,
-//     Pr: val?.Pr || 1,
-//     Va: val?.Va || 1,
-//     Fe: val?.Fe || 1,
-//     count: 0
-//   }
-// }
 
 export const familyMembersDefault = sampleFamilyMemberCategory.map((item, index) => {
   return {
@@ -287,13 +279,15 @@ export type FctItemsWithNote = Zod.infer<typeof FctItemsWithNoteZod>
 export const fctItemsWIthNoteDefault = {
   data: [fctItemDefault],
   note: '',
-  userId: ''
+  userId: '',
+  fctId: ''
 }
 
 export const driItemsWIthNoteDefault = {
   data: [driItemDefault],
   note: '',
-  userId: ''
+  userId: '',
+  driId: ''
 }
 
 export const FctStarZod = z.object({
