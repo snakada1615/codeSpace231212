@@ -227,7 +227,7 @@ export const useProjectData = defineStore('prjData', {
     async fireGetAllData(userId: string) {
       this.setUserId(userId)
       const currentProjectId = this.currentDataSet.project || FakerFunc.uuid()
-      let currentDataSetId = this.currentDataSet.currentDataSetId || FakerFunc.uuid()
+      // let currentDataSetId = this.currentDataSet.currentDataSetId || FakerFunc.uuid()
       const defaultFamilyId = FakerFunc.uuid()
       const defaultMenuId = FakerFunc.uuid()
 
@@ -239,11 +239,17 @@ export const useProjectData = defineStore('prjData', {
         userId,
         'CurrentDataSet',
         (userData) => this.setCurrentDataset(userData[0]),
-        [{ ...myVal.currentDataSetDefault, userId: userId, currentDataSetId: currentDataSetId }]
+        [
+          {
+            ...this.currentDataSet,
+            userId: userId,
+            currentDataSetId: this.currentDataSet.currentDataSetId || FakerFunc.uuid()
+          }
+        ]
       )
-      currentDataSetId = this.currentDataSet.currentDataSetId
+      // currentDataSetId = this.currentDataSet.currentDataSetId
 
-      //  fct:
+      // fct:
       console.log('...fetching fct')
 
       await this.fireGetData<myVal.FctItemsWithNote>(
@@ -268,9 +274,9 @@ export const useProjectData = defineStore('prjData', {
         userId
       )
 
-      //  AppUser:
+      // AppUser:
       console.log('...fetching appUser')
-      await this.fireGetData<myVal.AppUserBlanc>(
+      await this.fireGetData<myVal.AppUser>(
         'user',
         'userId',
         userId,
@@ -278,7 +284,7 @@ export const useProjectData = defineStore('prjData', {
         (userData) => this.setAppUser(userData[0]),
         [
           {
-            ...myVal.appUserDefault,
+            ...this.appUser,
             userId: userId
           }
         ]
@@ -297,10 +303,9 @@ export const useProjectData = defineStore('prjData', {
         (projectInfo) => this.setProjectInfo(projectInfo[0]),
         [
           {
-            ...myVal.projectInfoDefault,
+            ...this.projectInfo,
             userId: userId,
-            projectId: currentProjectId,
-            targetPopulation: [...targetPopulationTemp]
+            projectId: currentProjectId
           }
         ]
       )
@@ -315,11 +320,10 @@ export const useProjectData = defineStore('prjData', {
         (houseData) => this.setHouses(houseData), // houseData is already an array.
         [
           {
-            ...myVal.houseDefault,
+            ...this.houses[0],
             userId: userId,
             projectId: currentProjectId,
-            familyId: defaultFamilyId,
-            familyMembers: [...targetPopulationTemp]
+            familyId: defaultFamilyId
           }
         ]
       )
@@ -351,7 +355,7 @@ export const useProjectData = defineStore('prjData', {
       fieldValue: string,
       typeName: string,
       setFunction: (data: T[]) => void,
-      defaultData: T[],
+      defaultData?: T[],
       userId?: string
     ) {
       const res = await fireFunc.fireGetQueryTyped<T>(
@@ -489,7 +493,7 @@ export const useProjectData = defineStore('prjData', {
             }
             break
           case 'currentDataSet':
-            setFunction(defaultData)
+            setFunction(this.currentDataSet)
             await fireFunc.fireSetMergeTyped<myVal.CurrentDataSet>(
               // fireStoreに保存
               'currentDataSet',

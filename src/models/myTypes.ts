@@ -92,8 +92,7 @@ export const AppUserZod = z.object({
   title: z.string().min(3).max(200),
   country: z.string().min(3).max(200),
   region: z.string().min(3).max(200),
-  town: z.string().min(3).max(200).optional(),
-  currentDataSet: CurrentDataSetZod
+  town: z.string().min(3).max(200).optional()
 })
 
 export type AppUser = z.infer<typeof AppUserZod>
@@ -101,14 +100,13 @@ export type AppUser = z.infer<typeof AppUserZod>
 export type AppUserBlanc = typeof appUserDefault
 
 export const appUserDefault = {
-  userId: '',
-  name: '',
-  job: '',
-  title: '',
-  country: '',
-  region: '',
-  town: '',
-  currentDataSet: currentDataSetDefault
+  userId: 'default',
+  name: 'default',
+  job: 'default',
+  title: 'default',
+  country: 'default',
+  region: 'default',
+  town: 'default'
 }
 
 export const sampleFamilyMemberCategory = [
