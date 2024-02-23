@@ -72,6 +72,9 @@ export class fireFunc {
   ): FirestoreDataConverter<T> => ({
     toFirestore: (data: WithFieldValue<T>): WithFieldValue<DocumentData> => {
       if (!isOfTypeT(data)) {
+        console.log('isOffType Error')
+        console.log(data)
+        console.log(myVal.appUserDefault)
         throw new Error('Provided data does not match expected type.')
       }
       // The data object has been validated and can be spread into the resulting object
@@ -80,6 +83,8 @@ export class fireFunc {
     fromFirestore: (snapshot: QueryDocumentSnapshot): T => {
       const data = snapshot.data()
       if (!isOfTypeT(data)) {
+        console.log('isOffType Error')
+        console.log(data)
         throw new Error('Data from Firestore does not match expected type.')
       }
       return data
@@ -104,7 +109,7 @@ export class fireFunc {
   // Then use these type guards within your converter instantiation
   private static fctItemConverter = this.converter<myVal.FctItemsWithNote>(this.isFctItem)
   private static driItemConverter = this.converter<myVal.DriItemsWithNote>(this.isDriItem)
-  private static appUseronverter = this.converter<myVal.AppUser>(this.isAppUser)
+  private static appUserConverter = this.converter<myVal.AppUser>(this.isAppUser)
   private static ProjectInfoConverter = this.converter<myVal.ProjectInfo>(this.isProjectInfo)
   private static houseConverter = this.converter<myVal.House>(this.isHouse)
   private static menuConverter = this.converter<myVal.Menu>(this.isMenu)
@@ -115,7 +120,7 @@ export class fireFunc {
   private static converters: ConverterMap = {
     FctItem: this.fctItemConverter,
     DriItem: this.driItemConverter,
-    AppUser: this.appUseronverter,
+    AppUser: this.appUserConverter,
     ProjectInfo: this.ProjectInfoConverter,
     House: this.houseConverter,
     Menu: this.menuConverter,
@@ -284,7 +289,7 @@ export class fireFunc {
     const colRef: CollectionReference = collection(db, collectionId)
     const q = query(colRef, where(key, '==', val)).withConverter(converter)
     try {
-      splash(true, message || 'dwonloading data...')
+      splash(true, message || 'downloading data ' + typeName + '...')
       const snapshot = await getDocs(q)
       splash(false)
       const res: Array<T> = []
@@ -327,7 +332,6 @@ export class fireFunc {
     const converter = this.getTypeConverter<T>(typeName)
     const docRef: DocumentReference<T> = doc(db, collectionId, docId).withConverter(converter)
     try {
-      console.log(val)
       await setDoc(docRef, val, { merge: true })
       console.log('done')
       splash(false)

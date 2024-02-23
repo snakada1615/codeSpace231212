@@ -24,8 +24,7 @@ import {
   getAuth,
   GoogleAuthProvider,
   signInWithPopup,
-  signInWithEmailAndPassword,
-  signInWithRedirect
+  signInWithEmailAndPassword
 } from 'firebase/auth'
 import { Loading } from 'quasar' //splash screen
 import { useRouter } from 'vue-router' // import router

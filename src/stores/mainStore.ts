@@ -5,6 +5,7 @@ import { defineStore } from 'pinia'
 import * as myVal from '@/models/myTypes'
 import { fireFunc } from '@/models/fireFunctions'
 import FakerFunc from '@/models/fakerFunc'
+import { Dialog } from 'quasar'
 
 export const useAuthState = defineStore('auth', {
   state: () => ({
@@ -226,7 +227,7 @@ export const useProjectData = defineStore('prjData', {
     async fireGetAllData(userId: string) {
       this.setUserId(userId)
       const currentProjectId = this.currentDataSet.project || FakerFunc.uuid()
-      let currentDataSetId = FakerFunc.uuid()
+      let currentDataSetId = this.currentDataSet.currentDataSetId || FakerFunc.uuid()
       const defaultFamilyId = FakerFunc.uuid()
       const defaultMenuId = FakerFunc.uuid()
 
@@ -268,7 +269,8 @@ export const useProjectData = defineStore('prjData', {
       )
 
       //  AppUser:
-      await this.fireGetData<myVal.AppUser>(
+      console.log('...fetching appUser')
+      await this.fireGetData<myVal.AppUserBlanc>(
         'user',
         'userId',
         userId,
@@ -283,7 +285,7 @@ export const useProjectData = defineStore('prjData', {
       )
 
       // project:
-      console.log('fireGetProject')
+      console.log('...fetching project data')
       // targetPopulationの初期値をあらかじめ設定しておく(thisが使えないため)
       const targetPopulationTemp = this.familyMembersDefault
 
@@ -304,7 +306,7 @@ export const useProjectData = defineStore('prjData', {
       )
 
       // House:
-      console.log('fireGetHouse')
+      console.log('...fetching house data')
       await this.fireGetData<myVal.House>(
         'house',
         'projectId',
@@ -323,7 +325,7 @@ export const useProjectData = defineStore('prjData', {
       )
 
       //  Menu:
-      console.log('fireGetMenu')
+      console.log('...fetching menu data')
       await this.fireGetData<myVal.MenuItem>(
         'menu',
         'projectId',
@@ -361,9 +363,12 @@ export const useProjectData = defineStore('prjData', {
 
       if (res && res.length > 0) {
         setFunction(res)
+        console.log(typeName + ' fetch success!')
+        console.log(res)
         return { result: true, info: typeName }
       } else {
         console.log(`${collectionName} data not available in server. Initializing data...`)
+        console.log(collectionName)
 
         // 配列初期化のための関数(fct/dri限定)
         const initiateData = async (
@@ -403,6 +408,14 @@ export const useProjectData = defineStore('prjData', {
                   userId: userId,
                   fctId: newId
                 }
+                await fireFunc.fireSetMergeTyped<myVal.FctItemsWithNote>(
+                  // fireStoreに保存
+                  collectionName,
+                  newId,
+                  resFire as myVal.FctItemsWithNote,
+                  typeName,
+                  'copying data...'
+                )
                 break
 
               case 'dri':
@@ -412,6 +425,14 @@ export const useProjectData = defineStore('prjData', {
                   userId: userId,
                   driId: newId
                 }
+                await fireFunc.fireSetMergeTyped<myVal.DriItemsWithNote>(
+                  // fireStoreに保存
+                  collectionName,
+                  newId,
+                  resFire as myVal.DriItemsWithNote,
+                  typeName,
+                  'copying data...'
+                )
                 break
 
               default:
@@ -421,23 +442,15 @@ export const useProjectData = defineStore('prjData', {
 
             setData(resultData) // piniaに保存(修正してなくて良い)
             this.setCurrentDataset(resCurr) // currentDataSetの更新
-            await fireFunc.fireSetMergeTyped(
-              // fireStoreに保存
+            await fireFunc.fireSetMergeTyped<myVal.CurrentDataSet>(
+              // fireStoreに保存--currentDataSet
               'currentDataSet',
               this.currentDataSet.currentDataSetId,
-              resFire,
+              resCurr,
               'CurrentDataSet',
               'copying data...'
             )
 
-            await fireFunc.fireSetMergeTyped(
-              // fireStoreに保存
-              collectionName,
-              newId,
-              resFire,
-              typeName,
-              'copying data...'
-            )
             return {
               result: false,
               info: typeName
@@ -461,6 +474,7 @@ export const useProjectData = defineStore('prjData', {
             } else {
               throw new Error('missing parameter, userId in fireGetData')
             }
+            break
           case 'dri':
             if (userId) {
               return initiateData(
@@ -473,9 +487,37 @@ export const useProjectData = defineStore('prjData', {
             } else {
               throw new Error('missing parameter, userId in fireGetData')
             }
+            break
+          case 'currentDataSet':
+            setFunction(defaultData)
+            await fireFunc.fireSetMergeTyped<myVal.CurrentDataSet>(
+              // fireStoreに保存
+              'currentDataSet',
+              this.currentDataSet.currentDataSetId,
+              this.currentDataSet,
+              'CurrentDataSet',
+              'copying currentDataSet data...'
+            )
+            return { result: false, info: typeName }
+            break
+          case 'user':
+            console.log('ここだよ')
+            setFunction(defaultData)
+            await fireFunc.fireSetMergeTyped<myVal.AppUser>(
+              // fireStoreに保存
+              'user',
+              this.appUser.userId,
+              this.appUser,
+              'AppUser',
+              'copying AppUser data...'
+            )
+            console.log('ここかな')
+            return { result: false, info: typeName }
+            break
           default:
             setFunction(defaultData)
             return { result: false, info: typeName }
+            break
         }
       }
     }
