@@ -356,8 +356,10 @@ export class fireFunc {
       splash(true)
       await setDoc(docRef, val)
       splash(false)
+      return true
     } catch (error) {
       splash(false)
+      return false
       console.log(error)
     }
   }

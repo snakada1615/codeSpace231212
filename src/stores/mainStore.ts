@@ -99,25 +99,6 @@ export const useProjectData = defineStore('prjData', {
       return true
     },
 
-    // familyMembersDefault: (state) => {
-    //   if (state.dri && state.dri.length > 0) {
-    //     return state.dri.map((item) => {
-    //       return {
-    //         ...item,
-    //         count: 0
-    //       }
-    //     })
-    //   } else {
-    //     return myVal.sampleFamilyMemberCategory.map((item, index) => {
-    //       return {
-    //         ...myVal.familyMemberDefault,
-    //         DriId: String(index),
-    //         Name: item
-    //       }
-    //     })
-    //   }
-    // },
-
     targetPopulationTotal: (state) => {
       if (!state.projectInfo) {
         return 0
@@ -263,10 +244,11 @@ export const useProjectData = defineStore('prjData', {
         (userData) => this.setAppUser(userData[0]),
         [
           {
-            ...this.appUser,
+            ...myVal.appUserDefault,
             userId: userId
           }
-        ]
+        ],
+        FakerFunc.uuid() // データがfireStoreに存在しない場合、このIDで新規作成
       )
 
       // currentDataSet
@@ -283,7 +265,8 @@ export const useProjectData = defineStore('prjData', {
             userId: userId,
             currentDataSetId: this.currentDataSet.currentDataSetId || FakerFunc.uuid()
           }
-        ]
+        ],
+        FakerFunc.uuid() // データがfireStoreに存在しない場合、このIDで新規作成
       )
       // currentDataSetId = this.currentDataSet.currentDataSetId
 
@@ -350,7 +333,25 @@ export const useProjectData = defineStore('prjData', {
       )
     },
 
-    // 基本関数
+    // 基本関数：初期化 ---------------------------------------------------------------------------
+    async fireInitData<T>(
+      collectionName: string,
+      newId: string,
+      fieldName: string,
+      fieldValue: string,
+      typeName: string,
+      defaultData: T,
+      setFunction: (data: T) => void
+    ) {
+      const res = await fireFunc.fireSetTyped<T>(collectionName, newId, defaultData, typeName)
+      if (res) {
+        setFunction(defaultData)
+      } else {
+        console.error('error')
+      }
+    },
+
+    // 基本関数 ---------------------------------------------------------------------------
     async fireGetData<T>(
       collectionName: string,
       fieldName: string,
@@ -358,7 +359,7 @@ export const useProjectData = defineStore('prjData', {
       typeName: string,
       setFunction: (data: T[]) => void,
       defaultData: T[],
-      userId?: string
+      newId?: string
     ) {
       const res = await fireFunc.fireGetQueryTyped<T>(
         collectionName,
@@ -368,14 +369,15 @@ export const useProjectData = defineStore('prjData', {
       )
 
       if (res && res.length > 0) {
+        // fireStoreにデータが保存されている場合
         setFunction(res)
         console.log(typeName + ' fetch success!')
-        console.log(res)
         return { result: true, info: typeName }
       } else {
+        // fireStoreにデータが保存されていない場合
         console.log(`${collectionName} data not available in server. Initializing data...`)
 
-        // 配列初期化のための関数(fct/dri限定)
+        // 配列初期化のための関数(fct/dri限定) ------------------------------------------------------
         const initiateData = async (
           originCollection: 'fct' | 'dri',
           dataPath: string,
@@ -384,7 +386,6 @@ export const useProjectData = defineStore('prjData', {
           userId: string
         ) => {
           const newId = FakerFunc.uuid() // 新規ユーザのための fctId/driId 設定
-          console.log(newId)
           // まずはoriginal Fctをコピーして複製
           const copiedData = await fireFunc.fireDuplicateDocument(
             originCollection,
@@ -398,7 +399,7 @@ export const useProjectData = defineStore('prjData', {
             // コピーしたデータ（driItemWithNote）の一部を修正して、firesotre, piniaに保存、currentDataSetの修正
             // まずはデータ準備
             const resultData = copiedData.data.data as T
-            const resCurr = { ...this.currentDataSet }
+            const resCurr = { ...this.currentDataSet } // TODO: 外部変数持ち込まない！
             resCurr['userId'] = userId // currentDataSetの修正
             resCurr[originCollection] = newId // currentDataSetの修正
             let resFire = {}
@@ -413,13 +414,12 @@ export const useProjectData = defineStore('prjData', {
                   userId: userId,
                   fctId: newId
                 }
-                await fireFunc.fireSetMergeTyped<myVal.FctItemsWithNote>(
+                await fireFunc.fireSetTyped<myVal.FctItemsWithNote>(
                   // fireStoreに保存
                   collectionName,
                   newId,
                   resFire as myVal.FctItemsWithNote,
-                  typeName,
-                  'copying data...'
+                  typeName
                 )
                 break
 
@@ -430,13 +430,12 @@ export const useProjectData = defineStore('prjData', {
                   userId: userId,
                   driId: newId
                 }
-                await fireFunc.fireSetMergeTyped<myVal.DriItemsWithNote>(
+                await fireFunc.fireSetTyped<myVal.DriItemsWithNote>(
                   // fireStoreに保存
                   collectionName,
                   newId,
                   resFire as myVal.DriItemsWithNote,
-                  typeName,
-                  'copying data...'
+                  typeName
                 )
                 break
 
@@ -464,46 +463,51 @@ export const useProjectData = defineStore('prjData', {
             throw new Error(`no ${typeName.toUpperCase()} data available in fireStore`)
           }
         }
+        // 配列初期化のための関数(fct/dri限定) ------------------------------------------------------
 
         switch (collectionName) {
           case 'fct':
-            if (userId) {
-              console.log(userId)
+            if (newId) {
               return initiateData(
                 'fct',
                 this.copyDataFromOrigin['fct'],
                 this.setFct,
                 typeName,
-                userId
+                newId
               )
             } else {
-              throw new Error('missing parameter, userId in fireGetData')
+              throw new Error('missing parameter, newId in fireGetData')
             }
             break
           case 'dri':
-            if (userId) {
+            if (newId) {
               return initiateData(
                 'dri',
                 this.copyDataFromOrigin['dri'],
                 this.setDri,
                 typeName,
-                userId
+                newId
               )
             } else {
-              throw new Error('missing parameter, userId in fireGetData')
+              throw new Error('missing parameter, newId in fireGetData')
             }
             break
           case 'currentDataSet':
-            setFunction(defaultData)
-            await fireFunc.fireSetMergeTyped<myVal.CurrentDataSet>(
-              // fireStoreに保存
-              'currentDataSet',
-              this.currentDataSet.currentDataSetId,
-              this.currentDataSet,
-              'CurrentDataSet',
-              'copying currentDataSet data...'
-            )
-            return { result: false, info: typeName }
+            if (newId) {
+              if (myVal.CurrentDataSetZod.safeParse(defaultData)) {
+                await fireFunc.fireSetTyped<myVal.CurrentDataSet>(
+                  // fireStoreに保存
+                  'currentDataSet',
+                  newId,
+                  myVal.currentDataSetDefault, //TODO 初期値修正
+                  'CurrentDataSet'
+                )
+                setFunction(defaultData)
+              }
+              return { result: false, info: typeName }
+            } else {
+              throw new Error('missing parameter, newId in fireGetData')
+            }
             break
           case 'user':
             setFunction(defaultData)

@@ -71,15 +71,15 @@ export const CurrentDataSetZod = z.object({
 export type CurrentDataSet = z.infer<typeof CurrentDataSetZod>
 
 export const currentDataSetDefault = {
-  currentDataSetId: 'default',
-  userId: 'default',
-  fct: 'default',
-  dri: 'default',
-  family: 'default',
-  menu: 'default',
-  nutrient: 'default',
-  crop: 'default',
-  project: 'default'
+  currentDataSetId: '',
+  userId: '',
+  fct: '',
+  dri: '',
+  family: '',
+  menu: '',
+  nutrient: '',
+  crop: '',
+  project: ''
 }
 
 export type CurrentDataSetBlank = typeof currentDataSetDefault
@@ -110,13 +110,13 @@ export type AppUser = z.infer<typeof AppUserZod>
 export type AppUser_v = z.infer<typeof AppUserZod_v>
 
 export const appUserDefault = {
-  userId: 'default',
-  name: 'default',
-  job: 'default',
-  title: 'default',
-  country: 'default',
-  region: 'default',
-  town: 'default'
+  userId: '',
+  name: '',
+  job: '',
+  title: '',
+  country: '',
+  region: '',
+  town: ''
 }
 
 export const sampleFamilyMemberCategory = [
