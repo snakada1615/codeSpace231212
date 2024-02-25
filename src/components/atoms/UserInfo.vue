@@ -4,11 +4,9 @@ import { computed, defineEmits, type PropType } from 'vue'
 // import { useProjectData } from '@/stores/mainStore'
 // import { ref } from 'vue'
 
-type AppUserBlanc = typeof myVal.appUserDefault
-
 const props = defineProps({
   appUser: {
-    type: Object as PropType<myVal.AppUser | AppUserBlanc>,
+    type: Object as PropType<myVal.AppUser>,
     required: true
   }
 })
@@ -21,7 +19,7 @@ const appUserComp = computed({
   get() {
     return props.appUser
   },
-  set(val) {
+  set(val: myVal.AppUser_v) {
     emits('update:appUser', val)
   }
 })
@@ -30,7 +28,7 @@ function isValidValue(
   val: number | string | null,
   key: 'name' | 'job' | 'title' | 'country' | 'region' | 'town'
 ): boolean | string {
-  const result = myVal.AppUserZod.shape[key].safeParse(val)
+  const result = myVal.AppUserZod_v.shape[key].safeParse(val)
   if (result.success) {
     return true // Or some validation logic that returns a boolean
   } else {

@@ -87,6 +87,16 @@ export type CurrentDataSetBlank = typeof currentDataSetDefault
 // 現在のユーザー情報
 export const AppUserZod = z.object({
   userId: z.string(),
+  name: z.string(),
+  job: z.string(),
+  title: z.string(),
+  country: z.string(),
+  region: z.string(),
+  town: z.string().optional()
+})
+
+export const AppUserZod_v = z.object({
+  userId: z.string(),
   name: z.string().min(3).max(200),
   job: z.string().min(3).max(200),
   title: z.string().min(3).max(200),
@@ -97,7 +107,7 @@ export const AppUserZod = z.object({
 
 export type AppUser = z.infer<typeof AppUserZod>
 
-export type AppUserBlanc = typeof appUserDefault
+export type AppUser_v = z.infer<typeof AppUserZod_v>
 
 export const appUserDefault = {
   userId: 'default',

@@ -473,3 +473,106 @@ With this modification, both `toFirestore` and `fromFirestore` methods now ensur
 Please note that it is often the case that data being sent to Firestore may have additional fields such as `FieldValue`s for server timestamps, which might not strictly conform to the schema of `T`. In such cases, the type guard should be defined in a way that allows these special Firestore types for the write operations to succeed.
 
 ---
+
+i have set of variable (mostly array of objects) to be stored in pinia. i have set of pages to initialize each variables.
+what is a best practice to handle initialization and set value into pinia one by one using vue3-typescript.
+my problem is without initialization, i cannot set value in pinia (because typescript does not accept null)
+
+---
+
+When working with Pinia in a Vue 3 application using TypeScript, initializing and setting values for the store can be done in a way that ensures type safety and avoids issues with `null` or `undefined` values.
+
+Here's a step-by-step guide to best practices for handling initialization and setting values:
+
+### Step 1: Define Your Store with Initial State
+
+Firstly, define your store with an initial state. This means providing default values for all properties. If a property is an array of objects, initialize it as an empty array.
+
+```typescript
+// store.ts
+import { defineStore } from 'pinia'
+
+export const useMyStore = defineStore('myStore', {
+  state: () => ({
+    items: [] as MyObject[] // Replace MyObject with the actual object type
+    // ... other states
+  })
+  // getters and actions
+})
+```
+
+### Step 2: Type Your State
+
+Type your state by defining interfaces or types for your objects. This helps TypeScript understand what structure your objects will have.
+
+```typescript
+// types.ts
+export interface MyObject {
+  id: number
+  name: string
+  // ...other properties
+}
+```
+
+Then import this interface into your store file:
+
+```typescript
+// store.ts
+import { MyObject } from './types'
+
+// ... rest of the store code
+```
+
+### Step 3: Initialize Properties on Each Page
+
+If you're initializing different parts of your store on different pages, provide a method within your store to handle the initialization of each part. Call these methods when the corresponding page is created or mounted.
+
+```typescript
+// store.ts
+import { defineStore } from 'pinia'
+import { MyObject } from './types'
+
+export const useMyStore = defineStore('myStore', {
+  state: () => ({
+    items: [] as MyObject[]
+    // ... other states
+  }),
+  actions: {
+    initializeItems(items: MyObject[]) {
+      this.items = items
+    }
+    // ... other initialization methods
+  }
+})
+```
+
+In your page component, you would call this action when you want to initialize the `items`.
+
+```vue
+<script setup lang="ts">
+import { onMounted } from 'vue'
+import { useMyStore } from '@/stores/store'
+import { fetchItems } from '@/api' // Assume this is a function to fetch your items
+
+const myStore = useMyStore()
+
+onMounted(async () => {
+  const items = await fetchItems()
+  myStore.initializeItems(items)
+})
+</script>
+```
+
+### Step 4: Handle Asynchronous Operations
+
+If data initialization involves asynchronous operations like API calls, make sure to handle them properly using async/await or .then/.catch within your actions.
+
+### Step 5: Utilize Non-null Assertion Operator if Needed
+
+In cases where you are absolutely sure a value will not be `null` at runtime but TypeScript cannot infer that, you can use the non-null assertion operator (`!`). However, use this with caution as it bypasses TypeScript’s checks and can lead to runtime errors if misused.
+
+```typescript
+this.items!.push(newItem)
+```
+
+## By following these steps, you can ensure that your Pinia store is properly typed and initialized, avoiding `null` or `undefined` issues with TypeScript in your Vue 3 application.

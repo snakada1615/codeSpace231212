@@ -14,6 +14,7 @@ import {
   setDoc,
   getDoc,
   getDocs,
+  deleteDoc,
   query,
   where,
   QueryDocumentSnapshot,
@@ -210,6 +211,46 @@ export class fireFunc {
     }
   }
 
+  static async fireDeleteDoc(collectionId: string, docId: string, message?: string) {
+    try {
+      splash(true, message || 'deleting data...')
+      await deleteDoc(doc(db, collectionId, docId))
+      splash(false)
+    } catch (error) {
+      splash(false)
+      throw new Error('fireDeleteDoc Error:' + error)
+    }
+  }
+
+  static async fireDeleteQueryDoc<T>(
+    collectionId: string,
+    field: string,
+    fieldValue: string,
+    message?: string
+  ) {
+    const colRef: CollectionReference = collection(db, collectionId)
+    const q = query(colRef, where(field, '==', fieldValue))
+    try {
+      splash(true, message || 'deleting data...')
+      const snapshot = await getDocs(q)
+      if (snapshot.empty) {
+        console.log('document did not found: fireDeleteQueryDoc')
+        splash(false)
+        return null
+      }
+
+      for (const docData of snapshot.docs) {
+        // Now we have a DocumentReference
+        const docRef = doc(db, collectionId, docData.id)
+        await deleteDoc(docRef)
+        splash(false)
+      }
+    } catch (error) {
+      splash(false)
+      throw new Error('fireDeleteQueryDoc Error:' + error)
+    }
+  }
+
   static async fireDuplicateDocument(
     sourceCol: string,
     sourceDoc: string,
@@ -334,6 +375,42 @@ export class fireFunc {
     try {
       await setDoc(docRef, val, { merge: true })
       console.log('done')
+      splash(false)
+    } catch (error) {
+      splash(false)
+      console.log(error)
+    }
+  }
+
+  static async fireSetQueryMergeTyped<T>(
+    collectionId: string,
+    key: string,
+    keyVal: string,
+    val: T,
+    typeName: string,
+    message?: string,
+    newId?: string
+  ) {
+    splash(true, message || `uploading ${typeName} data to fireStore...`)
+    const converter = this.getTypeConverter<T>(typeName)
+    const colRef: CollectionReference = collection(db, collectionId)
+    const q = query(colRef, where(key, '==', keyVal)).withConverter(converter)
+    try {
+      const snapshot = await getDocs(q)
+      const currentVal = snapshot.docs[0]
+      if (currentVal) {
+        // Now we have a DocumentReference
+        const docRef = doc(colRef, currentVal.id).withConverter(converter)
+        await setDoc(docRef, val, { merge: true })
+        console.log('done')
+      } else {
+        if (newId) {
+          const docRef: DocumentReference<T> = doc(db, collectionId, newId).withConverter(converter)
+          await setDoc(docRef, val)
+        } else {
+          throw new Error('missing parameter in fireSetQUeryMergeTyped<T>. newId is missing')
+        }
+      }
       splash(false)
     } catch (error) {
       splash(false)
