@@ -333,7 +333,7 @@ export const useProjectData = defineStore('prjData', {
       )
     },
 
-    // 基本関数：初期化 ---------------------------------------------------------------------------
+    // TODO 基本関数：初期化 ---------------------------------------------------------------------------
     async fireInitData<T>(
       collectionName: string,
       newId: string,
@@ -344,10 +344,10 @@ export const useProjectData = defineStore('prjData', {
       setFunction: (data: T) => void
     ) {
       const res = await fireFunc.fireSetTyped<T>(collectionName, newId, defaultData, typeName)
-      if (res) {
+      if (res.flag) {
         setFunction(defaultData)
       } else {
-        console.error('error')
+        console.error(res.value)
       }
     },
 

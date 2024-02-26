@@ -356,10 +356,10 @@ export class fireFunc {
       splash(true)
       await setDoc(docRef, val)
       splash(false)
-      return true
+      return { flag: true, value: docRef.id }
     } catch (error) {
       splash(false)
-      return false
+      return { flag: false, value: error }
       console.log(error)
     }
   }
