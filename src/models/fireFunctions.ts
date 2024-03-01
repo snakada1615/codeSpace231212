@@ -56,13 +56,13 @@ function splash(val: boolean, mes?: string) {
 
 interface ConverterMap {
   [key: string]: FirestoreDataConverter<any>
-  FctItem: FirestoreDataConverter<myVal.FctItemsWithNote>
-  DriItem: FirestoreDataConverter<myVal.DriItemsWithNote>
-  AppUser: FirestoreDataConverter<myVal.AppUser>
-  ProjectInfo: FirestoreDataConverter<myVal.ProjectInfo>
-  House: FirestoreDataConverter<myVal.House>
-  Menu: FirestoreDataConverter<myVal.Menu>
-  CurrentDataSet: FirestoreDataConverter<myVal.CurrentDataSet>
+  fct: FirestoreDataConverter<myVal.FctItemsWithNote>
+  dri: FirestoreDataConverter<myVal.DriItemsWithNote>
+  user: FirestoreDataConverter<myVal.AppUser>
+  projectInfo: FirestoreDataConverter<myVal.ProjectInfo>
+  house: FirestoreDataConverter<myVal.House>
+  menu: FirestoreDataConverter<myVal.Menu>
+  currentDataSet: FirestoreDataConverter<myVal.CurrentDataSet>
   // other specific converters
 }
 
@@ -119,20 +119,20 @@ export class fireFunc {
   )
 
   private static converters: ConverterMap = {
-    FctItem: this.fctItemConverter,
-    DriItem: this.driItemConverter,
-    AppUser: this.appUserConverter,
-    ProjectInfo: this.ProjectInfoConverter,
-    House: this.houseConverter,
-    Menu: this.menuConverter,
-    CurrentDataSet: this.currentDataSetConverter
+    fct: this.fctItemConverter,
+    dri: this.driItemConverter,
+    user: this.appUserConverter,
+    projectInfo: this.ProjectInfoConverter,
+    house: this.houseConverter,
+    menu: this.menuConverter,
+    currentDataSet: this.currentDataSetConverter
     // More converters can be added here
   }
 
-  private static getTypeConverter<T>(typeName: string): FirestoreDataConverter<T> {
-    const converter = this.converters[typeName] as FirestoreDataConverter<T>
+  private static getTypeConverter<T>(collectionId: string): FirestoreDataConverter<T> {
+    const converter = this.converters[collectionId] as FirestoreDataConverter<T>
     if (!converter) {
-      throw new Error(`Converter for type "${typeName}" is not found.`)
+      throw new Error(`Converter for type "${collectionId}" is not found.`)
     }
     return converter
   }
@@ -222,7 +222,7 @@ export class fireFunc {
     }
   }
 
-  static async fireDeleteQueryDoc<T>(
+  static async fireDeleteQueryDoc(
     collectionId: string,
     field: string,
     fieldValue: string,
@@ -295,12 +295,8 @@ export class fireFunc {
     }
   }
 
-  static async fireGetTyped<T>(
-    collectionId: string,
-    docId: string,
-    typeName: string
-  ): Promise<T | null> {
-    const converter = this.getTypeConverter<T>(typeName)
+  static async fireGetTyped<T>(collectionId: string, docId: string): Promise<T | null> {
+    const converter = this.getTypeConverter<T>(collectionId)
     const docRef = doc(db, collectionId, docId).withConverter(converter)
 
     try {
@@ -323,14 +319,13 @@ export class fireFunc {
     collectionId: string,
     key: string,
     val: string,
-    typeName: string,
     message?: string
   ): Promise<T[] | null> {
-    const converter = this.getTypeConverter<T>(typeName)
+    const converter = this.getTypeConverter<T>(collectionId)
     const colRef: CollectionReference = collection(db, collectionId)
     const q = query(colRef, where(key, '==', val)).withConverter(converter)
     try {
-      splash(true, message || 'downloading data ' + typeName + '...')
+      splash(true, message || 'downloading data ' + collectionId + '...')
       const snapshot = await getDocs(q)
       splash(false)
       const res: Array<T> = []
@@ -349,8 +344,8 @@ export class fireFunc {
     }
   }
 
-  static async fireSetTyped<T>(collectionId: string, docId: string, val: T, typeName: string) {
-    const converter = this.getTypeConverter<T>(typeName)
+  static async fireSetTyped<T>(collectionId: string, docId: string, val: T) {
+    const converter = this.getTypeConverter<T>(collectionId)
     const docRef: DocumentReference<T> = doc(db, collectionId, docId).withConverter(converter)
     try {
       splash(true)
@@ -364,15 +359,9 @@ export class fireFunc {
     }
   }
 
-  static async fireSetMergeTyped<T>(
-    collectionId: string,
-    docId: string,
-    val: T,
-    typeName: string,
-    message?: string
-  ) {
-    splash(true, message || `uploading ${typeName} data to fireStore...`)
-    const converter = this.getTypeConverter<T>(typeName)
+  static async fireSetMergeTyped<T>(collectionId: string, docId: string, val: T, message?: string) {
+    splash(true, message || `uploading ${collectionId} data to fireStore...`)
+    const converter = this.getTypeConverter<T>(collectionId)
     const docRef: DocumentReference<T> = doc(db, collectionId, docId).withConverter(converter)
     try {
       await setDoc(docRef, val, { merge: true })
@@ -389,12 +378,11 @@ export class fireFunc {
     key: string,
     keyVal: string,
     val: T,
-    typeName: string,
     message?: string,
     newId?: string
   ) {
-    splash(true, message || `uploading ${typeName} data to fireStore...`)
-    const converter = this.getTypeConverter<T>(typeName)
+    splash(true, message || `uploading ${collectionId} data to fireStore...`)
+    const converter = this.getTypeConverter<T>(collectionId)
     const colRef: CollectionReference = collection(db, collectionId)
     const q = query(colRef, where(key, '==', keyVal)).withConverter(converter)
     try {

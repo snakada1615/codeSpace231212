@@ -185,7 +185,6 @@ export const useProjectData = defineStore('prjData', {
         'userId',
         userId,
         val,
-        'CurrentDataset',
         '',
         FakerFunc.uuid()
       )
@@ -207,7 +206,6 @@ export const useProjectData = defineStore('prjData', {
         userId,
         val,
         'AppUser',
-        '',
         FakerFunc.uuid()
       )
     },
@@ -240,7 +238,6 @@ export const useProjectData = defineStore('prjData', {
         'user',
         'userId',
         userId,
-        'AppUser',
         (userData) => this.setAppUser(userData[0]),
         [
           {
@@ -257,7 +254,6 @@ export const useProjectData = defineStore('prjData', {
         'currentDataSet',
         'userId',
         userId,
-        'CurrentDataSet',
         (userData) => this.setCurrentDataset(userData[0]),
         [
           {
@@ -277,7 +273,6 @@ export const useProjectData = defineStore('prjData', {
         'fct',
         'fctId',
         this.currentDataSet.fct,
-        'FctItem',
         (userData) => this.setFct(userData[0].data),
         [{ data: [myVal.fctItemDefault], userId: userId, note: '', fctId: '' }],
         userId
@@ -289,7 +284,6 @@ export const useProjectData = defineStore('prjData', {
         'dri',
         'driId',
         this.currentDataSet.dri,
-        'DriItem',
         (userData) => this.setDri(userData[0].data),
         [{ data: [myVal.driItemDefault], userId: '', note: '', driId: '' }],
         userId
@@ -301,7 +295,6 @@ export const useProjectData = defineStore('prjData', {
         'house',
         'projectId',
         currentProjectId,
-        'House',
         (houseData) => this.setHouses(houseData), // houseData is already an array.
         [
           {
@@ -319,7 +312,6 @@ export const useProjectData = defineStore('prjData', {
         'menu',
         'projectId',
         currentProjectId,
-        'Menu',
         (menu) => this.setMenu(menu), // houseData is already an array.
         [
           {
@@ -338,7 +330,6 @@ export const useProjectData = defineStore('prjData', {
       collectionName: myVal.collectionNameType,
       fieldName: string,
       fieldValue: string,
-      typeName: string,
       setFunction: (data: T[]) => void,
       defaultData: T[],
       userId: string,
@@ -350,7 +341,6 @@ export const useProjectData = defineStore('prjData', {
         collectionName,
         fieldName,
         fieldValue,
-        typeName,
         setFunction
       )
 
@@ -366,7 +356,6 @@ export const useProjectData = defineStore('prjData', {
               'fct',
               newId,
               userId,
-              typeName,
               this.setFct,
               myCurrentDataSet
             )
@@ -381,7 +370,6 @@ export const useProjectData = defineStore('prjData', {
               'dri',
               newId,
               userId,
-              typeName,
               this.setDri,
               myCurrentDataSet
             )
@@ -396,7 +384,6 @@ export const useProjectData = defineStore('prjData', {
               collectionName,
               newId,
               userId,
-              typeName,
               defaultData as unknown as myVal.CurrentDataSet,
               myCurrentDataSet,
               (val) => this.setCurrentDataset(val as myVal.CurrentDataSet)
@@ -412,7 +399,6 @@ export const useProjectData = defineStore('prjData', {
               collectionName,
               newId,
               userId,
-              typeName,
               defaultData as unknown as myVal.AppUser,
               myCurrentDataSet,
               (val) => this.setCurrentDataset(val as unknown as myVal.CurrentDataSet)
@@ -428,7 +414,6 @@ export const useProjectData = defineStore('prjData', {
               collectionName as myVal.fireDocNames,
               newId,
               userId,
-              typeName,
               defaultData as unknown as myVal.ProjectInfo,
               myCurrentDataSet,
               (val) => this.setCurrentDataset(val as unknown as myVal.CurrentDataSet)
@@ -445,21 +430,15 @@ export const useProjectData = defineStore('prjData', {
       collectionName: myVal.collectionNameType,
       fieldName: string,
       fieldValue: string,
-      typeName: string,
       setFunction: (data: T[]) => void
     ) {
-      const res = await fireFunc.fireGetQueryTyped<T>(
-        collectionName,
-        fieldName,
-        fieldValue,
-        typeName
-      )
+      const res = await fireFunc.fireGetQueryTyped<T>(collectionName, fieldName, fieldValue)
 
       if (res && res.length > 0) {
         // fireStoreにデータが保存されている場合
         setFunction(res)
-        console.log(typeName + ' fetch success!')
-        return { result: true, info: typeName }
+        console.log(collectionName + ' fetch success!')
+        return { result: true, info: collectionName }
       } else {
         return { result: false, info: 'fireGetData: no data available' }
       }
@@ -470,7 +449,6 @@ export const useProjectData = defineStore('prjData', {
       collectionName: myVal.collectionNameType, // 保存先のcollection
       newId: string, // 初期化データ保存用のID
       userId: string, // 利用中のユーザーID
-      typeName: string, // validationのための型指定
       defaultData: T, // 初期化用のデータ
       myCurrentDataSet: myVal.CurrentDataSet, // currentDataSetの値（これを更新して保存する）
       setFunction: (data: T) => void // piniaを更新するための関数指定
@@ -485,7 +463,7 @@ export const useProjectData = defineStore('prjData', {
         Menus: 'Menu'
       }
       // fireStoreに保存
-      const res = await fireFunc.fireSetTyped<T>(collectionName, newId, defaultData, typeName)
+      const res = await fireFunc.fireSetTyped<T>(collectionName, newId, defaultData)
       if (!res.flag) {
         console.error(res.value)
       }
@@ -506,17 +484,15 @@ export const useProjectData = defineStore('prjData', {
         'currentDataSet',
         myCurrentDataSet.currentDataSetId,
         resCurr,
-        'CurrentDataSet',
         'copying data...'
       )
     },
 
-    // TODO 基本関数：userデータがfireStoreに存在しなかった場合の初期化関数 ---------------------------------------------------------------------------
+    // NOTE 基本関数：userデータがfireStoreに存在しなかった場合の初期化関数 ---------------------------------------------------------------------------
     async fireSetDefaultFromFireStore<T>(
       originCollection: 'fct' | 'dri',
       newId: string, // 初期化データ保存用のID
       userId: string, // 利用中のユーザーID
-      typeName: string, // validationのための型指定
       setData: (data: any) => void, // piniaを更新するための関数指定
       myCurrentDataSet: myVal.CurrentDataSet // currentDataSetの値（これを更新して保存する）
     ) {
@@ -545,7 +521,7 @@ export const useProjectData = defineStore('prjData', {
         }
 
         // fireStoreに保存
-        await fireFunc.fireSetTyped<T>(originCollection, newId, resultData as T, typeName)
+        await fireFunc.fireSetTyped<T>(originCollection, newId, resultData as T)
 
         // piniaに保存
         setData(copiedData.data.data) // piniaに保存(修正してなくて良い)
@@ -557,13 +533,12 @@ export const useProjectData = defineStore('prjData', {
           'currentDataSet',
           myCurrentDataSet.currentDataSetId,
           resCurr as myVal.CurrentDataSet,
-          'CurrentDataSet',
           'copying data...'
         )
 
         return true
       } else {
-        console.error(`no ${typeName.toUpperCase()} data available in fireStore`)
+        console.error(`no ${originCollection.toUpperCase()} data available in fireStore`)
         return false
       }
     },
@@ -573,23 +548,17 @@ export const useProjectData = defineStore('prjData', {
       collectionName: string,
       fieldName: string,
       fieldValue: string,
-      typeName: string,
       setFunction: (data: T[]) => void,
       defaultData: T[],
       newId?: string
     ) {
-      const res = await fireFunc.fireGetQueryTyped<T>(
-        collectionName,
-        fieldName,
-        fieldValue,
-        typeName
-      )
+      const res = await fireFunc.fireGetQueryTyped<T>(collectionName, fieldName, fieldValue)
 
       if (res && res.length > 0) {
         // fireStoreにデータが保存されている場合
         setFunction(res)
-        console.log(typeName + ' fetch success!')
-        return { result: true, info: typeName }
+        console.log(collectionName + ' fetch success!')
+        return { result: true, info: collectionName }
       } else {
         // fireStoreにデータが保存されていない場合
         console.log(`${collectionName} data not available in server. Initializing data...`)
@@ -599,7 +568,6 @@ export const useProjectData = defineStore('prjData', {
           originCollection: 'fct' | 'dri',
           dataPath: string,
           setData: (data: any) => void,
-          typeName: string,
           userId: string
         ) => {
           const newId = FakerFunc.uuid() // 新規ユーザのための fctId/driId 設定
@@ -635,8 +603,7 @@ export const useProjectData = defineStore('prjData', {
                   // fireStoreに保存
                   collectionName,
                   newId,
-                  resFire as myVal.FctItemsWithNote,
-                  typeName
+                  resFire as myVal.FctItemsWithNote
                 )
                 break
 
@@ -651,8 +618,7 @@ export const useProjectData = defineStore('prjData', {
                   // fireStoreに保存
                   collectionName,
                   newId,
-                  resFire as myVal.DriItemsWithNote,
-                  typeName
+                  resFire as myVal.DriItemsWithNote
                 )
                 break
 
@@ -668,16 +634,15 @@ export const useProjectData = defineStore('prjData', {
               'currentDataSet',
               this.currentDataSet.currentDataSetId,
               resCurr,
-              'CurrentDataSet',
               'copying data...'
             )
 
             return {
               result: false,
-              info: typeName
+              info: originCollection
             }
           } else {
-            throw new Error(`no ${typeName.toUpperCase()} data available in fireStore`)
+            throw new Error(`no ${originCollection.toUpperCase()} data available in fireStore`)
           }
         }
         // 配列初期化のための関数(fct/dri限定) ------------------------------------------------------
@@ -685,26 +650,14 @@ export const useProjectData = defineStore('prjData', {
         switch (collectionName) {
           case 'fct':
             if (newId) {
-              return initiateData(
-                'fct',
-                this.copyDataFromOrigin['fct'],
-                this.setFct,
-                typeName,
-                newId
-              )
+              return initiateData('fct', this.copyDataFromOrigin['fct'], this.setFct, newId)
             } else {
               throw new Error('missing parameter, newId in fireGetData')
             }
             break
           case 'dri':
             if (newId) {
-              return initiateData(
-                'dri',
-                this.copyDataFromOrigin['dri'],
-                this.setDri,
-                typeName,
-                newId
-              )
+              return initiateData('dri', this.copyDataFromOrigin['dri'], this.setDri, newId)
             } else {
               throw new Error('missing parameter, newId in fireGetData')
             }
@@ -716,12 +669,11 @@ export const useProjectData = defineStore('prjData', {
                   // fireStoreに保存
                   'currentDataSet',
                   newId,
-                  myVal.currentDataSetDefault, //TODO 初期値修正
-                  'CurrentDataSet'
+                  myVal.currentDataSetDefault //TODO 初期値修正
                 )
                 setFunction(defaultData)
               }
-              return { result: false, info: typeName }
+              return { result: false, info: collectionName }
             } else {
               throw new Error('missing parameter, newId in fireGetData')
             }
@@ -733,14 +685,13 @@ export const useProjectData = defineStore('prjData', {
               'user',
               this.appUser.userId,
               this.appUser,
-              'AppUser',
               'copying AppUser data...'
             )
-            return { result: false, info: typeName }
+            return { result: false, info: collectionName }
             break
           default:
             setFunction(defaultData)
-            return { result: false, info: typeName }
+            return { result: false, info: collectionName }
             break
         }
       }
