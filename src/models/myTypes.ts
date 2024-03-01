@@ -56,6 +56,7 @@ export const CategoryItemZod = z.object({
 export type CategoryItem = z.infer<typeof CategoryItemZod>
 
 //現在ユーザーが利用しているデータセット
+// TODO フォルダ名と一致するよう変数名を修正
 export const CurrentDataSetZod = z.object({
   currentDataSetId: z.string(),
   userId: z.string(),
@@ -472,9 +473,13 @@ export const commonMenus: string[] = [
 
 export type AllProjectData = AppUser | Houses | Menu
 
-export enum projectDataType {
-  'appUser',
-  'Projects',
-  'Houses',
-  'Menus'
-}
+export type collectionNameType =
+  | 'fct'
+  | 'dri'
+  | 'user'
+  | 'currentDataSet'
+  | 'projectInfo'
+  | 'Houses'
+  | 'Menus'
+
+export type fireDocNames = 'fct' | 'dri' | 'currentDataSet' | 'user'

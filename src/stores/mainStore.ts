@@ -333,21 +333,238 @@ export const useProjectData = defineStore('prjData', {
       )
     },
 
-    // TODO 基本関数：初期化 ---------------------------------------------------------------------------
-    async fireInitData<T>(
-      collectionName: string,
-      newId: string,
+    // TODO 基本関数：userデータの初期化全て ---------------------------------------------------------------------------
+    async fireInitialize<T>(
+      collectionName: myVal.collectionNameType,
       fieldName: string,
       fieldValue: string,
       typeName: string,
-      defaultData: T,
-      setFunction: (data: T) => void
+      setFunction: (data: T[]) => void,
+      defaultData: T[],
+      userId: string,
+      myCurrentDataSet: myVal.CurrentDataSet,
+      newId?: string
     ) {
-      const res = await fireFunc.fireSetTyped<T>(collectionName, newId, defaultData, typeName)
-      if (res.flag) {
-        setFunction(defaultData)
+      // fireStoreからデータをfetchしてPiniaに保存
+      const resultFetch = await this.fireGetData2<T>(
+        collectionName,
+        fieldName,
+        fieldValue,
+        typeName,
+        setFunction
+      )
+
+      // うまくfetchできたらこれで終了
+      if (resultFetch.result) {
+        return true
+      }
+
+      switch (collectionName) {
+        case 'fct':
+          if (newId) {
+            return this.fireSetDefaultFromFireStore(
+              'fct',
+              newId,
+              userId,
+              typeName,
+              this.setFct,
+              myCurrentDataSet
+            )
+          } else {
+            throw new Error('missing parameter, newId in fireGetData')
+          }
+          break
+
+        case 'dri':
+          if (newId) {
+            return this.fireSetDefaultFromFireStore(
+              'dri',
+              newId,
+              userId,
+              typeName,
+              this.setDri,
+              myCurrentDataSet
+            )
+          } else {
+            throw new Error('missing parameter, newId in fireGetData')
+          }
+          break
+
+        case 'currentDataSet':
+          if (newId && myVal.CurrentDataSetZod.safeParse(defaultData).success) {
+            this.fireSetDefault<myVal.CurrentDataSet>(
+              collectionName,
+              newId,
+              userId,
+              typeName,
+              defaultData as unknown as myVal.CurrentDataSet,
+              myCurrentDataSet,
+              (val) => this.setCurrentDataset(val as myVal.CurrentDataSet)
+            )
+          } else {
+            throw new Error('missing parameter, newId in fireGetData')
+          }
+          break
+
+        case 'user':
+          if (newId && myVal.AppUserZod.safeParse(defaultData).success) {
+            this.fireSetDefault<myVal.AppUser>(
+              collectionName,
+              newId,
+              userId,
+              typeName,
+              defaultData as unknown as myVal.AppUser,
+              myCurrentDataSet,
+              (val) => this.setCurrentDataset(val as unknown as myVal.CurrentDataSet)
+            )
+          } else {
+            throw new Error('missing parameter, newId in fireGetData')
+          }
+          break
+
+        case 'projectInfo':
+          if (newId && myVal.ProjectInfoZod.safeParse(defaultData).success) {
+            this.fireSetDefault<myVal.ProjectInfo>(
+              collectionName as myVal.fireDocNames,
+              newId,
+              userId,
+              typeName,
+              defaultData as unknown as myVal.ProjectInfo,
+              myCurrentDataSet,
+              (val) => this.setCurrentDataset(val as unknown as myVal.CurrentDataSet)
+            )
+          } else {
+            throw new Error('missing parameter, newId in fireGetData')
+          }
+          break
+      }
+    },
+
+    // TODO 基本関数：userデータをfireStoreから入手してpiniaに保存 ---------------------------------------------------------------------------
+    async fireGetData2<T>(
+      collectionName: myVal.collectionNameType,
+      fieldName: string,
+      fieldValue: string,
+      typeName: string,
+      setFunction: (data: T[]) => void
+    ) {
+      const res = await fireFunc.fireGetQueryTyped<T>(
+        collectionName,
+        fieldName,
+        fieldValue,
+        typeName
+      )
+
+      if (res && res.length > 0) {
+        // fireStoreにデータが保存されている場合
+        setFunction(res)
+        console.log(typeName + ' fetch success!')
+        return { result: true, info: typeName }
       } else {
+        return { result: false, info: 'fireGetData: no data available' }
+      }
+    },
+
+    // TODO 基本関数：userデータがfireStoreに存在しなかった場合の初期化関数 ---------------------------------------------------------------------------
+    async fireSetDefault<T>(
+      collectionName: myVal.collectionNameType, // 保存先のcollection
+      newId: string, // 初期化データ保存用のID
+      userId: string, // 利用中のユーザーID
+      typeName: string, // validationのための型指定
+      defaultData: T, // 初期化用のデータ
+      myCurrentDataSet: myVal.CurrentDataSet, // currentDataSetの値（これを更新して保存する）
+      setFunction: (data: T) => void // piniaを更新するための関数指定
+    ) {
+      const currentDataSetItem = {
+        fct: 'fct',
+        dri: 'dri',
+        currentDataSet: 'currentDataSetId',
+        user: 'userId',
+        projectInfo: 'project',
+        Houses: 'houses',
+        Menus: 'Menu'
+      }
+      // fireStoreに保存
+      const res = await fireFunc.fireSetTyped<T>(collectionName, newId, defaultData, typeName)
+      if (!res.flag) {
         console.error(res.value)
+      }
+
+      // piniaに保存
+      setFunction(defaultData)
+
+      // currentDataSetを更新
+      const resCurr = {
+        ...myCurrentDataSet,
+        userId: userId,
+        [currentDataSetItem[collectionName]]: newId
+      } as myVal.CurrentDataSet
+
+      this.setCurrentDataset(resCurr as myVal.CurrentDataSet) // currentDataSetの更新
+      await fireFunc.fireSetMergeTyped<myVal.CurrentDataSet>(
+        // fireStoreに保存--currentDataSet
+        'currentDataSet',
+        myCurrentDataSet.currentDataSetId,
+        resCurr,
+        'CurrentDataSet',
+        'copying data...'
+      )
+    },
+
+    // TODO 基本関数：userデータがfireStoreに存在しなかった場合の初期化関数 ---------------------------------------------------------------------------
+    async fireSetDefaultFromFireStore<T>(
+      originCollection: 'fct' | 'dri',
+      newId: string, // 初期化データ保存用のID
+      userId: string, // 利用中のユーザーID
+      typeName: string, // validationのための型指定
+      setData: (data: any) => void, // piniaを更新するための関数指定
+      myCurrentDataSet: myVal.CurrentDataSet // currentDataSetの値（これを更新して保存する）
+    ) {
+      // まずはoriginal Fctをコピーして複製
+      const copiedData = await fireFunc.fireDuplicateDocument(
+        originCollection,
+        this.copyDataFromOrigin[originCollection],
+        originCollection,
+        newId,
+        `data not found. Downloading default data from fireStore...`
+      )
+      console.log(copiedData)
+      if (copiedData) {
+        // コピーしたデータ（driItemWithNote）の一部を修正して、firesotre, piniaに保存、currentDataSetの修正
+        // まずはデータ準備
+        const resultData = {
+          data: copiedData.data.data,
+          userId: userId,
+          [this.copyDataFromOrigin[originCollection]]: newId,
+          note: ''
+        }
+        const resCurr = {
+          ...myCurrentDataSet,
+          userId: userId,
+          [this.copyDataFromOrigin[originCollection]]: newId
+        }
+
+        // fireStoreに保存
+        await fireFunc.fireSetTyped<T>(originCollection, newId, resultData as T, typeName)
+
+        // piniaに保存
+        setData(copiedData.data.data) // piniaに保存(修正してなくて良い)
+
+        // currentDataSetに保存
+        this.setCurrentDataset(resCurr as myVal.CurrentDataSet) // currentDataSetの更新
+        await fireFunc.fireSetMergeTyped<myVal.CurrentDataSet>(
+          // fireStoreに保存--currentDataSet
+          'currentDataSet',
+          myCurrentDataSet.currentDataSetId,
+          resCurr as myVal.CurrentDataSet,
+          'CurrentDataSet',
+          'copying data...'
+        )
+
+        return true
+      } else {
+        console.error(`no ${typeName.toUpperCase()} data available in fireStore`)
+        return false
       }
     },
 
