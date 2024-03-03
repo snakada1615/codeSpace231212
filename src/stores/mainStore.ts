@@ -35,6 +35,7 @@ interface PiniaState {
   // loading時のsplash画面表示
   loading: boolean
   copyDataFromOrigin: { fct: string; dri: string }
+  isUpdate: boolean
 }
 
 export const useProjectData = defineStore('prjData', {
@@ -54,7 +55,8 @@ export const useProjectData = defineStore('prjData', {
     copyDataFromOrigin: {
       fct: '08e5ee1f-8321-4cc3-8b9f-00619a262931',
       dri: '5139dec2-f340-46bd-aed4-57670991bab7'
-    }
+    },
+    isUpdate: false
   }),
 
   getters: {
