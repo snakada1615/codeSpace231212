@@ -25,6 +25,10 @@ const projInfo = useProjectData()
       IFNA Nutrient App
     </q-toolbar-title>
 
+    <q-btn flat round :disabled="!projInfo.isUpdate">
+      <q-icon name="save_as" :color="projInfo.isUpdate ? 'red' : 'red'" />
+    </q-btn>
+
     <!-- login/logout用のメニュー -->
     <!-- logout -->
     <q-btn v-if="isLoggedIn" flat round>
