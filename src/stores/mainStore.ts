@@ -29,7 +29,7 @@ interface PiniaState {
   // プロジェクトで対象とする家庭の情報
   houses: myVal.Houses | myVal.HousesBlank
   // 各家庭での食事調査結果
-  menu: myVal.Menu | myVal.MenuBlank
+  menu: myVal.MenuItems | myVal.MenuItemsBlank
   // デフォルトで使うデータベース名
   currentDataSet: myVal.CurrentDataSet | myVal.CurrentDataSetBlank
   // loading時のsplash画面表示
@@ -184,7 +184,7 @@ export const useProjectData = defineStore('prjData', {
       this.houses.push(JSON.parse(JSON.stringify(val)))
     },
 
-    setMenu(val: myVal.Menu) {
+    setMenu(val: myVal.MenuItems) {
       this.menu = JSON.parse(JSON.stringify(val))
     },
 
@@ -319,15 +319,22 @@ export const useProjectData = defineStore('prjData', {
 
       //  Menu:
       console.log('...fetching menu data')
+      const newMenuId = FakerFunc.uuid()
       await this.fireInitialize<myVal.Menu>(
         'menu', // collection名
         'userId', // 参照用フィールド
         userId, // 参照値
-        (menu) => menu.forEach((menuItem) => this.setMenu(menuItem)), //piniaに値をセットする関数
-        [myVal.menuItemDefault], // データがない場合の初期値
+        (menu) => this.setMenu(menu[0].data), //piniaに値をセットする関数
+        {
+          ...myVal.menuDefault,
+          userId: userId,
+          projectId: currentProjectId,
+          familyId: defaultFamilyId,
+          menu: newMenuId
+        }, // データがない場合の初期値
         userId, // userid
         this.currentDataSet, // 現状記録
-        FakerFunc.uuid() // データがfireStoreに存在しない場合、このIDで新規作成
+        newMenuId // データがfireStoreに存在しない場合、このIDで新規作成
       )
     },
 

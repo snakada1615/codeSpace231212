@@ -46,7 +46,7 @@ function splash(val: boolean, mes?: string) {
   if (val) {
     Loading.show({
       message: mes || 'Accessing remote database. Please wait...',
-      boxClass: 'bg-grey-2 text-grey-9',
+      //      boxClass: 'bg-grey-2 text-grey-9',
       spinnerColor: 'primary'
     }) //splash
   } else {
@@ -109,7 +109,7 @@ export class fireFunc {
   private static isAppUser = this.createIsOfTypeT<myVal.AppUser>(myVal.AppUserZod)
   private static isProjectInfo = this.createIsOfTypeT<myVal.ProjectInfo>(myVal.ProjectInfoZod)
   private static isHouse = this.createIsOfTypeT<myVal.House>(myVal.HouseZod)
-  private static isMenu = this.createIsOfTypeT<myVal.Menu>(myVal.MenuItemsZod)
+  private static isMenu = this.createIsOfTypeT<myVal.Menu>(myVal.MenuZod)
   private static isCurrentDataSet = this.createIsOfTypeT<myVal.CurrentDataSet>(
     myVal.CurrentDataSetZod
   )

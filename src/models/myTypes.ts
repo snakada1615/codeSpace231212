@@ -448,7 +448,7 @@ export const MenuItemZod = FctRowItemZod.extend({
   projectId: z.string(),
   KeyFamily: z.string(),
   menuItemId: z.string(),
-  Date: z.date()
+  Date: z.number()
 })
 
 export const MenuItemZod_v = FctRowItemZod.extend({
@@ -456,16 +456,29 @@ export const MenuItemZod_v = FctRowItemZod.extend({
   projectId: z.string(),
   KeyFamily: z.string().min(3).max(200),
   menuItemId: z.string(),
-  Date: z.date()
+  Date: z.number()
 })
 
 export const MenuItemsZod = z.array(MenuItemZod)
+
+export const MenuZod = z.object({
+  data: MenuItemsZod,
+  note: z.string(),
+  userId: z.string(),
+  projectId: z.string(),
+  familyId: z.string(),
+  menu: z.string()
+})
 
 // export const MenuesZod = z.array(MenuItemsZod)
 
 export type MenuItem = z.infer<typeof MenuItemZod>
 
-export type Menu = z.infer<typeof MenuItemsZod>
+export type MenuItems = z.infer<typeof MenuItemsZod>
+
+export type Menu = z.infer<typeof MenuZod>
+
+export type MenuItemsBlank = (typeof menuItemDefault)[]
 
 export type MenuBlank = typeof menuDefault
 
@@ -477,19 +490,26 @@ export const menuItemDefault = {
   KeyFamily: '',
   projectId: '',
   userId: '',
-  Date: new Date()
+  Date: Date.now()
 }
 
-export const menuDefault = [
-  {
-    ...fctRowItemDefault,
-    menuItemId: '',
-    KeyFamily: '',
-    projectId: '',
-    userId: '',
-    Date: new Date()
-  }
-]
+export const menuDefault = {
+  data: [
+    {
+      ...fctRowItemDefault,
+      menuItemId: '',
+      KeyFamily: '',
+      projectId: '',
+      userId: '',
+      Date: Date.now()
+    }
+  ],
+  note: '',
+  userId: '',
+  projectId: '',
+  familyId: '',
+  menu: ''
+}
 
 // export interface Menu {
 //   projectId: string
