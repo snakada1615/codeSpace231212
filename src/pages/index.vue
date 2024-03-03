@@ -4,7 +4,12 @@
     <q-card>
       <q-icon name="flag" />
       <div>halo/ {{ projectData.appUser.userId }}</div>
-      <q-btn label="push me" @click="onClick" />
+      <q-btn label="データ初期化" @click="onClick" />
+      <q-btn label="notify" @click="$q.notify({ message: 'はろー', position: 'top-right' })" />
+      <q-btn
+        label="notify"
+        @click="$q.notify({ message: 'ぼろー', position: 'top-right', color: 'teal' })"
+      />
       <JsonTreeView :json="JSON.stringify(projectData.appUser)" :maxDepth="4" />
     </q-card>
   </div>

@@ -5,7 +5,7 @@ import { defineStore } from 'pinia'
 import * as myVal from '@/models/myTypes'
 import { fireFunc } from '@/models/fireFunctions'
 import FakerFunc from '@/models/fakerFunc'
-import { Dialog } from 'quasar'
+import { Dialog, Notify } from 'quasar'
 
 export const useAuthState = defineStore('auth', {
   state: () => ({
@@ -360,6 +360,11 @@ export const useProjectData = defineStore('prjData', {
       // うまくfetchできたらこれで終了
       if (resultFetch.result) {
         console.log(`data successfully downloaded from ${collectionName}`)
+        Notify.create({
+          position: 'top-right',
+          message: `data successfully downloaded from ${collectionName}`,
+          timeout: 3000
+        })
         return true
       }
 
@@ -528,6 +533,11 @@ export const useProjectData = defineStore('prjData', {
         resCurr,
         'copying data...'
       )
+      Notify.create({
+        position: 'top-right',
+        message: `${collectionName} initialized with default value`,
+        timeout: 3000
+      })
     },
 
     // NOTE userデータがfireStoreに存在しなかった場合の初期化関数 ---------------------------------------------------------------------------
@@ -546,7 +556,7 @@ export const useProjectData = defineStore('prjData', {
         newId,
         `data not found. Downloading default data from fireStore...`
       )
-      console.log(copiedData)
+      // console.log(copiedData)
       if (copiedData) {
         // コピーしたデータ（driItemWithNote）の一部を修正して、firesotre, piniaに保存、currentDataSetの修正
         // まずはデータ準備
@@ -577,6 +587,12 @@ export const useProjectData = defineStore('prjData', {
           resCurr as myVal.CurrentDataSet,
           'copying data...'
         )
+
+        Notify.create({
+          position: 'top-right',
+          message: `${originCollection} initialized with default value`,
+          timeout: 3000
+        })
 
         return true
       } else {
