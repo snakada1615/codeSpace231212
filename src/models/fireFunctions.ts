@@ -75,7 +75,6 @@ export class fireFunc {
       if (!isOfTypeT(data)) {
         console.log('isOffType Error')
         console.log(data)
-        console.log(myVal.appUserDefault)
         throw new Error('Provided data does not match expected type.')
       }
       // The data object has been validated and can be spread into the resulting object
@@ -93,7 +92,15 @@ export class fireFunc {
   })
   // 基本となるvaridator
   private static createIsOfTypeT = <T>(schema: ZodSchema<T>): ((data: any) => data is T) => {
-    return (data: any): data is T => schema.safeParse(data).success
+    return (data: any): data is T => {
+      const res = schema.safeParse(data)
+      if (res.success) {
+        return true
+      } else {
+        console.error(res.error)
+        return false
+      }
+    }
   }
 
   // Create type guards using their respective Zod schemas

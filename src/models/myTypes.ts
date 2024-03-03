@@ -55,11 +55,10 @@ export const CategoryItemZod = z.object({
 
 export type CategoryItem = z.infer<typeof CategoryItemZod>
 
-//現在ユーザーが利用しているデータセット
-// TODO フォルダ名と一致するよう変数名を修正
+// 現在ユーザーが利用しているデータセット
 export const CurrentDataSetZod = z.object({
-  currentDataSetId: z.string(),
   userId: z.string(),
+  currentDataSetId: z.string(),
   fct: z.string(),
   dri: z.string(),
   family: z.string(),
@@ -157,7 +156,7 @@ export const DriItemsWithNoteZod = z.object({
   data: DriItemsZod,
   note: z.string(),
   userId: z.string(),
-  driId: z.string()
+  dri: z.string()
 })
 
 export type DriItemsWithNote = z.infer<typeof DriItemsWithNoteZod>
@@ -218,6 +217,15 @@ export type ProjectInfoBlank = typeof projectInfoDefault
 export const HouseZod = z.object({
   projectId: z.string(),
   userId: z.string(),
+  locationId: z.string(),
+  familyId: z.string(),
+  familyName: z.string(),
+  familyMembers: FamilyMembersZod
+})
+
+export const HouseZod_v = z.object({
+  projectId: z.string(),
+  userId: z.string(),
   locationId: z.string().min(3).max(200),
   familyId: z.string(),
   familyName: z.string().min(3).max(200),
@@ -246,6 +254,19 @@ export const houseDefault = {
 export const housesDefault = [houseDefault]
 
 export const FctItemZod = z.object({
+  keyFct: z.string(),
+  FoodGroupId: z.string(),
+  FctName: z.string(),
+  FoodGroup: z.string(),
+  Carb: z.number(),
+  En: z.number(),
+  Pr: z.number(),
+  Fe: z.number(),
+  Fat: z.number(),
+  Va: z.number()
+})
+
+export const FctItemZod_v = z.object({
   keyFct: z.string(),
   FoodGroupId: z.string(),
   FctName: z.string().min(3).max(200),
@@ -282,7 +303,7 @@ export const FctItemsWithNoteZod = z.object({
   data: FctItemsZod,
   note: z.string(),
   userId: z.string(),
-  fctId: z.string()
+  fct: z.string()
 })
 
 export type FctItemsWithNote = Zod.infer<typeof FctItemsWithNoteZod>
@@ -291,14 +312,14 @@ export const fctItemsWIthNoteDefault = {
   data: [fctItemDefault],
   note: '',
   userId: '',
-  fctId: ''
+  fct: ''
 }
 
 export const driItemsWIthNoteDefault = {
   data: [driItemDefault],
   note: '',
   userId: '',
-  driId: ''
+  dri: ''
 }
 
 export const FctStarZod = z.object({
@@ -320,6 +341,13 @@ export enum setDigitKey {
 }
 
 export const FctRowItemZod = FctItemZod.extend({
+  NutrientValue: z.number(),
+  Star: z.boolean(),
+  Weight: z.number(),
+  MenuName: z.string()
+})
+
+export const FctRowItemZod_v = FctItemZod.extend({
   NutrientValue: z.number().gte(0),
   Star: z.boolean(),
   Weight: z.number().gte(0),
@@ -418,6 +446,14 @@ export const nutrientLabels: nutrientLabel[] = [
 export const MenuItemZod = FctRowItemZod.extend({
   userId: z.string(),
   projectId: z.string(),
+  KeyFamily: z.string(),
+  menuItemId: z.string(),
+  Date: z.date()
+})
+
+export const MenuItemZod_v = FctRowItemZod.extend({
+  userId: z.string(),
+  projectId: z.string(),
   KeyFamily: z.string().min(3).max(200),
   menuItemId: z.string(),
   Date: z.date()
@@ -479,7 +515,7 @@ export type collectionNameType =
   | 'user'
   | 'currentDataSet'
   | 'projectInfo'
-  | 'Houses'
-  | 'Menus'
+  | 'house'
+  | 'menu'
 
 export type fireDocNames = 'fct' | 'dri' | 'currentDataSet' | 'user'

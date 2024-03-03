@@ -3,7 +3,7 @@
   <div>
     <q-card>
       <q-icon name="flag" />
-      <div>halo</div>
+      <div>halo/ {{ projectData.appUser.userId }}</div>
       <q-btn label="push me" @click="onClick" />
       <JsonTreeView :json="JSON.stringify(projectData.appUser)" :maxDepth="4" />
     </q-card>
