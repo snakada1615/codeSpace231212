@@ -576,3 +576,127 @@ this.items!.push(newItem)
 ```
 
 ## By following these steps, you can ensure that your Pinia store is properly typed and initialized, avoiding `null` or `undefined` issues with TypeScript in your Vue 3 application.
+
+---
+
+i want to watch set of state variables in Pinia.
+everytime one variable is modified, name of this variable will be pushed into array named "modifiedStates".
+
+when user decided to save all modified variables, modifiedStates will be used to update all these variables into firestore.
+
+how can i enable this?
+
+---
+
+To implement a watcher for a set of state variables in Pinia that tracks modifications by pushing the variable name into an array called "modifiedStates," you will need to do the following steps:
+
+1. Define the `modifiedStates` array within your Pinia store to keep track of changes.
+2. Set up watchers for the specific state variables you want to monitor for changes.
+3. Define a method that uses the `modifiedStates` array to update the values in Firestore when the user decides to save.
+
+Here's an example implementation:
+
+```javascript
+import { defineStore } from 'pinia';
+
+export const useYourStore = defineStore('yourStore', {
+  state: () => ({
+    // Your state variables
+    variable1: '',
+    variable2: '',
+    variable3: '',
+
+    // Array to keep track of modified state names
+    modifiedStates: [],
+  }),
+  getters: {
+    // You might have some getters here
+  },
+  actions: {
+    // Function to update state value and record the change
+    updateStateValue(fieldName, value) {
+      if (this[fieldName] !== value) {
+        this[fieldName] = value;
+
+        // Add field name to modifiedStates if not already present
+        if (!this.modifiedStates.includes(fieldName)) {
+          this.modifiedStates.push(fieldName);
+        }
+      }
+    },
+
+    // Method to save modified states to Firestore
+    async saveModifiedStates() {
+      const updates = {};
+
+      for (const fieldName of this.modifiedStates) {
+        updates[fieldName] = this[fieldName];
+      }
+
+      // Update Firestore with the new values.
+      // You'll need to import your Firestore instance and handle this per your setup.
+      const documentRef = /* Your Firestore document reference */;
+      await documentRef.update(updates);
+
+      // After saving, clear the modifiedStates array
+      this.modifiedStates = [];
+    }
+  },
+});
+```
+
+In your Vue component, whenever you modify one of those state variables, you would call `updateStateValue()` instead of changing the state directly. This action ensures the `modifiedStates` array is updated accordingly.
+
+Here's how you might use it within a component:
+
+```html
+<template>
+  <input v-model="variable1" />
+  <input v-model="variable2" />
+  <input v-model="variable3" />
+  <button @click="saveChanges">Save Changes</button>
+</template>
+
+<script setup>
+  import { useYourStore } from '@/stores/yourStore'
+  import { watch } from 'vue'
+
+  const store = useYourStore()
+
+  // These computed setters use the `updateStateValue` method
+  const variable1 = computed({
+    get() {
+      return store.variable1
+    },
+    set(value) {
+      store.updateStateValue('variable1', value)
+    }
+  })
+
+  const variable2 = computed({
+    get() {
+      return store.variable2
+    },
+    set(value) {
+      store.updateStateValue('variable2', value)
+    }
+  })
+
+  const variable3 = computed({
+    get() {
+      return store.variable3
+    },
+    set(value) {
+      store.updateStateValue('variable3', value)
+    }
+  })
+
+  function saveChanges() {
+    store.saveModifiedStates()
+  }
+</script>
+```
+
+The `updateStateValue` action both updates the state and records any changes. When the user clicks the save button, the `saveChanges` function is triggered, which calls `saveModifiedStates`. This method then updates Firestore with only the modified values and clears the `modifiedStates` array.
+
+---
