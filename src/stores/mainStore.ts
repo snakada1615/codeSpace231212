@@ -29,7 +29,7 @@ interface PiniaState {
   // プロジェクトで対象とする家庭の情報
   houses: myVal.Houses | myVal.HousesBlank
   // 各家庭での食事調査結果
-  menu: myVal.MenuItems | myVal.MenuItemsBlank
+  menu: myVal.Menu | myVal.MenuItemsBlank | null
   // デフォルトで使うデータベース名
   currentDataSet: myVal.CurrentDataSet | myVal.CurrentDataSetBlank
   // loading時のsplash画面表示
@@ -39,18 +39,26 @@ interface PiniaState {
   modifiedStates: [] //
 }
 
+// PiniaStateからstateのキーのみを抽出（functionを削除）するための関数
+interface StateKeys {
+  [key: string]: unknown
+}
+type ExtractStateKeys<T> = {
+  [K in keyof T]: T[K] extends Function ? never : K
+}[keyof T]
+
 export const useProjectData = defineStore('prjData', {
   state: (): PiniaState => ({
     // 現在利用しているユーザーの情報
     appUser: myVal.appUserDefault,
     // ユーザーが取り組んでいるプロジェクトの情報
     projectInfo: myVal.projectInfoDefault,
-    fct: [],
-    dri: [],
+    fct: null,
+    dri: null,
     // プロジェクトで対象とする家庭の情報
-    houses: [],
+    houses: myVal.housesDefault,
     // 各家庭での食事調査結果
-    menu: [],
+    menu: null,
     currentDataSet: myVal.currentDataSetDefault,
     loading: false,
     copyDataFromOrigin: {
@@ -154,8 +162,22 @@ export const useProjectData = defineStore('prjData', {
       }
     }
   },
-
   actions: {
+    // Function to update state value and record the change
+    // TODO 共通関数
+    updateStateValue<K extends ExtractStateKeys<PiniaState>>(fieldName: K, value: PiniaState[K]) {
+      // Since this refers to the store instance, we cast it to StateKeys & this
+      // const currentStateValue = (this as StateKeys & typeof this)[fieldName]
+      if (this[fieldName] !== value) {
+        this[fieldName] = value
+
+        // Assuming modifiedStates is part of the state and typed correctly
+        if (!this.modifiedStates.includes(fieldName as string)) {
+          this.modifiedStates.push(fieldName as string)
+        }
+      }
+    },
+
     setUserId(val: string) {
       this.appUser.userId = val
     },
