@@ -27,7 +27,7 @@ const currentHouse: WritableComputedRef<myVal.House> = computed({
     myProjectData.updateStateValue(
       'house',
       myProjectData.house.map((item) => {
-        if (val.familyId === item.familyId) {
+        if (val.house === item.house) {
           return val
         }
         return item
@@ -48,7 +48,7 @@ const newFamilyName = ref('')
 const newLocation = ref('')
 
 function changeCurrentHouse(val: typeof selectedHouse) {
-  const res = val.value.value > 0 ? currentHouse.value.familyId : ''
+  const res = val.value.value > 0 ? currentHouse.value.house : ''
   const current = myProjectData.currentDataSet
   myProjectData.updateStateValue('currentDataSet', {
     ...current,
@@ -102,14 +102,16 @@ function addNewHouse() {
   const res: myVal.House = {
     ...myVal.houseDefault,
     user: myProjectData.appUser.userId,
-    projectId: myProjectData.projectInfo.projectId,
+    projectInfo: myProjectData.projectInfo.projectInfo,
     locationId: newLocation.value,
-    familyId: FakerFunc.uuid(),
+    house: FakerFunc.uuid(),
     familyName: newFamilyName.value
   }
   console.log(myVal.houseDefault)
   console.log(res)
-  myProjectData.addNewHouse(res)
+  let resArray = [...myProjectData.house]
+  resArray.push(res)
+  myProjectData.updateStateValue('house', resArray)
   addNewFlag.value = false
   selectedHouse.value = {
     label: newFamilyName.value,

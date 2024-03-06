@@ -227,13 +227,14 @@ export const useProjectData = defineStore('prjData', {
     // NOTE ログイン状態が変わるたびに初期化
     async fireGetAllData(userId: string) {
       this.updateStateValue('appUser', { ...this.appUser, userId: userId })
-      const currentProjectId = this.currentDataSet.projectInfo || FakerFunc.uuid()
+      const currentProjectId = this.currentDataSet.projectInfo
       const currentDataSetId = this.currentDataSet.currentDataSet || FakerFunc.uuid()
       const defaultFamilyId = FakerFunc.uuid()
       const defaultFctId = FakerFunc.uuid()
       const defaultDriId = FakerFunc.uuid()
       const defaultUserId = FakerFunc.uuid()
       const defaultMenuId = FakerFunc.uuid()
+      const defaultProjectId = FakerFunc.uuid()
       const defaultCurrentDataSetrId = FakerFunc.uuid()
 
       // AppUser:
@@ -311,11 +312,11 @@ export const useProjectData = defineStore('prjData', {
         {
           ...myVal.projectInfoDefault,
           userId: userId,
-          projectId: currentProjectId
+          projectInfo: defaultProjectId
         }, // データがない場合の初期値
         userId, // userid
         this.currentDataSet, // 現状記録
-        currentProjectId // データがfireStoreに存在しない場合、このIDで新規作成
+        defaultProjectId // データがfireStoreに存在しない場合、このIDで新規作成
       )
 
       // House:
@@ -329,8 +330,8 @@ export const useProjectData = defineStore('prjData', {
         {
           ...myVal.houseDefault,
           user: userId,
-          projectId: currentProjectId,
-          familyId: defaultFamilyId
+          projectInfo: defaultProjectId,
+          house: defaultFamilyId
         }, // データがない場合の初期値
         userId, // userid
         this.currentDataSet, // 現状記録
@@ -348,8 +349,8 @@ export const useProjectData = defineStore('prjData', {
         {
           ...myVal.menuDefault,
           user: userId,
-          projectId: currentProjectId,
-          familyId: defaultFamilyId,
+          projectInfo: defaultProjectId,
+          house: defaultFamilyId,
           menu: defaultMenuId
         }, // データがない場合の初期値
         userId, // userid
