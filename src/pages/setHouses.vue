@@ -100,7 +100,7 @@ function modeChange() {
 function addNewHouse() {
   const res: myVal.House = {
     ...myVal.houseDefault,
-    userId: myProjectData.appUser.userId,
+    user: myProjectData.appUser.userId,
     projectId: myProjectData.projectInfo.projectId,
     locationId: newLocation.value,
     familyId: FakerFunc.uuid(),

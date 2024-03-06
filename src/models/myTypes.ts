@@ -57,29 +57,29 @@ export type CategoryItem = z.infer<typeof CategoryItemZod>
 
 // 現在ユーザーが利用しているデータセット
 export const CurrentDataSetZod = z.object({
-  userId: z.string(),
-  currentDataSetId: z.string(),
+  user: z.string(),
+  currentDataSet: z.string(),
   fct: z.string(),
   dri: z.string(),
-  family: z.string(),
+  house: z.string(),
   menu: z.string(),
   nutrient: z.string(),
   crop: z.string(),
-  project: z.string()
+  projectInfo: z.string()
 })
 
 export type CurrentDataSet = z.infer<typeof CurrentDataSetZod>
 
 export const currentDataSetDefault = {
-  currentDataSetId: '',
-  userId: '',
+  currentDataSet: '',
+  user: '',
   fct: '',
   dri: '',
-  family: '',
+  house: '',
   menu: '',
   nutrient: '',
   crop: '',
-  project: ''
+  projectInfo: ''
 }
 
 export type CurrentDataSetBlank = typeof currentDataSetDefault
@@ -190,6 +190,15 @@ export const familyMembersDefault = sampleFamilyMemberCategory.map((item, index)
 
 export const ProjectInfoZod = z.object({
   userId: z.string(),
+  projectName: z.string(),
+  projectId: z.string(),
+  locationId: z.string(),
+  location: z.string(),
+  targetPopulation: FamilyMembersZod
+})
+
+export const ProjectInfoZod_v = z.object({
+  userId: z.string(),
   projectName: z.string().min(3).max(200),
   projectId: z.string(),
   locationId: z.string(),
@@ -216,7 +225,7 @@ export type ProjectInfoBlank = typeof projectInfoDefault
 
 export const HouseZod = z.object({
   projectId: z.string(),
-  userId: z.string(),
+  user: z.string(),
   locationId: z.string(),
   familyId: z.string(),
   familyName: z.string(),
@@ -225,7 +234,7 @@ export const HouseZod = z.object({
 
 export const HouseZod_v = z.object({
   projectId: z.string(),
-  userId: z.string(),
+  user: z.string(),
   locationId: z.string().min(3).max(200),
   familyId: z.string(),
   familyName: z.string().min(3).max(200),
@@ -244,7 +253,7 @@ export type HousesBlank = HouseBlank[]
 
 export const houseDefault = {
   projectId: '',
-  userId: '',
+  user: '',
   locationId: '',
   familyId: '',
   familyName: 'family01',
@@ -444,7 +453,7 @@ export const nutrientLabels: nutrientLabel[] = [
 ]
 
 export const MenuItemZod = FctRowItemZod.extend({
-  userId: z.string(),
+  user: z.string(),
   projectId: z.string(),
   KeyFamily: z.string(),
   menuItemId: z.string(),
@@ -452,7 +461,7 @@ export const MenuItemZod = FctRowItemZod.extend({
 })
 
 export const MenuItemZod_v = FctRowItemZod.extend({
-  userId: z.string(),
+  user: z.string(),
   projectId: z.string(),
   KeyFamily: z.string().min(3).max(200),
   menuItemId: z.string(),
@@ -464,7 +473,7 @@ export const MenuItemsZod = z.array(MenuItemZod)
 export const MenuZod = z.object({
   data: MenuItemsZod,
   note: z.string(),
-  userId: z.string(),
+  user: z.string(),
   projectId: z.string(),
   familyId: z.string(),
   menu: z.string()
@@ -489,7 +498,7 @@ export const menuItemDefault = {
   menuItemId: '',
   KeyFamily: '',
   projectId: '',
-  userId: '',
+  user: '',
   Date: Date.now()
 }
 
@@ -500,12 +509,12 @@ export const menuDefault = {
       menuItemId: '',
       KeyFamily: '',
       projectId: '',
-      userId: '',
+      user: '',
       Date: Date.now()
     }
   ],
   note: '',
-  userId: '',
+  user: '',
   projectId: '',
   familyId: '',
   menu: ''

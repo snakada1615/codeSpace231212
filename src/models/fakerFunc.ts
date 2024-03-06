@@ -87,7 +87,7 @@ export default class FakerFunc {
 
   static createHouse(): myVal.House {
     return {
-      userId: faker.string.uuid(),
+      user: faker.string.uuid(),
       projectId: faker.string.uuid(),
       locationId: faker.string.uuid(),
       familyId: faker.string.uuid(),
@@ -111,7 +111,7 @@ export default class FakerFunc {
     const food = this.createFct(myVal.sampleFood)
     const menu = faker.helpers.arrayElement(myVal.commonMenus)
     return {
-      userId: uid(),
+      user: uid(),
       projectId: uid(),
       ...food,
       menuItemId: faker.string.uuid(),

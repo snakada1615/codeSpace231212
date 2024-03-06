@@ -11,7 +11,7 @@ const appUserStore = computed({
   },
   set(val) {
     console.log('set')
-    projectData.setAppUser(val)
+    projectData.updateStateValue('appUser', val)
   }
 })
 </script>

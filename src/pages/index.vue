@@ -10,7 +10,7 @@
         label="notify"
         @click="$q.notify({ message: 'ぼろー', position: 'top-right', color: 'teal' })"
       />
-      <JsonTreeView :json="JSON.stringify(projectData.appUser)" :maxDepth="4" />
+      <JsonTreeView :json="JSON.stringify(projectData)" :maxDepth="4" />
     </q-card>
   </div>
 </template>

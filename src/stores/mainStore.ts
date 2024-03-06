@@ -36,16 +36,8 @@ interface PiniaState {
   loading: boolean
   copyDataFromOrigin: { fct: string; dri: string }
   isUpdate: boolean
-  modifiedStates: [] //
+  modifiedStates: string[]
 }
-
-// PiniaStateからstateのキーのみを抽出（functionを削除）するための関数
-interface StateKeys {
-  [key: string]: unknown
-}
-type ExtractStateKeys<T> = {
-  [K in keyof T]: T[K] extends Function ? never : K
-}[keyof T]
 
 export const useProjectData = defineStore('prjData', {
   state: (): PiniaState => ({
@@ -95,21 +87,26 @@ export const useProjectData = defineStore('prjData', {
       }
     },
 
-    stateHouseInfo(state) {
-      const currentHouse = state.houses.find(
-        (item) => item.familyId === state.currentDataSet.family
-      )
-      if (!currentHouse) {
-        return false
-      }
-      if (!myVal.HouseZod.safeParse(currentHouse)) {
-        return false
-      }
-      if (currentHouse.familyMembers.reduce((accum, current) => current.count + accum, 0) <= 0) {
-        return false
-      }
-      return true
-    },
+    // stateHouseInfo(state) {
+    //   if (!state.houses) {
+    //     return false
+    //   }
+    //   if (state.houses.length <= 0) {
+    //     return false
+    //   }
+    //   console.log(state.houses)
+    //   const currentHouse = state.houses.find((item) => item.familyId === state.currentDataSet.house)
+    //   if (!currentHouse) {
+    //     return false
+    //   }
+    //   if (!myVal.HouseZod.safeParse(currentHouse)) {
+    //     return false
+    //   }
+    //   if (currentHouse.familyMembers.reduce((accum, current) => current.count + accum, 0) <= 0) {
+    //     return false
+    //   }
+    //   return true
+    // },
 
     targetPopulationTotal: (state) => {
       if (!state.projectInfo) {
@@ -164,12 +161,12 @@ export const useProjectData = defineStore('prjData', {
   },
   actions: {
     // Function to update state value and record the change
-    // TODO 共通関数
-    updateStateValue<K extends ExtractStateKeys<PiniaState>>(fieldName: K, value: PiniaState[K]) {
+    // TODO storeに値をセット
+    updateStateValue<K extends keyof PiniaState>(fieldName: K, value: PiniaState[K]) {
       // Since this refers to the store instance, we cast it to StateKeys & this
       // const currentStateValue = (this as StateKeys & typeof this)[fieldName]
       if (this[fieldName] !== value) {
-        this[fieldName] = value
+        ;(this as any)[fieldName] = value
 
         // Assuming modifiedStates is part of the state and typed correctly
         if (!this.modifiedStates.includes(fieldName as string)) {
@@ -178,78 +175,46 @@ export const useProjectData = defineStore('prjData', {
       }
     },
 
-    setUserId(val: string) {
-      this.appUser.userId = val
-    },
+    // async fireSetCurrentDataset(userId: string, val: myVal.CurrentDataSet) {
+    //   await fireFunc.fireSetQueryMergeTyped<myVal.CurrentDataSet>(
+    //     'currentDataSet',
+    //     'userId',
+    //     userId,
+    //     val,
+    //     '',
+    //     FakerFunc.uuid()
+    //   )
+    // },
 
-    setFct(val: myVal.FctItems) {
-      this.fct = JSON.parse(JSON.stringify(val))
-    },
+    // async fireSetFct(fctId: string, val: myVal.FctItemsWithNote) {
+    //   await fireFunc.fireSetMergeTyped<myVal.FctItemsWithNote>('fct', fctId, val, 'FctItem')
+    // },
 
-    setDri(val: myVal.DriItems) {
-      this.dri = JSON.parse(JSON.stringify(val))
-    },
+    // async fireSetDri(driId: string, val: myVal.DriItemsWithNote) {
+    //   await fireFunc.fireSetMergeTyped<myVal.DriItemsWithNote>('dri', driId, val, 'DriItem')
+    // },
 
-    setAppUser(val: myVal.AppUser) {
-      this.appUser = val
-    },
+    // async fireSetAppUser(userId: string, val: myVal.AppUser) {
+    //   await fireFunc.fireSetMergeTyped<myVal.AppUser>('user', userId, val, 'AppUser')
+    //   await fireFunc.fireSetQueryMergeTyped(
+    //     'user',
+    //     'userId',
+    //     userId,
+    //     val,
+    //     'AppUser',
+    //     FakerFunc.uuid()
+    //   )
+    // },
 
-    setCurrentDataset(val: myVal.CurrentDataSet) {
-      this.currentDataSet = JSON.parse(JSON.stringify(val))
-    },
-
-    setProjectInfo(val: myVal.ProjectInfo) {
-      this.projectInfo = JSON.parse(JSON.stringify(val))
-    },
-
-    setHouses(val: myVal.Houses) {
-      this.houses = JSON.parse(JSON.stringify(val))
-    },
-
-    addNewHouse(val: myVal.House) {
-      this.houses.push(JSON.parse(JSON.stringify(val)))
-    },
-
-    setMenu(val: myVal.MenuItems) {
-      this.menu = JSON.parse(JSON.stringify(val))
-    },
-
-    async fireSetCurrentDataset(userId: string, val: myVal.CurrentDataSet) {
-      await fireFunc.fireSetQueryMergeTyped<myVal.CurrentDataSet>(
-        'currentDataSet',
-        'userId',
-        userId,
-        val,
-        '',
-        FakerFunc.uuid()
-      )
-    },
-
-    async fireSetFct(fctId: string, val: myVal.FctItemsWithNote) {
-      await fireFunc.fireSetMergeTyped<myVal.FctItemsWithNote>('fct', fctId, val, 'FctItem')
-    },
-
-    async fireSetDri(driId: string, val: myVal.DriItemsWithNote) {
-      await fireFunc.fireSetMergeTyped<myVal.DriItemsWithNote>('dri', driId, val, 'DriItem')
-    },
-
-    async fireSetAppUser(userId: string, val: myVal.AppUser) {
-      await fireFunc.fireSetMergeTyped<myVal.AppUser>('user', userId, val, 'AppUser')
-      await fireFunc.fireSetQueryMergeTyped(
-        'user',
-        'userId',
-        userId,
-        val,
-        'AppUser',
-        FakerFunc.uuid()
-      )
-    },
-
+    // NOTE fireResetData: userIdに紐づいたデータの削除、初期化
     async fireResetData(userId: string) {
       try {
         await fireFunc.fireDeleteQueryDoc('currentDataSet', 'userId', userId)
         await fireFunc.fireDeleteQueryDoc('dri', 'userId', userId)
         await fireFunc.fireDeleteQueryDoc('fct', 'userId', userId)
+        await fireFunc.fireDeleteQueryDoc('projectInfo', 'user', userId)
+        await fireFunc.fireDeleteQueryDoc('menu', 'user', userId)
+        await fireFunc.fireDeleteQueryDoc('house', 'user', userId)
         await fireFunc.fireDeleteQueryDoc('user', 'userId', userId)
         console.log('all data cleared')
         console.log('initialize all data for ' + userId)
@@ -261,10 +226,15 @@ export const useProjectData = defineStore('prjData', {
 
     // NOTE ログイン状態が変わるたびに初期化
     async fireGetAllData(userId: string) {
-      this.setUserId(userId)
-      const currentProjectId = this.currentDataSet.project || FakerFunc.uuid()
-      // let currentDataSetId = this.currentDataSet.currentDataSetId || FakerFunc.uuid()
+      this.updateStateValue('appUser', { ...this.appUser, userId: userId })
+      const currentProjectId = this.currentDataSet.projectInfo || FakerFunc.uuid()
+      const currentDataSetId = this.currentDataSet.currentDataSet || FakerFunc.uuid()
       const defaultFamilyId = FakerFunc.uuid()
+      const defaultFctId = FakerFunc.uuid()
+      const defaultDriId = FakerFunc.uuid()
+      const defaultUserId = FakerFunc.uuid()
+      const defaultMenuId = FakerFunc.uuid()
+      const defaultCurrentDataSetrId = FakerFunc.uuid()
 
       // AppUser:
       console.log('...fetching appUser')
@@ -272,31 +242,34 @@ export const useProjectData = defineStore('prjData', {
         'user', // collection名
         'userId', // 参照用フィールド
         userId, // 参照値
-        (userData) => this.setAppUser(userData[0]), //piniaに値をセットする関数
+        // (userData) => this.setAppUser(userData[0]), //piniaに値をセットする関数
+        (userData) => this.updateStateValue('appUser', userData[0]), //piniaに値をセットする関数
         {
           ...myVal.appUserDefault,
           userId: userId
         }, // データがない場合の初期値
         userId, // userid
         this.currentDataSet, // 現状記録
-        FakerFunc.uuid() // データがfireStoreに存在しない場合、このIDで新規作成
+        userId // データがfireStoreに存在しない場合、このIDで新規作成
       )
 
       // currentDataSet
       console.log('...fetching currentDataSet')
       await this.fireInitialize<myVal.CurrentDataSet>(
         'currentDataSet', // collection名
-        'userId', // 参照用フィールド
+        'user', // 参照用フィールド
         userId, // 参照値
-        (userData) => this.setCurrentDataset(userData[0]), //piniaに値をセットする関数
+        // (userData) => this.setCurrentDataset(userData[0]), //piniaに値をセットする関数
+        (userData) =>
+          this.updateStateValue('currentDataSet', JSON.parse(JSON.stringify(userData[0]))), //piniaに値をセットする関数
         {
           ...this.currentDataSet,
-          userId: userId,
-          currentDataSetId: this.currentDataSet.currentDataSetId || FakerFunc.uuid()
+          user: userId,
+          currentDataSet: defaultCurrentDataSetrId
         }, // データがない場合の初期値
         userId,
         this.currentDataSet,
-        FakerFunc.uuid() // データがfireStoreに存在しない場合、このIDで新規作成
+        defaultCurrentDataSetrId // データがfireStoreに存在しない場合、このIDで新規作成
       )
 
       // fct:
@@ -305,11 +278,12 @@ export const useProjectData = defineStore('prjData', {
         'fct', // collection名
         'userId', // 参照用フィールド
         userId, // 参照値
-        (userData) => this.setFct(userData[0].data), //piniaに値をセットする関数
-        { ...myVal.fctItemsWIthNoteDefault, userId: userId }, // データがない場合の初期値
+        // (userData) => this.setFct(userData[0].data), //piniaに値をセットする関数
+        (userData) => this.updateStateValue('fct', JSON.parse(JSON.stringify(userData[0].data))), //piniaに値をセットする関数
+        { ...myVal.fctItemsWIthNoteDefault, userId: userId, fct: defaultFctId }, // データがない場合の初期値
         userId,
         this.currentDataSet,
-        FakerFunc.uuid() // データがfireStoreに存在しない場合、このIDで新規作成
+        defaultFctId // データがfireStoreに存在しない場合、このIDで新規作成
       )
 
       //  dri:
@@ -318,11 +292,30 @@ export const useProjectData = defineStore('prjData', {
         'dri', // collection名
         'userId', // 参照用フィールド
         userId, // 参照値
-        (userData) => this.setDri(userData[0].data), //piniaに値をセットする関数
-        { ...myVal.driItemsWIthNoteDefault, userId: userId }, // データがない場合の初期値
+        // (userData) => this.setDri(userData[0].data), //piniaに値をセットする関数
+        (userData) => this.updateStateValue('dri', JSON.parse(JSON.stringify(userData[0].data))),
+        { ...myVal.driItemsWIthNoteDefault, userId: userId, dri: defaultDriId }, // データがない場合の初期値
         userId,
         this.currentDataSet,
-        FakerFunc.uuid() // データがfireStoreに存在しない場合、このIDで新規作成
+        defaultDriId // データがfireStoreに存在しない場合、このIDで新規作成
+      )
+
+      // Project
+      console.log('...fetching project data')
+      await this.fireInitialize<myVal.ProjectInfo>(
+        'projectInfo', // collection名
+        'userId', // 参照用フィールド
+        userId, // 参照値
+        // (houseData) => this.setHouses(houseData), //piniaに値をセットする関数
+        (project) => this.updateStateValue('projectInfo', JSON.parse(JSON.stringify(project))), //piniaに値をセットする関数
+        {
+          ...myVal.projectInfoDefault,
+          userId: userId,
+          projectId: currentProjectId
+        }, // データがない場合の初期値
+        userId, // userid
+        this.currentDataSet, // 現状記録
+        currentProjectId // データがfireStoreに存在しない場合、このIDで新規作成
       )
 
       // House:
@@ -331,36 +324,37 @@ export const useProjectData = defineStore('prjData', {
         'house', // collection名
         'userId', // 参照用フィールド
         userId, // 参照値
-        (houseData) => this.setHouses(houseData), //piniaに値をセットする関数
+        // (houseData) => this.setHouses(houseData), //piniaに値をセットする関数
+        (houseData) => this.updateStateValue('houses', JSON.parse(JSON.stringify(houseData))), //piniaに値をセットする関数
         {
           ...myVal.houseDefault,
-          userId: userId,
+          user: userId,
           projectId: currentProjectId,
           familyId: defaultFamilyId
         }, // データがない場合の初期値
         userId, // userid
         this.currentDataSet, // 現状記録
-        FakerFunc.uuid() // データがfireStoreに存在しない場合、このIDで新規作成
+        defaultFamilyId // データがfireStoreに存在しない場合、このIDで新規作成
       )
 
       //  Menu:
       console.log('...fetching menu data')
-      const newMenuId = FakerFunc.uuid()
       await this.fireInitialize<myVal.Menu>(
         'menu', // collection名
         'userId', // 参照用フィールド
         userId, // 参照値
-        (menu) => this.setMenu(menu[0].data), //piniaに値をセットする関数
+        // (menu) => this.setMenu(menu[0].data), //piniaに値をセットする関数
+        (menu) => this.updateStateValue('menu', JSON.parse(JSON.stringify(menu))), //piniaに値をセットする関数
         {
           ...myVal.menuDefault,
-          userId: userId,
+          user: userId,
           projectId: currentProjectId,
           familyId: defaultFamilyId,
-          menu: newMenuId
+          menu: defaultMenuId
         }, // データがない場合の初期値
         userId, // userid
         this.currentDataSet, // 現状記録
-        newMenuId // データがfireStoreに存在しない場合、このIDで新規作成
+        defaultMenuId // データがfireStoreに存在しない場合、このIDで新規作成
       )
     },
 
@@ -402,7 +396,8 @@ export const useProjectData = defineStore('prjData', {
               'fct',
               newId,
               userId,
-              this.setFct,
+              // this.setFct,
+              (userData) => this.updateStateValue('fct', JSON.parse(JSON.stringify(userData))),
               myCurrentDataSet
             )
           } else {
@@ -416,7 +411,8 @@ export const useProjectData = defineStore('prjData', {
               'dri',
               newId,
               userId,
-              this.setDri,
+              // this.setDri,
+              (userData) => this.updateStateValue('dri', JSON.parse(JSON.stringify(userData))),
               myCurrentDataSet
             )
           } else {
@@ -432,7 +428,8 @@ export const useProjectData = defineStore('prjData', {
               userId,
               defaultData as T,
               myCurrentDataSet,
-              (val) => this.setCurrentDataset(val as myVal.CurrentDataSet)
+              // (val) => this.setCurrentDataset(val as myVal.CurrentDataSet)
+              (val) => this.updateStateValue('currentDataSet', JSON.parse(JSON.stringify(val))) //piniaに値をセットする関数
             )
           } else {
             throw new Error('missing parameter, newId in fireGetData')
@@ -447,7 +444,8 @@ export const useProjectData = defineStore('prjData', {
               userId,
               defaultData as T,
               myCurrentDataSet,
-              (val) => this.setAppUser(val as myVal.AppUser)
+              // (val) => this.setAppUser(val as myVal.AppUser)
+              (val) => this.updateStateValue('appUser', val as myVal.AppUser) //piniaに値をセットする関数
             )
           } else {
             throw new Error('missing parameter, newId in fireGetData')
@@ -462,7 +460,8 @@ export const useProjectData = defineStore('prjData', {
               userId,
               defaultData as T,
               myCurrentDataSet,
-              (val) => this.setCurrentDataset(val as myVal.CurrentDataSet)
+              // (val) => this.setCurrentDataset(val as myVal.CurrentDataSet)
+              (val) => this.updateStateValue('projectInfo', JSON.parse(JSON.stringify(val))) //piniaに値をセットする関数
             )
           } else {
             throw new Error('missing parameter, newId in fireGetData')
@@ -478,7 +477,8 @@ export const useProjectData = defineStore('prjData', {
                 userId,
                 defaultData as T,
                 myCurrentDataSet,
-                (val) => this.setCurrentDataset(val as myVal.CurrentDataSet)
+                // (val) => this.setCurrentDataset(val as myVal.CurrentDataSet)
+                (val) => this.updateStateValue('houses', JSON.parse(JSON.stringify(val))) //piniaに値をセットする関数
               )
             } catch (error) {
               console.error(error)
@@ -498,7 +498,8 @@ export const useProjectData = defineStore('prjData', {
               userId,
               defaultData as T,
               myCurrentDataSet,
-              (val) => this.setCurrentDataset(val as myVal.CurrentDataSet)
+              // (val) => this.setCurrentDataset(val as myVal.CurrentDataSet)
+              (val) => this.updateStateValue('menu', JSON.parse(JSON.stringify(val))) //piniaに値をセットする関数
             )
           } else {
             throw new Error('missing parameter, newId in fireGetData')
@@ -547,15 +548,16 @@ export const useProjectData = defineStore('prjData', {
       // currentDataSetを更新
       const resCurr = {
         ...myCurrentDataSet,
-        userId: userId,
+        user: userId,
         [collectionName]: newId
       } as myVal.CurrentDataSet
 
-      this.setCurrentDataset(resCurr as myVal.CurrentDataSet) // currentDataSetの更新
+      // this.setCurrentDataset(resCurr as myVal.CurrentDataSet) // currentDataSetの更新
+      this.updateStateValue('currentDataSet', JSON.parse(JSON.stringify(resCurr))) // currentDataSetの更新
       await fireFunc.fireSetMergeTyped<myVal.CurrentDataSet>(
         // fireStoreに保存--currentDataSet
         'currentDataSet',
-        myCurrentDataSet.currentDataSetId,
+        myCurrentDataSet.currentDataSet,
         resCurr,
         'copying data...'
       )
@@ -594,7 +596,7 @@ export const useProjectData = defineStore('prjData', {
         }
         const resCurr = {
           ...myCurrentDataSet,
-          userId: userId,
+          user: userId,
           [originCollection]: newId
         }
 
@@ -605,11 +607,12 @@ export const useProjectData = defineStore('prjData', {
         setData(copiedData.data.data) // piniaに保存(修正してなくて良い)
 
         // currentDataSetに保存
-        this.setCurrentDataset(resCurr as myVal.CurrentDataSet) // currentDataSetの更新
+        // this.setCurrentDataset(resCurr as myVal.CurrentDataSet) // currentDataSetの更新
+        this.updateStateValue('currentDataSet', JSON.parse(JSON.stringify(resCurr))) // currentDataSetの更新
         await fireFunc.fireSetMergeTyped<myVal.CurrentDataSet>(
           // fireStoreに保存--currentDataSet
           'currentDataSet',
-          myCurrentDataSet.currentDataSetId,
+          myCurrentDataSet.currentDataSet,
           resCurr as myVal.CurrentDataSet,
           'copying data...'
         )
