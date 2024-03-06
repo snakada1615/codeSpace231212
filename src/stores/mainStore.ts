@@ -27,7 +27,7 @@ interface PiniaState {
   fct: myVal.FctItems | null
   dri: myVal.DriItems | null
   // プロジェクトで対象とする家庭の情報
-  houses: myVal.Houses | myVal.HousesBlank
+  house: myVal.Houses | myVal.HousesBlank
   // 各家庭での食事調査結果
   menu: myVal.Menu | myVal.MenuItemsBlank | null
   // デフォルトで使うデータベース名
@@ -48,7 +48,7 @@ export const useProjectData = defineStore('prjData', {
     fct: null,
     dri: null,
     // プロジェクトで対象とする家庭の情報
-    houses: myVal.housesDefault,
+    house: myVal.housesDefault,
     // 各家庭での食事調査結果
     menu: null,
     currentDataSet: myVal.currentDataSetDefault,
@@ -122,13 +122,13 @@ export const useProjectData = defineStore('prjData', {
     },
 
     houseSizes: (state) => {
-      if (!state.houses) {
+      if (!state.house) {
         return 0
       }
-      if (!state.houses[0]) {
+      if (!state.house[0]) {
         return 0
       }
-      return state.houses.map((house) =>
+      return state.house.map((house) =>
         house.familyMembers.reduce((total, current) => (total += current.count), 0)
       )
     },
@@ -142,7 +142,7 @@ export const useProjectData = defineStore('prjData', {
       }
 
       // Ensure all houses meet the conditions
-      const result = myVal.HousesZod.safeParse(state.houses)
+      const result = myVal.HousesZod.safeParse(state.house)
       if (result.success) {
         return true // Or some validation logic that returns a boolean
       } else {
@@ -325,7 +325,7 @@ export const useProjectData = defineStore('prjData', {
         'userId', // 参照用フィールド
         userId, // 参照値
         // (houseData) => this.setHouses(houseData), //piniaに値をセットする関数
-        (houseData) => this.updateStateValue('houses', JSON.parse(JSON.stringify(houseData))), //piniaに値をセットする関数
+        (houseData) => this.updateStateValue('house', JSON.parse(JSON.stringify(houseData))), //piniaに値をセットする関数
         {
           ...myVal.houseDefault,
           user: userId,
@@ -478,7 +478,7 @@ export const useProjectData = defineStore('prjData', {
                 defaultData as T,
                 myCurrentDataSet,
                 // (val) => this.setCurrentDataset(val as myVal.CurrentDataSet)
-                (val) => this.updateStateValue('houses', JSON.parse(JSON.stringify(val))) //piniaに値をセットする関数
+                (val) => this.updateStateValue('house', JSON.parse(JSON.stringify(val))) //piniaに値をセットする関数
               )
             } catch (error) {
               console.error(error)

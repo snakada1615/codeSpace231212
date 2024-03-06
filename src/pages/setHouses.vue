@@ -11,7 +11,7 @@ const myProjectData = useProjectData()
 
 // interface housesInfoType extends Array<houseInfoType> {}
 const housesInfo = computed(() => {
-  return myProjectData.houses.map((item, index) => {
+  return myProjectData.house.map((item, index) => {
     return {
       label: item.familyName,
       value: index
@@ -21,11 +21,12 @@ const housesInfo = computed(() => {
 
 const currentHouse: WritableComputedRef<myVal.House> = computed({
   get() {
-    return myProjectData.houses[selectedHouse.value.value]
+    return myProjectData.house[selectedHouse.value.value]
   },
   set(val: myVal.House) {
-    myProjectData.setHouses(
-      myProjectData.houses.map((item) => {
+    myProjectData.updateStateValue(
+      'house',
+      myProjectData.house.map((item) => {
         if (val.familyId === item.familyId) {
           return val
         }
@@ -49,9 +50,9 @@ const newLocation = ref('')
 function changeCurrentHouse(val: typeof selectedHouse) {
   const res = val.value.value > 0 ? currentHouse.value.familyId : ''
   const current = myProjectData.currentDataSet
-  myProjectData.setCurrentDataset({
+  myProjectData.updateStateValue('currentDataSet', {
     ...current,
-    family: res
+    house: res
   })
 }
 
@@ -181,6 +182,6 @@ function addNewHouse() {
       :currentHouseNames="housesInfo.map((item) => item.label)"
     />
     {{ currentHouse }}
-    <JsonTreeView :json="JSON.stringify(myProjectData.houses)" :maxDepth="4" />
+    <JsonTreeView :json="JSON.stringify(myProjectData.house)" :maxDepth="4" />
   </q-card>
 </template>
