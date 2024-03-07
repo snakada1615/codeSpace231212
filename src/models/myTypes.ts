@@ -86,7 +86,7 @@ export type CurrentDataSetBlank = typeof currentDataSetDefault
 
 // 現在のユーザー情報
 export const AppUserZod = z.object({
-  userId: z.string(),
+  user: z.string(),
   name: z.string(),
   job: z.string(),
   title: z.string(),
@@ -96,7 +96,7 @@ export const AppUserZod = z.object({
 })
 
 export const AppUserZod_v = z.object({
-  userId: z.string(),
+  user: z.string(),
   name: z.string().min(3).max(200),
   job: z.string().min(3).max(200),
   title: z.string().min(3).max(200),
@@ -110,7 +110,7 @@ export type AppUser = z.infer<typeof AppUserZod>
 export type AppUser_v = z.infer<typeof AppUserZod_v>
 
 export const appUserDefault = {
-  userId: '',
+  user: '',
   name: '',
   job: '',
   title: '',
@@ -155,7 +155,7 @@ export const driItemDefault = {
 export const DriItemsWithNoteZod = z.object({
   data: DriItemsZod,
   note: z.string(),
-  userId: z.string(),
+  user: z.string(),
   dri: z.string()
 })
 
@@ -189,7 +189,7 @@ export const familyMembersDefault = sampleFamilyMemberCategory.map((item, index)
 })
 
 export const ProjectInfoZod = z.object({
-  userId: z.string(),
+  user: z.string(),
   projectName: z.string(),
   projectInfo: z.string(),
   locationId: z.string(),
@@ -198,7 +198,7 @@ export const ProjectInfoZod = z.object({
 })
 
 export const ProjectInfoZod_v = z.object({
-  userId: z.string(),
+  user: z.string(),
   projectName: z.string().min(3).max(200),
   projectInfo: z.string(),
   locationId: z.string(),
@@ -207,7 +207,7 @@ export const ProjectInfoZod_v = z.object({
 })
 
 export const projectInfoDefault = {
-  userId: '',
+  user: '',
   projectName: '',
   projectInfo: '',
   locationId: '',
@@ -311,7 +311,7 @@ export const fctItemDefault = {
 export const FctItemsWithNoteZod = z.object({
   data: FctItemsZod,
   note: z.string(),
-  userId: z.string(),
+  user: z.string(),
   fct: z.string()
 })
 
@@ -320,14 +320,14 @@ export type FctItemsWithNote = Zod.infer<typeof FctItemsWithNoteZod>
 export const fctItemsWIthNoteDefault = {
   data: [fctItemDefault],
   note: '',
-  userId: '',
+  user: '',
   fct: ''
 }
 
 export const driItemsWIthNoteDefault = {
   data: [driItemDefault],
   note: '',
-  userId: '',
+  user: '',
   dri: ''
 }
 

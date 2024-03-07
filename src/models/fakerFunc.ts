@@ -98,7 +98,7 @@ export default class FakerFunc {
 
   static createProject(): myVal.ProjectInfo {
     return {
-      userId: faker.string.uuid(),
+      user: faker.string.uuid(),
       projectName: faker.company.name(),
       projectInfo: faker.string.uuid(),
       locationId: faker.string.uuid(),

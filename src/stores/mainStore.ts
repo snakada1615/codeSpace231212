@@ -64,7 +64,7 @@ export const useProjectData = defineStore('prjData', {
   getters: {
     stateUserId: (state) => {
       if (state.appUser && typeof state.appUser === 'object') {
-        return !!state.appUser.userId || false
+        return !!state.appUser.user || false
       }
       return false
       // state.appUser.state.appUser.userId? true:false
@@ -209,13 +209,13 @@ export const useProjectData = defineStore('prjData', {
     // NOTE fireResetData: userIdに紐づいたデータの削除、初期化
     async fireResetData(userId: string) {
       try {
-        await fireFunc.fireDeleteQueryDoc('currentDataSet', 'userId', userId)
-        await fireFunc.fireDeleteQueryDoc('dri', 'userId', userId)
-        await fireFunc.fireDeleteQueryDoc('fct', 'userId', userId)
+        await fireFunc.fireDeleteQueryDoc('currentDataSet', 'user', userId)
+        await fireFunc.fireDeleteQueryDoc('dri', 'user', userId)
+        await fireFunc.fireDeleteQueryDoc('fct', 'user', userId)
         await fireFunc.fireDeleteQueryDoc('projectInfo', 'user', userId)
         await fireFunc.fireDeleteQueryDoc('menu', 'user', userId)
         await fireFunc.fireDeleteQueryDoc('house', 'user', userId)
-        await fireFunc.fireDeleteQueryDoc('user', 'userId', userId)
+        await fireFunc.fireDeleteQueryDoc('user', 'user', userId)
         console.log('all data cleared')
         console.log('initialize all data for ' + userId)
         this.fireGetAllData(userId)
@@ -226,10 +226,10 @@ export const useProjectData = defineStore('prjData', {
 
     // NOTE ログイン状態が変わるたびに初期化
     async fireGetAllData(userId: string) {
-      this.updateStateValue('appUser', { ...this.appUser, userId: userId })
+      this.updateStateValue('appUser', { ...this.appUser, user: userId })
       const currentProjectId = this.currentDataSet.projectInfo
       const currentDataSetId = this.currentDataSet.currentDataSet || FakerFunc.uuid()
-      const defaultFamilyId = FakerFunc.uuid()
+      const defaultFamilyId: string = FakerFunc.uuid()
       const defaultFctId = FakerFunc.uuid()
       const defaultDriId = FakerFunc.uuid()
       const defaultUserId = FakerFunc.uuid()
@@ -241,13 +241,13 @@ export const useProjectData = defineStore('prjData', {
       console.log('...fetching appUser')
       await this.fireInitialize<myVal.AppUser>(
         'user', // collection名
-        'userId', // 参照用フィールド
+        'user', // 参照用フィールド
         userId, // 参照値
         // (userData) => this.setAppUser(userData[0]), //piniaに値をセットする関数
         (userData) => this.updateStateValue('appUser', userData[0]), //piniaに値をセットする関数
         {
           ...myVal.appUserDefault,
-          userId: userId
+          user: userId
         }, // データがない場合の初期値
         userId, // userid
         this.currentDataSet, // 現状記録
@@ -277,11 +277,11 @@ export const useProjectData = defineStore('prjData', {
       console.log('...fetching fct')
       await this.fireInitialize<myVal.FctItemsWithNote>(
         'fct', // collection名
-        'userId', // 参照用フィールド
+        'user', // 参照用フィールド
         userId, // 参照値
         // (userData) => this.setFct(userData[0].data), //piniaに値をセットする関数
         (userData) => this.updateStateValue('fct', JSON.parse(JSON.stringify(userData[0].data))), //piniaに値をセットする関数
-        { ...myVal.fctItemsWIthNoteDefault, userId: userId, fct: defaultFctId }, // データがない場合の初期値
+        { ...myVal.fctItemsWIthNoteDefault, user: userId, fct: defaultFctId }, // データがない場合の初期値
         userId,
         this.currentDataSet,
         defaultFctId // データがfireStoreに存在しない場合、このIDで新規作成
@@ -291,11 +291,11 @@ export const useProjectData = defineStore('prjData', {
       console.log('...fetching dri')
       await this.fireInitialize<myVal.DriItemsWithNote>(
         'dri', // collection名
-        'userId', // 参照用フィールド
+        'user', // 参照用フィールド
         userId, // 参照値
         // (userData) => this.setDri(userData[0].data), //piniaに値をセットする関数
         (userData) => this.updateStateValue('dri', JSON.parse(JSON.stringify(userData[0].data))),
-        { ...myVal.driItemsWIthNoteDefault, userId: userId, dri: defaultDriId }, // データがない場合の初期値
+        { ...myVal.driItemsWIthNoteDefault, user: userId, dri: defaultDriId }, // データがない場合の初期値
         userId,
         this.currentDataSet,
         defaultDriId // データがfireStoreに存在しない場合、このIDで新規作成
@@ -305,13 +305,13 @@ export const useProjectData = defineStore('prjData', {
       console.log('...fetching project data')
       await this.fireInitialize<myVal.ProjectInfo>(
         'projectInfo', // collection名
-        'userId', // 参照用フィールド
+        'user', // 参照用フィールド
         userId, // 参照値
         // (houseData) => this.setHouses(houseData), //piniaに値をセットする関数
         (project) => this.updateStateValue('projectInfo', JSON.parse(JSON.stringify(project))), //piniaに値をセットする関数
         {
           ...myVal.projectInfoDefault,
-          userId: userId,
+          user: userId,
           projectInfo: defaultProjectId
         }, // データがない場合の初期値
         userId, // userid
@@ -323,7 +323,7 @@ export const useProjectData = defineStore('prjData', {
       console.log('...fetching house data')
       await this.fireInitialize<myVal.House>(
         'house', // collection名
-        'userId', // 参照用フィールド
+        'user', // 参照用フィールド
         userId, // 参照値
         // (houseData) => this.setHouses(houseData), //piniaに値をセットする関数
         (houseData) => this.updateStateValue('house', JSON.parse(JSON.stringify(houseData))), //piniaに値をセットする関数
@@ -342,7 +342,7 @@ export const useProjectData = defineStore('prjData', {
       console.log('...fetching menu data')
       await this.fireInitialize<myVal.Menu>(
         'menu', // collection名
-        'userId', // 参照用フィールド
+        'user', // 参照用フィールド
         userId, // 参照値
         // (menu) => this.setMenu(menu[0].data), //piniaに値をセットする関数
         (menu) => this.updateStateValue('menu', JSON.parse(JSON.stringify(menu))), //piniaに値をセットする関数
@@ -393,7 +393,7 @@ export const useProjectData = defineStore('prjData', {
       switch (collectionName) {
         case 'fct':
           if (newId) {
-            return this.fireSetDefaultFromFireStore<T>(
+            return await this.fireSetDefaultFromFireStore<T>(
               'fct',
               newId,
               userId,
@@ -408,7 +408,7 @@ export const useProjectData = defineStore('prjData', {
 
         case 'dri':
           if (newId) {
-            return this.fireSetDefaultFromFireStore<T>(
+            return await this.fireSetDefaultFromFireStore<T>(
               'dri',
               newId,
               userId,
@@ -423,7 +423,7 @@ export const useProjectData = defineStore('prjData', {
 
         case 'currentDataSet':
           if (newId) {
-            this.fireSetDefault<T>(
+            await this.fireSetDefault<T>(
               collectionName,
               newId,
               userId,
@@ -439,7 +439,7 @@ export const useProjectData = defineStore('prjData', {
 
         case 'user':
           if (newId) {
-            this.fireSetDefault<T>(
+            await this.fireSetDefault<T>(
               collectionName,
               newId,
               userId,
@@ -455,7 +455,7 @@ export const useProjectData = defineStore('prjData', {
 
         case 'projectInfo':
           if (newId) {
-            this.fireSetDefault<T>(
+            await this.fireSetDefault<T>(
               collectionName as myVal.fireDocNames,
               newId,
               userId,
@@ -472,7 +472,7 @@ export const useProjectData = defineStore('prjData', {
         case 'house':
           if (newId) {
             try {
-              this.fireSetDefault<T>(
+              await this.fireSetDefault<T>(
                 collectionName as myVal.fireDocNames,
                 newId,
                 userId,
@@ -493,7 +493,7 @@ export const useProjectData = defineStore('prjData', {
 
         case 'menu':
           if (newId) {
-            this.fireSetDefault<T>(
+            await this.fireSetDefault<T>(
               collectionName as myVal.fireDocNames,
               newId,
               userId,
@@ -562,6 +562,8 @@ export const useProjectData = defineStore('prjData', {
         resCurr,
         'copying data...'
       )
+      // console.error(`resCurr: ${collectionName}`)
+      // console.error(resCurr)
       Notify.create({
         position: 'top-right',
         message: `${collectionName} initialized with default value`,
@@ -591,7 +593,7 @@ export const useProjectData = defineStore('prjData', {
         // まずはデータ準備
         const resultData = {
           data: copiedData.data.data,
-          userId: userId,
+          user: userId,
           [originCollection]: newId,
           note: ''
         }
@@ -601,6 +603,9 @@ export const useProjectData = defineStore('prjData', {
           [originCollection]: newId
         }
 
+        // console.error(`resCurr:  ${originCollection}`)
+        // console.error(resCurr)
+        // console.error(resultData)
         // fireStoreに保存
         await fireFunc.fireSetTyped<T>(originCollection, newId, resultData as T)
 

@@ -241,7 +241,7 @@ export class fireFunc {
       splash(true, message || 'deleting data...')
       const snapshot = await getDocs(q)
       if (snapshot.empty) {
-        console.log('document did not found: fireDeleteQueryDoc')
+        console.log(`document did not found: fireDeleteQueryDoc - ${collectionId}`)
         splash(false)
         return null
       }
