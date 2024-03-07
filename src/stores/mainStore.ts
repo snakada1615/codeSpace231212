@@ -161,7 +161,7 @@ export const useProjectData = defineStore('prjData', {
   },
   actions: {
     // Function to update state value and record the change
-    // TODO storeに値をセット
+    // NOTE updateStateValue: storeに値をセット
     updateStateValue<K extends keyof PiniaState>(fieldName: K, value: PiniaState[K]) {
       // Since this refers to the store instance, we cast it to StateKeys & this
       // const currentStateValue = (this as StateKeys & typeof this)[fieldName]
@@ -193,7 +193,7 @@ export const useProjectData = defineStore('prjData', {
       }
     },
 
-    // NOTE ログイン状態が変わるたびに初期化
+    // NOTE fireGetAllData: ログイン状態が変わるたびに初期化
     async fireGetAllData(userId: string) {
       this.updateStateValue('appUser', { ...this.appUser, user: userId })
       const defaultFamilyId: string = FakerFunc.uuid()
@@ -325,7 +325,7 @@ export const useProjectData = defineStore('prjData', {
       )
     },
 
-    // NOTE userデータの一括初期化関数 ---------------------------------------------------------------------------
+    // NOTE fireInitialize: userデータの一括初期化関数 ---------------------------------------------------------------------------
     async fireInitialize<T>(
       collectionName: myVal.collectionNameType,
       fieldName: string,
@@ -475,7 +475,7 @@ export const useProjectData = defineStore('prjData', {
       }
     },
 
-    // NOTE userデータをfireStoreから入手してpiniaに保存 ---------------------------------------------------------------------------
+    // NOTE fireGetData: userデータをfireStoreから入手してpiniaに保存 ---------------------------------------------------------------------------
     async fireGetData<T>(
       collectionName: myVal.collectionNameType,
       fieldName: string,
@@ -494,7 +494,7 @@ export const useProjectData = defineStore('prjData', {
       }
     },
 
-    // NOTE userデータがfireStoreに存在しなかった場合の初期化関数 ---------------------------------------------------------------------------
+    // NOTE fireSetDefault: userデータがfireStoreに存在しなかった場合の初期化関数 ---------------------------------------------------------------------------
     async fireSetDefault<T>(
       collectionName: myVal.collectionNameType, // 保存先のcollection
       newId: string, // 初期化データ保存用のID
@@ -537,7 +537,7 @@ export const useProjectData = defineStore('prjData', {
       })
     },
 
-    // NOTE userデータがfireStoreに存在しなかった場合の初期化関数 ---------------------------------------------------------------------------
+    // NOTE fireSetDefaultFromFireStore: userデータがfireStoreに存在しなかった場合の初期化関数 ---------------------------------------------------------------------------
     async fireSetDefaultFromFireStore<T>(
       originCollection: 'fct' | 'dri',
       newId: string, // 初期化データ保存用のID
