@@ -699,3 +699,101 @@ store.updateStateValue('variable1', 123) // Error, because 'variable1' should be
 Using this approach ensures that each field in the state gets updated with a value of the correct type, maintaining type safety throughout your application.
 
 ---
+
+```
+introduce unified function to save store value into fireStore
+
+
+```
+
+---
+
+To make the code typesafe using `withConverter` from Firebase, you will first need to implement a converter that will ensure the data exchanged with Firestore maintains the correct structure and type according to `YourStoreState`.
+
+In the code below, I've added a Firestore converter and modified the `updateStateValue` action to use `StateValue` while ensuring that the value types are correctly matched. The `saveModifiedStates` action is also updated so it uses this converter when interacting with Firestore.
+
+```typescript
+import {
+  defineStore
+} from 'pinia';
+import {
+  doc,
+  updateDoc,
+  WithFieldValue,
+  DocumentData,
+  FirestoreDataConverter
+} from 'firebase/firestore';
+
+// Define your state with specific types for each property
+interface YourStoreState {
+  variable1: string;
+  variable2: number;
+  variable3: object;
+  modifiedStates: string[];
+}
+
+// Firestore converter to enforce the YourStoreState on reads/writes
+const yourStoreConverter: FirestoreDataConverter<YourStoreState> = {
+  toFirestore(state: WithFieldValue<YourStoreState>): DocumentData {
+    return state;
+  },
+  fromFirestore(
+    snapshot: FirebaseFirestore.QueryDocumentSnapshot
+  ): YourStoreState {
+    const data = snapshot.data();
+    return {
+      variable1: data.variable1,
+      variable2: data.variable2,
+      variable3: data.variable3,
+      modifiedStates: data.modifiedStates,
+    };
+  }
+};
+
+export const useYourStore = defineStore('yourStore', {
+  state: (): YourStoreState => ({
+    variable1: '',
+    variable2: 0,
+    variable3: {},
+    modifiedStates: [],
+  }),
+  getters: {
+    // Your getters (if any)
+  },
+  actions: {
+    updateStateValue(fieldName: keyof YourStoreState, value: StateValue) {
+      // Perform type checking and only assign if the types match
+      if (typeof this[fieldName] === typeof value && this[fieldName] !== value) {
+        this[fieldName] = value as never;
+
+        // Ensure the field name is part of the state before pushing to modifiedStates
+        if (!this.modifiedStates.includes(fieldName)) {
+          this.modifiedStates.push(fieldName);
+        }
+      }
+    },
+
+    async saveModifiedStates() {
+      // Ensure updates object respects the state structure
+      const updates: Partial<Record<keyof YourStoreState, StateValue>> = {};
+
+      for (const fieldName of this.modifiedStates) {
+        updates[fieldName] = this[fieldName] as StateValue;
+      }
+
+      // Your Firestore document reference, now with a converter applied
+      const documentRef = doc(/* firestore instance */, /* path */).withConverter(yourStoreConverter);
+      await updateDoc(documentRef, updates);
+
+      this.modifiedStates = [];
+    }
+  },
+});
+
+// Define the acceptable types of state values after the store definition
+type StateValue = string | number | boolean | object | null; // Add more as needed
+```
+
+Please remember you will need to provide your actual Firestore instance and the path to your document where I've put the placeholders (`/* firestore instance */`, `/* path */`) in the `doc()` function.
+
+---

@@ -6,6 +6,7 @@ import * as myVal from '@/models/myTypes'
 import { fireFunc } from '@/models/fireFunctions'
 import FakerFunc from '@/models/fakerFunc'
 import { Dialog, Notify } from 'quasar'
+import { collection } from 'firebase/firestore'
 
 export const useAuthState = defineStore('auth', {
   state: () => ({
@@ -38,6 +39,9 @@ interface PiniaState {
   isUpdate: boolean
   modifiedStates: string[]
 }
+
+// Define a type for the acceptable types of state values
+type StateValue = string | number | boolean | object | null // Add more as needed
 
 export const useProjectData = defineStore('prjData', {
   state: (): PiniaState => ({
@@ -161,18 +165,32 @@ export const useProjectData = defineStore('prjData', {
   },
   actions: {
     // Function to update state value and record the change
-    // NOTE updateStateValue: storeに値をセット
+    // NOTE updateStateValue: storeに値をセット（fireUpdateStateValueを組み合わせて使う）
     updateStateValue<K extends keyof PiniaState>(fieldName: K, value: PiniaState[K]) {
       // Since this refers to the store instance, we cast it to StateKeys & this
       // const currentStateValue = (this as StateKeys & typeof this)[fieldName]
       if (this[fieldName] !== value) {
         ;(this as any)[fieldName] = value
 
-        // Assuming modifiedStates is part of the state and typed correctly
+        // 更新した要素めいが配列に蓄積される
         if (!this.modifiedStates.includes(fieldName as string)) {
           this.modifiedStates.push(fieldName as string)
         }
       }
+    },
+
+    // NOTE fireUpdateStateValue: fireStoreに値をセット
+    async fireUpdateStateValue<T>(collectionName: string, docId: string) {
+      // Ensure updates object respects the state structure
+      const updates: Partial<Record<keyof PiniaState, StateValue>> = {}
+
+      for (const fieldName of this.modifiedStates) {
+        updates[fieldName as keyof PiniaState] = this[fieldName as keyof PiniaState]
+      }
+
+      await fireFunc.fireSetMergeTyped<T>(collectionName, docId, updates as T)
+
+      this.modifiedStates = []
     },
 
     // NOTE fireResetData: userIdに紐づいたデータの削除、初期化
