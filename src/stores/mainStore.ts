@@ -175,37 +175,6 @@ export const useProjectData = defineStore('prjData', {
       }
     },
 
-    // async fireSetCurrentDataset(userId: string, val: myVal.CurrentDataSet) {
-    //   await fireFunc.fireSetQueryMergeTyped<myVal.CurrentDataSet>(
-    //     'currentDataSet',
-    //     'userId',
-    //     userId,
-    //     val,
-    //     '',
-    //     FakerFunc.uuid()
-    //   )
-    // },
-
-    // async fireSetFct(fctId: string, val: myVal.FctItemsWithNote) {
-    //   await fireFunc.fireSetMergeTyped<myVal.FctItemsWithNote>('fct', fctId, val, 'FctItem')
-    // },
-
-    // async fireSetDri(driId: string, val: myVal.DriItemsWithNote) {
-    //   await fireFunc.fireSetMergeTyped<myVal.DriItemsWithNote>('dri', driId, val, 'DriItem')
-    // },
-
-    // async fireSetAppUser(userId: string, val: myVal.AppUser) {
-    //   await fireFunc.fireSetMergeTyped<myVal.AppUser>('user', userId, val, 'AppUser')
-    //   await fireFunc.fireSetQueryMergeTyped(
-    //     'user',
-    //     'userId',
-    //     userId,
-    //     val,
-    //     'AppUser',
-    //     FakerFunc.uuid()
-    //   )
-    // },
-
     // NOTE fireResetData: userIdに紐づいたデータの削除、初期化
     async fireResetData(userId: string) {
       try {
@@ -227,12 +196,9 @@ export const useProjectData = defineStore('prjData', {
     // NOTE ログイン状態が変わるたびに初期化
     async fireGetAllData(userId: string) {
       this.updateStateValue('appUser', { ...this.appUser, user: userId })
-      const currentProjectId = this.currentDataSet.projectInfo
-      const currentDataSetId = this.currentDataSet.currentDataSet || FakerFunc.uuid()
       const defaultFamilyId: string = FakerFunc.uuid()
       const defaultFctId = FakerFunc.uuid()
       const defaultDriId = FakerFunc.uuid()
-      const defaultUserId = FakerFunc.uuid()
       const defaultMenuId = FakerFunc.uuid()
       const defaultProjectId = FakerFunc.uuid()
       const defaultCurrentDataSetrId = FakerFunc.uuid()
@@ -277,8 +243,8 @@ export const useProjectData = defineStore('prjData', {
       console.log('...fetching fct')
       await this.fireInitialize<myVal.FctItemsWithNote>(
         'fct', // collection名
-        'user', // 参照用フィールド
-        userId, // 参照値
+        'fct', // 参照用フィールド
+        this.currentDataSet.fct, // 参照値
         // (userData) => this.setFct(userData[0].data), //piniaに値をセットする関数
         (userData) => this.updateStateValue('fct', JSON.parse(JSON.stringify(userData[0].data))), //piniaに値をセットする関数
         { ...myVal.fctItemsWIthNoteDefault, user: userId, fct: defaultFctId }, // データがない場合の初期値
@@ -291,8 +257,8 @@ export const useProjectData = defineStore('prjData', {
       console.log('...fetching dri')
       await this.fireInitialize<myVal.DriItemsWithNote>(
         'dri', // collection名
-        'user', // 参照用フィールド
-        userId, // 参照値
+        'dri', // 参照用フィールド
+        this.currentDataSet.dri, // 参照値
         // (userData) => this.setDri(userData[0].data), //piniaに値をセットする関数
         (userData) => this.updateStateValue('dri', JSON.parse(JSON.stringify(userData[0].data))),
         { ...myVal.driItemsWIthNoteDefault, user: userId, dri: defaultDriId }, // データがない場合の初期値
@@ -305,8 +271,8 @@ export const useProjectData = defineStore('prjData', {
       console.log('...fetching project data')
       await this.fireInitialize<myVal.ProjectInfo>(
         'projectInfo', // collection名
-        'user', // 参照用フィールド
-        userId, // 参照値
+        'projectIndo', // 参照用フィールド
+        this.currentDataSet.projectInfo, // 参照値
         // (houseData) => this.setHouses(houseData), //piniaに値をセットする関数
         (project) => this.updateStateValue('projectInfo', JSON.parse(JSON.stringify(project))), //piniaに値をセットする関数
         {
