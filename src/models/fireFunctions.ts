@@ -113,6 +113,9 @@ export class fireFunc {
   private static isCurrentDataSet = this.createIsOfTypeT<myVal.CurrentDataSet>(
     myVal.CurrentDataSetZod
   )
+  private static isPiniaStatePartial = this.createIsOfTypeT<myVal.PiniaState_partial>(
+    myVal.PiniaState_partialZod
+  )
 
   // Then use these type guards within your converter instantiation
   private static fctItemConverter = this.converter<myVal.FctItemsWithNote>(this.isFctItem)
@@ -124,6 +127,9 @@ export class fireFunc {
   private static currentDataSetConverter = this.converter<myVal.CurrentDataSet>(
     this.isCurrentDataSet
   )
+  private static piniaStatePartialConverter = this.converter<myVal.PiniaState_partial>(
+    this.isPiniaStatePartial
+  )
 
   private static converters: ConverterMap = {
     fct: this.fctItemConverter,
@@ -132,7 +138,8 @@ export class fireFunc {
     projectInfo: this.ProjectInfoConverter,
     house: this.houseConverter,
     menu: this.menuConverter,
-    currentDataSet: this.currentDataSetConverter
+    currentDataSet: this.currentDataSetConverter,
+    piniaStatePartial: this.piniaStatePartialConverter
     // More converters can be added here
   }
 

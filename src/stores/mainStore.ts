@@ -6,7 +6,6 @@ import * as myVal from '@/models/myTypes'
 import { fireFunc } from '@/models/fireFunctions'
 import FakerFunc from '@/models/fakerFunc'
 import { Dialog, Notify } from 'quasar'
-import { collection } from 'firebase/firestore'
 
 export const useAuthState = defineStore('auth', {
   state: () => ({
@@ -20,31 +19,31 @@ export const useAuthState = defineStore('auth', {
   }
 })
 
-interface PiniaState {
-  // 現在利用しているユーザーの情報
-  appUser: myVal.AppUser
-  // ユーザーが取り組んでいるプロジェクトの情報
-  projectInfo: myVal.ProjectInfo | myVal.ProjectInfoBlank
-  fct: myVal.FctItems | null
-  dri: myVal.DriItems | null
-  // プロジェクトで対象とする家庭の情報
-  house: myVal.Houses | myVal.HousesBlank
-  // 各家庭での食事調査結果
-  menu: myVal.Menu | myVal.MenuItemsBlank | null
-  // デフォルトで使うデータベース名
-  currentDataSet: myVal.CurrentDataSet | myVal.CurrentDataSetBlank
-  // loading時のsplash画面表示
-  loading: boolean
-  copyDataFromOrigin: { fct: string; dri: string }
-  isUpdate: boolean
-  modifiedStates: string[]
-}
+// interface PiniaState {
+//   // 現在利用しているユーザーの情報
+//   appUser: myVal.AppUser
+//   // ユーザーが取り組んでいるプロジェクトの情報
+//   projectInfo: myVal.ProjectInfo | myVal.ProjectInfoBlank
+//   fct: myVal.FctItems | null
+//   dri: myVal.DriItems | null
+//   // プロジェクトで対象とする家庭の情報
+//   house: myVal.Houses | myVal.HousesBlank
+//   // 各家庭での食事調査結果
+//   menu: myVal.Menu | myVal.MenuItemsBlank | null
+//   // デフォルトで使うデータベース名
+//   currentDataSet: myVal.CurrentDataSet | myVal.CurrentDataSetBlank
+//   // loading時のsplash画面表示
+//   loading: boolean
+//   copyDataFromOrigin: { fct: string; dri: string }
+//   isUpdate: boolean
+//   modifiedStates: string[]
+// }
 
 // Define a type for the acceptable types of state values
 type StateValue = string | number | boolean | object | null // Add more as needed
 
 export const useProjectData = defineStore('prjData', {
-  state: (): PiniaState => ({
+  state: (): myVal.PiniaState => ({
     // 現在利用しているユーザーの情報
     appUser: myVal.appUserDefault,
     // ユーザーが取り組んでいるプロジェクトの情報
@@ -166,7 +165,7 @@ export const useProjectData = defineStore('prjData', {
   actions: {
     // Function to update state value and record the change
     // NOTE updateStateValue: storeに値をセット（fireUpdateStateValueを組み合わせて使う）
-    updateStateValue<K extends keyof PiniaState>(fieldName: K, value: PiniaState[K]) {
+    updateStateValue<K extends keyof myVal.PiniaState>(fieldName: K, value: myVal.PiniaState[K]) {
       // Since this refers to the store instance, we cast it to StateKeys & this
       // const currentStateValue = (this as StateKeys & typeof this)[fieldName]
       if (this[fieldName] !== value) {
@@ -179,16 +178,26 @@ export const useProjectData = defineStore('prjData', {
       }
     },
 
-    // NOTE fireUpdateStateValue: fireStoreに値をセット
-    async fireUpdateStateValue<T>(collectionName: string, docId: string) {
+    // NOTE fireUpdateStateValue: fireStoreに値をセットしてmodifiedStatesをクリア
+    async fireUpdateStateValue(collectionName: string, docId: string) {
       // Ensure updates object respects the state structure
-      const updates: Partial<Record<keyof PiniaState, StateValue>> = {}
+      const updates: Partial<Record<keyof myVal.PiniaState, StateValue>> = {}
 
       for (const fieldName of this.modifiedStates) {
-        updates[fieldName as keyof PiniaState] = this[fieldName as keyof PiniaState]
+        updates[fieldName as keyof myVal.PiniaState] = this[fieldName as keyof myVal.PiniaState]
       }
 
-      await fireFunc.fireSetMergeTyped<T>(collectionName, docId, updates as T)
+      console.log('updates...')
+      console.log(updates)
+
+      // Your Firestore document reference, now with a converter applied
+      // const documentRef = doc(/* firestore instance */, /* path */).withConverter(yourStoreConverter);
+      // await updateDoc(documentRef, updates);
+      await fireFunc.fireSetMergeTyped<myVal.PiniaState_partial>(
+        collectionName,
+        docId,
+        updates as myVal.PiniaState_partial
+      )
 
       this.modifiedStates = []
     },
@@ -209,6 +218,39 @@ export const useProjectData = defineStore('prjData', {
       } catch (error) {
         console.log(error)
       }
+    },
+
+    // NOTE fireGetUserData: userが変わるたびに初期化
+    async fireGetUserData(userId: string) {
+      try {
+        const res = await fireFunc.fireGetTyped<myVal.PiniaState>('user', userId)
+        if (res) {
+          this.appUser = res.appUser
+          this.projectInfo = res.projectInfo
+          this.fct = res.fct
+          this.dri = res.dri
+          this.house = res.house
+          this.menu = res.menu
+          this.currentDataSet = res.currentDataSet
+          this.loading = res.loading
+          this.copyDataFromOrigin = res.copyDataFromOrigin
+          this.isUpdate = res.isUpdate
+          this.modifiedStates = res.modifiedStates
+        } else {
+          this.appUser = { ...myVal.appUserDefault, user: userId }
+          this.projectInfo = { ...myVal.projectInfoDefault, user: userId }
+          this.fct = null
+          this.dri = null
+          this.house = myVal.housesDefault
+          this.menu = myVal.menuesDefault
+          this.currentDataSet = myVal.currentDataSetDefault
+          this.loading = false
+          this.modifiedStates = []
+        }
+      } catch (error) {
+        throw new Error('error')
+      }
+      return true
     },
 
     // NOTE fireGetAllData: ログイン状態が変わるたびに初期化

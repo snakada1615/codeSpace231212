@@ -452,23 +452,23 @@ export const nutrientLabels: nutrientLabel[] = [
   { value: 'Fat', label: 'Fat' }
 ]
 
-export const MenuItemZod = FctRowItemZod.extend({
-  user: z.string(),
-  projectInfo: z.string(),
-  KeyFamily: z.string(),
-  menuItemId: z.string(),
-  Date: z.number()
-})
+// export const MenuItemZod = FctRowItemZod.extend({
+//   user: z.string(),
+//   projectInfo: z.string(),
+//   KeyFamily: z.string(),
+//   menuItemId: z.string(),
+//   Date: z.number()
+// })
 
-export const MenuItemZod_v = FctRowItemZod.extend({
-  user: z.string(),
-  projectInfo: z.string(),
-  KeyFamily: z.string().min(3).max(200),
-  menuItemId: z.string(),
-  Date: z.number()
-})
+// export const MenuItemZod_v = FctRowItemZod.extend({
+//   user: z.string(),
+//   projectInfo: z.string(),
+//   KeyFamily: z.string().min(3).max(200),
+//   menuItemId: z.string(),
+//   Date: z.number()
+// })
 
-export const MenuItemsZod = z.array(MenuItemZod)
+export const MenuItemsZod = z.array(FctRowItemZod)
 
 export const MenuZod = z.object({
   data: MenuItemsZod,
@@ -476,48 +476,66 @@ export const MenuZod = z.object({
   user: z.string(),
   projectInfo: z.string(),
   house: z.string(),
-  menu: z.string()
+  menu: z.string(),
+  date: z.number()
+})
+
+export const MenuesZod = z.array(MenuZod)
+
+export const MenuZod_v = z.object({
+  data: MenuItemsZod,
+  note: z.string(),
+  user: z.string(),
+  projectInfo: z.string(),
+  house: z.string(),
+  menu: z.string(),
+  date: z.number()
 })
 
 // export const MenuesZod = z.array(MenuItemsZod)
 
-export type MenuItem = z.infer<typeof MenuItemZod>
+export type MenuItem = z.infer<typeof FctRowItemZod>
 
 export type MenuItems = z.infer<typeof MenuItemsZod>
 
 export type Menu = z.infer<typeof MenuZod>
 
-export type MenuItemsBlank = (typeof menuItemDefault)[]
+// export type MenuItemsBlank = (typeof menuItemDefault)[]
 
-export type MenuBlank = typeof menuDefault
+// export type MenuBlank = typeof menuDefault
 
 // export type Menues = z.infer<typeof MenuesZod>
 
-export const menuItemDefault = {
-  ...fctRowItemDefault,
-  menuItemId: '',
-  KeyFamily: '',
-  projectInfo: '',
-  user: '',
-  Date: Date.now()
-}
+// export const menuItemDefault = {
+//   ...fctRowItemDefault,
+//   menuItemId: '',
+//   KeyFamily: '',
+//   projectInfo: '',
+//   user: '',
+//   Date: Date.now()
+// }
 
 export const menuDefault = {
-  data: [
-    {
-      ...fctRowItemDefault,
-      menuItemId: '',
-      KeyFamily: '',
-      projectInfo: '',
-      user: '',
-      Date: Date.now()
-    }
-  ],
+  data: [fctRowItemDefault],
+  user: '',
   note: '',
   projectInfo: '',
   house: '',
-  menu: ''
+  menu: '',
+  date: 0
 }
+
+export const menuesDefault = [
+  {
+    data: [fctRowItemDefault],
+    user: '',
+    note: '',
+    projectInfo: '',
+    house: '',
+    menu: '',
+    date: 0
+  }
+]
 
 // export interface Menu {
 //   projectInfo: string
@@ -547,3 +565,52 @@ export type collectionNameType =
   | 'menu'
 
 export type fireDocNames = 'fct' | 'dri' | 'currentDataSet' | 'user'
+
+export const PiniaStateZod = z.object({
+  // 現在利用しているユーザーの情報
+  appUser: AppUserZod,
+  // ユーザーが取り組んでいるプロジェクトの情報
+  projectInfo: ProjectInfoZod,
+  fct: FctItemsWithNoteZod.nullable(),
+  dri: DriItemsWithNoteZod.nullable(),
+  // プロジェクトで対象とする家庭の情報
+  house: HousesZod.nullable(),
+  // 各家庭での食事調査結果
+  menu: MenuesZod.nullable(),
+  // デフォルトで使うデータベース名
+  currentDataSet: CurrentDataSetZod,
+  // loading時のsplash画面表示
+  loading: z.boolean(),
+  copyDataFromOrigin: z.object({ fct: z.string(), dri: z.string() }),
+  isUpdate: z.boolean(),
+  modifiedStates: z.string().array()
+})
+
+export const PiniaState_partialZod = PiniaStateZod.partial()
+
+export type PiniaState = z.infer<typeof PiniaStateZod>
+
+export type PiniaState_partial = z.infer<typeof PiniaState_partialZod>
+
+export const PiniaStateDefault = {
+  // 現在利用しているユーザーの情報
+  appUser: appUserDefault,
+  // ユーザーが取り組んでいるプロジェクトの情報
+  projectInfo: projectInfoDefault,
+  fct: null,
+  dri: null,
+  // プロジェクトで対象とする家庭の情報
+  house: null,
+  // 各家庭での食事調査結果
+  menu: null,
+  // デフォルトで使うデータベース名
+  currentDataSet: currentDataSetDefault,
+  // loading時のsplash画面表示
+  loading: false,
+  copyDataFromOrigin: {
+    fct: '08e5ee1f-8321-4cc3-8b9f-00619a262931',
+    dri: '5139dec2-f340-46bd-aed4-57670991bab7'
+  },
+  isUpdate: false,
+  modifiedStates: []
+}
