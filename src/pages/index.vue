@@ -19,8 +19,6 @@
 import { useProjectData } from '../stores/mainStore'
 import { JsonTreeView } from 'json-tree-view-vue3'
 import 'json-tree-view-vue3/dist/style.css'
-import { fireFunc } from '@/models/fireFunctions'
-import * as myVal from '@/models/myTypes'
 const projectData = useProjectData()
 function onClick() {
   projectData.fireResetData(projectData.appUser.user)

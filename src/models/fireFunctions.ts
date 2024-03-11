@@ -144,12 +144,15 @@ export class fireFunc {
     // More converters can be added here
   }
 
-  private static getTypeConverter<T>(collectionId: string): FirestoreDataConverter<T> {
-    const converter = this.converters[collectionId] as FirestoreDataConverter<T>
+  // Adjust the getTypeConverter method signature to take a key of ConverterTypeMap rather than a generic type
+  private static getTypeConverter<K extends keyof myVal.ConverterTypeMap>(
+    collectionId: K
+  ): FirestoreDataConverter<myVal.ConverterTypeMap[K]> {
+    const converter = this.converters[collectionId]
     if (!converter) {
-      throw new Error(`Converter for type "${collectionId}" is not found.`)
+      throw new Error(`Converter for collection "${collectionId}" is not found.`)
     }
-    return converter
+    return converter as FirestoreDataConverter<myVal.ConverterTypeMap[K]>
   }
 
   // ここまでwithConverter更新版 --------------------------------------------
@@ -310,8 +313,11 @@ export class fireFunc {
     }
   }
 
-  static async fireGetTyped<T>(collectionId: string, docId: string): Promise<T | null> {
-    const converter = this.getTypeConverter<T>(collectionId)
+  static async fireGetTyped<K extends keyof myVal.ConverterTypeMap>(
+    collectionId: K,
+    docId: string
+  ): Promise<myVal.ConverterTypeMap[K] | null> {
+    const converter = this.getTypeConverter(collectionId)
     const docRef = doc(db, collectionId, docId).withConverter(converter)
     console.warn(`docId = ${docId}`)
 
@@ -320,7 +326,7 @@ export class fireFunc {
       const snapshot = await getDoc(docRef)
       splash(false)
       if (snapshot.exists()) {
-        return snapshot.data() as T
+        return snapshot.data() as myVal.ConverterTypeMap[K]
       } else {
         return null
       }
@@ -331,25 +337,25 @@ export class fireFunc {
     }
   }
 
-  static async fireGetQueryTyped<T>(
-    collectionId: string,
+  static async fireGetQueryTyped<K extends keyof myVal.ConverterTypeMap>(
+    collectionId: K,
     key: string,
     val: string,
     message?: string
-  ): Promise<T[] | null> {
-    const converter = this.getTypeConverter<T>(collectionId)
+  ): Promise<myVal.ConverterTypeMap[K][] | null> {
+    const converter = this.getTypeConverter(collectionId)
     const colRef: CollectionReference = collection(db, collectionId)
     const q = query(colRef, where(key, '==', val)).withConverter(converter)
     try {
       splash(true, message || 'downloading data ' + collectionId + '...')
       const snapshot = await getDocs(q)
       splash(false)
-      const res: Array<T> = []
+      const res: Array<myVal.ConverterTypeMap[K]> = []
       if (snapshot.empty) {
         return null
       }
       snapshot.forEach((doc) => {
-        const docData = doc.data() as T
+        const docData = doc.data() as myVal.ConverterTypeMap[K]
         res.push(docData)
       })
       return res
@@ -360,9 +366,13 @@ export class fireFunc {
     }
   }
 
-  static async fireSetTyped<T>(collectionId: string, docId: string, val: T) {
-    const converter = this.getTypeConverter<T>(collectionId)
-    const docRef: DocumentReference<T> = doc(db, collectionId, docId).withConverter(converter)
+  static async fireSetTyped<K extends keyof myVal.ConverterTypeMap>(
+    collectionId: K,
+    docId: string,
+    val: myVal.ConverterTypeMap[K]
+  ) {
+    const converter = this.getTypeConverter(collectionId)
+    const docRef: DocumentReference = doc(db, collectionId, docId).withConverter(converter)
     try {
       splash(true)
       await setDoc(docRef, val)
@@ -375,21 +385,15 @@ export class fireFunc {
     }
   }
 
-  static async fireUpdateTyped<T>(
-    collectionId: string,
+  static async fireSetMergeTyped<K extends keyof myVal.ConverterTypeMap>(
+    collectionId: K,
     docId: string,
-    val: T,
-    convereterId: string
+    val: myVal.ConverterTypeMap[K],
+    message?: string
   ) {
-    const converter = this.getTypeConverter<T>(convereterId)
-    const documentRef = doc(db, collectionId, docId).withConverter(converter)
-    await updateDoc(documentRef, val as T)
-  }
-
-  static async fireSetMergeTyped<T>(collectionId: string, docId: string, val: T, message?: string) {
     splash(true, message || `uploading ${collectionId} data to fireStore...`)
-    const converter = this.getTypeConverter<T>(collectionId)
-    const docRef: DocumentReference<T> = doc(db, collectionId, docId).withConverter(converter)
+    const converter = this.getTypeConverter(collectionId)
+    const docRef: DocumentReference = doc(db, collectionId, docId).withConverter(converter)
     try {
       await setDoc(docRef, val, { merge: true })
       console.log('done')
@@ -400,16 +404,31 @@ export class fireFunc {
     }
   }
 
-  static async fireSetQueryMergeTyped<T>(
+  static async fireUpdateTyped<K extends keyof myVal.ConverterTypeMap>(
     collectionId: string,
+    docId: string,
+    val: myVal.ConverterTypeMap[K],
+    convereterId: K
+  ) {
+    const converter = this.getTypeConverter(convereterId)
+    const documentRef = doc(db, collectionId, docId).withConverter(converter)
+    try {
+      await updateDoc(documentRef, val)
+    } catch (error) {
+      console.log(error)
+    }
+  }
+
+  static async fireSetQueryMergeTyped<K extends keyof myVal.ConverterTypeMap>(
+    collectionId: K,
     key: string,
     keyVal: string,
-    val: T,
+    val: myVal.ConverterTypeMap[K],
     message?: string,
     newId?: string
   ) {
     splash(true, message || `uploading ${collectionId} data to fireStore...`)
-    const converter = this.getTypeConverter<T>(collectionId)
+    const converter = this.getTypeConverter(collectionId)
     const colRef: CollectionReference = collection(db, collectionId)
     const q = query(colRef, where(key, '==', keyVal)).withConverter(converter)
     try {
@@ -422,7 +441,7 @@ export class fireFunc {
         console.log('done')
       } else {
         if (newId) {
-          const docRef: DocumentReference<T> = doc(db, collectionId, newId).withConverter(converter)
+          const docRef: DocumentReference = doc(db, collectionId, newId).withConverter(converter)
           await setDoc(docRef, val)
         } else {
           throw new Error('missing parameter in fireSetQUeryMergeTyped<T>. newId is missing')

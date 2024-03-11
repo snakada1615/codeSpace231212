@@ -4,7 +4,6 @@
 import { defineStore } from 'pinia'
 import * as myVal from '@/models/myTypes'
 import { fireFunc } from '@/models/fireFunctions'
-import FakerFunc from '@/models/fakerFunc'
 import { Dialog, Notify } from 'quasar'
 
 export const useAuthState = defineStore('auth', {
@@ -137,7 +136,7 @@ export const useProjectData = defineStore('prjData', {
       }
     },
 
-    // NOTE fireUpdateStateValue: fireStoreに値をセットしてmodifiedStatesをクリア
+    // TODO fireUpdateStateValue: fireStoreに値をセットしてmodifiedStatesをクリア
     async fireUpdateStateValue(collectionName: string, docId: string) {
       // Ensure updates object respects the state structure
       const updates: Partial<Record<keyof myVal.PiniaState, StateValue>> = {}
@@ -151,8 +150,8 @@ export const useProjectData = defineStore('prjData', {
       console.log(updates)
 
       // Your Firestore document reference, now with a converter applied
-      const documentRef = doc(collectionName, docId).withConverter(yourStoreConverter)
-      await updateDoc(documentRef, updates)
+      // const documentRef = doc(collectionName, docId).withConverter(yourStoreConverter)
+      // await updateDoc(documentRef, updates)
       // await fireFunc.fireSetMergeTyped<myVal.PiniaState_partial>(
       //   collectionName,
       //   docId,
@@ -174,7 +173,7 @@ export const useProjectData = defineStore('prjData', {
         await fireFunc.fireDeleteQueryDoc('user', 'user', userId)
         console.log('all data cleared')
         console.log('initialize all data for ' + userId)
-        this.fireGetAllData(userId)
+        this.fireGetUserData(userId)
       } catch (error) {
         console.log(error)
       }
@@ -183,7 +182,7 @@ export const useProjectData = defineStore('prjData', {
     // NOTE fireGetUserData: userが変わるたびに初期化
     async fireGetUserData(userId: string) {
       try {
-        const res = await fireFunc.fireGetTyped<myVal.PiniaState>('user', userId)
+        const res = await fireFunc.fireGetTyped('user', userId)
         if (res) {
           console.log('fireGetUserData: fetch success')
           this.appUser = res.appUser
@@ -201,16 +200,10 @@ export const useProjectData = defineStore('prjData', {
           console.log('fireGetUserData: fetch fail')
 
           // オリジナルのFCTをコピーして複製
-          const newFct = await fireFunc.fireGetTyped<myVal.FctItemsWithNote>(
-            'fct',
-            this.copyDataFromOrigin['fct']
-          )
+          const newFct = await fireFunc.fireGetTyped('fct', this.copyDataFromOrigin['fct'])
 
           // オリジナルのDRIをコピーして複製
-          const newDri = await fireFunc.fireGetTyped<myVal.DriItemsWithNote>(
-            'dri',
-            this.copyDataFromOrigin['dri']
-          )
+          const newDri = await fireFunc.fireGetTyped('dri', this.copyDataFromOrigin['dri'])
 
           // オリジナルが見つからなければエラーを出して終了
           if (!newFct || !newDri) {
@@ -246,455 +239,6 @@ export const useProjectData = defineStore('prjData', {
         throw new Error('error')
       }
       return true
-    },
-
-    // NOTE fireGetAllData: ログイン状態が変わるたびに初期化
-    async fireGetAllData(userId: string) {
-      console.error('ここから入る')
-      this.updateStateValue('appUser', { ...this.appUser, user: userId })
-      const defaultFamilyId: string = FakerFunc.uuid()
-      const defaultFctId = FakerFunc.uuid()
-      const defaultDriId = FakerFunc.uuid()
-      const defaultMenuId = FakerFunc.uuid()
-      const defaultProjectId = FakerFunc.uuid()
-      const defaultCurrentDataSetrId = FakerFunc.uuid()
-
-      // AppUser:
-      console.log('...fetching appUser')
-      await this.fireInitialize<myVal.AppUser>(
-        'user', // collection名
-        'user', // 参照用フィールド
-        userId, // 参照値
-        // (userData) => this.setAppUser(userData[0]), //piniaに値をセットする関数
-        (userData) => this.updateStateValue('appUser', userData[0]), //piniaに値をセットする関数
-        {
-          ...myVal.appUserDefault,
-          user: userId
-        }, // データがない場合の初期値
-        userId, // userid
-        this.currentDataSet, // 現状記録
-        userId // データがfireStoreに存在しない場合、このIDで新規作成
-      )
-
-      // currentDataSet
-      console.log('...fetching currentDataSet')
-      await this.fireInitialize<myVal.CurrentDataSet>(
-        'currentDataSet', // collection名
-        'user', // 参照用フィールド
-        userId, // 参照値
-        // (userData) => this.setCurrentDataset(userData[0]), //piniaに値をセットする関数
-        (userData) =>
-          this.updateStateValue('currentDataSet', JSON.parse(JSON.stringify(userData[0]))), //piniaに値をセットする関数
-        {
-          ...this.currentDataSet,
-          user: userId,
-          currentDataSet: defaultCurrentDataSetrId
-        }, // データがない場合の初期値
-        userId,
-        this.currentDataSet,
-        defaultCurrentDataSetrId // データがfireStoreに存在しない場合、このIDで新規作成
-      )
-
-      // fct:
-      console.log('...fetching fct')
-      await this.fireInitialize<myVal.FctItemsWithNote>(
-        'fct', // collection名
-        'fct', // 参照用フィールド
-        this.currentDataSet.fct, // 参照値
-        // (userData) => this.setFct(userData[0].data), //piniaに値をセットする関数
-        (userData) => this.updateStateValue('fct', JSON.parse(JSON.stringify(userData[0].data))), //piniaに値をセットする関数
-        { ...myVal.fctItemsWIthNoteDefault, user: userId, fct: defaultFctId }, // データがない場合の初期値
-        userId,
-        this.currentDataSet,
-        defaultFctId // データがfireStoreに存在しない場合、このIDで新規作成
-      )
-
-      //  dri:
-      console.log('...fetching dri')
-      await this.fireInitialize<myVal.DriItemsWithNote>(
-        'dri', // collection名
-        'dri', // 参照用フィールド
-        this.currentDataSet.dri, // 参照値
-        // (userData) => this.setDri(userData[0].data), //piniaに値をセットする関数
-        (userData) => this.updateStateValue('dri', JSON.parse(JSON.stringify(userData[0].data))),
-        { ...myVal.driItemsWIthNoteDefault, user: userId, dri: defaultDriId }, // データがない場合の初期値
-        userId,
-        this.currentDataSet,
-        defaultDriId // データがfireStoreに存在しない場合、このIDで新規作成
-      )
-
-      // Project
-      console.log('...fetching project data')
-      await this.fireInitialize<myVal.ProjectInfo>(
-        'projectInfo', // collection名
-        'projectIndo', // 参照用フィールド
-        this.currentDataSet.projectInfo, // 参照値
-        // (houseData) => this.setHouses(houseData), //piniaに値をセットする関数
-        (project) => this.updateStateValue('projectInfo', JSON.parse(JSON.stringify(project))), //piniaに値をセットする関数
-        {
-          ...myVal.projectInfoDefault,
-          user: userId,
-          projectInfo: defaultProjectId
-        }, // データがない場合の初期値
-        userId, // userid
-        this.currentDataSet, // 現状記録
-        defaultProjectId // データがfireStoreに存在しない場合、このIDで新規作成
-      )
-
-      // House:
-      console.log('...fetching house data')
-      await this.fireInitialize<myVal.House>(
-        'house', // collection名
-        'user', // 参照用フィールド
-        userId, // 参照値
-        // (houseData) => this.setHouses(houseData), //piniaに値をセットする関数
-        (houseData) => this.updateStateValue('house', JSON.parse(JSON.stringify(houseData))), //piniaに値をセットする関数
-        {
-          ...myVal.houseDefault,
-          user: userId,
-          projectInfo: defaultProjectId,
-          house: defaultFamilyId
-        }, // データがない場合の初期値
-        userId, // userid
-        this.currentDataSet, // 現状記録
-        defaultFamilyId // データがfireStoreに存在しない場合、このIDで新規作成
-      )
-
-      //  Menu:
-      console.log('...fetching menu data')
-      await this.fireInitialize<myVal.Menu>(
-        'menu', // collection名
-        'user', // 参照用フィールド
-        userId, // 参照値
-        // (menu) => this.setMenu(menu[0].data), //piniaに値をセットする関数
-        (menu) => this.updateStateValue('menu', JSON.parse(JSON.stringify(menu))), //piniaに値をセットする関数
-        {
-          ...myVal.menuDefault,
-          user: userId,
-          projectInfo: defaultProjectId,
-          house: defaultFamilyId,
-          menu: defaultMenuId
-        }, // データがない場合の初期値
-        userId, // userid
-        this.currentDataSet, // 現状記録
-        defaultMenuId // データがfireStoreに存在しない場合、このIDで新規作成
-      )
-    },
-
-    // NOTE fireInitialize: userデータの一括初期化関数 ---------------------------------------------------------------------------
-    async fireInitialize<T>(
-      collectionName: myVal.collectionNameType,
-      fieldName: string,
-      fieldValue: string,
-      setFunction: (data: T[]) => void,
-      defaultData: T,
-      userId: string,
-      myCurrentDataSet: myVal.CurrentDataSet,
-      newId?: string
-    ) {
-      // fireStoreからデータをfetchしてPiniaに保存
-      const resultFetch = await this.fireGetData<T>(
-        collectionName,
-        fieldName,
-        fieldValue,
-        setFunction
-      )
-
-      // うまくfetchできたらこれで終了
-      if (resultFetch.result) {
-        console.log(`data successfully downloaded from ${collectionName}`)
-        Notify.create({
-          position: 'top-right',
-          message: `data successfully downloaded from ${collectionName}`,
-          timeout: 3000
-        })
-        return true
-      }
-
-      console.log(`failed fetching data..., set initial value for ${collectionName}`)
-      switch (collectionName) {
-        case 'fct':
-          if (newId) {
-            return await this.fireSetDefaultFromFireStore<T>(
-              'fct',
-              newId,
-              userId,
-              // this.setFct,
-              (userData) => this.updateStateValue('fct', JSON.parse(JSON.stringify(userData))),
-              myCurrentDataSet
-            )
-          } else {
-            throw new Error('missing parameter, newId in fireGetData')
-          }
-          break
-
-        case 'dri':
-          if (newId) {
-            return await this.fireSetDefaultFromFireStore<T>(
-              'dri',
-              newId,
-              userId,
-              // this.setDri,
-              (userData) => this.updateStateValue('dri', JSON.parse(JSON.stringify(userData))),
-              myCurrentDataSet
-            )
-          } else {
-            throw new Error('missing parameter, newId in fireGetData')
-          }
-          break
-
-        case 'currentDataSet':
-          if (newId) {
-            await this.fireSetDefault<T>(
-              collectionName,
-              newId,
-              userId,
-              defaultData as T,
-              myCurrentDataSet,
-              // (val) => this.setCurrentDataset(val as myVal.CurrentDataSet)
-              (val) => this.updateStateValue('currentDataSet', JSON.parse(JSON.stringify(val))) //piniaに値をセットする関数
-            )
-          } else {
-            throw new Error('missing parameter, newId in fireGetData')
-          }
-          break
-
-        case 'user':
-          if (newId) {
-            await this.fireSetDefault<T>(
-              collectionName,
-              newId,
-              userId,
-              defaultData as T,
-              myCurrentDataSet,
-              // (val) => this.setAppUser(val as myVal.AppUser)
-              (val) => this.updateStateValue('appUser', val as myVal.AppUser) //piniaに値をセットする関数
-            )
-          } else {
-            throw new Error('missing parameter, newId in fireGetData')
-          }
-          break
-
-        case 'projectInfo':
-          if (newId) {
-            await this.fireSetDefault<T>(
-              collectionName as myVal.fireDocNames,
-              newId,
-              userId,
-              defaultData as T,
-              myCurrentDataSet,
-              // (val) => this.setCurrentDataset(val as myVal.CurrentDataSet)
-              (val) => this.updateStateValue('projectInfo', JSON.parse(JSON.stringify(val))) //piniaに値をセットする関数
-            )
-          } else {
-            throw new Error('missing parameter, newId in fireGetData')
-          }
-          break
-
-        case 'house':
-          if (newId) {
-            try {
-              await this.fireSetDefault<T>(
-                collectionName as myVal.fireDocNames,
-                newId,
-                userId,
-                defaultData as T,
-                myCurrentDataSet,
-                // (val) => this.setCurrentDataset(val as myVal.CurrentDataSet)
-                (val) => this.updateStateValue('house', JSON.parse(JSON.stringify(val))) //piniaに値をセットする関数
-              )
-            } catch (error) {
-              console.error(error)
-            }
-          } else {
-            console.log(defaultData)
-            console.log(myVal.HouseZod.safeParse(defaultData).success)
-            throw new Error('missing parameter, newId in fireGetData')
-          }
-          break
-
-        case 'menu':
-          if (newId) {
-            await this.fireSetDefault<T>(
-              collectionName as myVal.fireDocNames,
-              newId,
-              userId,
-              defaultData as T,
-              myCurrentDataSet,
-              // (val) => this.setCurrentDataset(val as myVal.CurrentDataSet)
-              (val) => this.updateStateValue('menu', JSON.parse(JSON.stringify(val))) //piniaに値をセットする関数
-            )
-          } else {
-            throw new Error('missing parameter, newId in fireGetData')
-          }
-          break
-      }
-    },
-
-    // NOTE fireGetData: userデータをfireStoreから入手してpiniaに保存 ---------------------------------------------------------------------------
-    async fireGetData<T>(
-      collectionName: myVal.collectionNameType,
-      fieldName: string,
-      fieldValue: string,
-      setFunction: (data: T[]) => void
-    ) {
-      const res = await fireFunc.fireGetQueryTyped<T>(collectionName, fieldName, fieldValue)
-
-      if (res && res.length > 0) {
-        // fireStoreにデータが保存されている場合
-        setFunction(res)
-        console.log(collectionName + ' fetch success!')
-        return { result: true, info: collectionName }
-      } else {
-        return { result: false, info: 'fireGetData: no data available' }
-      }
-    },
-
-    // NOTE fireSetDefault: userデータがfireStoreに存在しなかった場合の初期化関数 ---------------------------------------------------------------------------
-    async fireSetDefault<T>(
-      collectionName: myVal.collectionNameType, // 保存先のcollection
-      newId: string, // 初期化データ保存用のID
-      userId: string, // 利用中のユーザーID
-      defaultData: T, // 初期化用のデータ
-      myCurrentDataSet: myVal.CurrentDataSet, // currentDataSetの値（これを更新して保存する）
-      setFunction: (data: T) => void // piniaを更新するための関数指定
-    ) {
-      // fireStoreに保存
-      const res = await fireFunc.fireSetTyped<T>(collectionName, newId, defaultData)
-      if (!res.flag) {
-        console.error(res.value)
-      }
-
-      // piniaに保存
-      setFunction(defaultData)
-
-      // currentDataSetを更新
-      const resCurr = {
-        ...myCurrentDataSet,
-        user: userId,
-        [collectionName]: newId
-      } as myVal.CurrentDataSet
-
-      // this.setCurrentDataset(resCurr as myVal.CurrentDataSet) // currentDataSetの更新
-      this.updateStateValue('currentDataSet', JSON.parse(JSON.stringify(resCurr))) // currentDataSetの更新
-      await fireFunc.fireSetMergeTyped<myVal.CurrentDataSet>(
-        // fireStoreに保存--currentDataSet
-        'currentDataSet',
-        myCurrentDataSet.currentDataSet,
-        resCurr,
-        'copying data...'
-      )
-      // console.error(`resCurr: ${collectionName}`)
-      // console.error(resCurr)
-      Notify.create({
-        position: 'top-right',
-        message: `${collectionName} initialized with default value`,
-        timeout: 3000
-      })
-    },
-
-    // NOTE fireGetDefaultFromFireStore: userデータがfireStoreに存在しなかった場合の初期化関数 ---------------------------------------------------------------------------
-    async fireGetDefaultFromFireStore<T>(
-      originCollection: 'fct' | 'dri',
-      destCollection: string,
-      newId: string, // 初期化データ保存用のID
-      userId: string // 利用中のユーザーID
-    ) {
-      // まずはoriginal Fctをコピーして複製
-      const copiedData = await fireFunc.fireDuplicateDocument(
-        originCollection,
-        this.copyDataFromOrigin[originCollection],
-        destCollection,
-        newId,
-        `data not found. Downloading default data from fireStore...`
-      )
-      // console.log(copiedData)
-      if (copiedData) {
-        // コピーしたデータ（driItemWithNote）の一部を修正して、firesotre, piniaに保存、currentDataSetの修正
-        // まずはデータ準備
-        const resultData = {
-          data: copiedData.data.data,
-          user: userId,
-          [originCollection]: newId,
-          note: ''
-        }
-
-        Notify.create({
-          position: 'top-right',
-          message: `${originCollection} initialized with default value`,
-          timeout: 3000
-        })
-
-        return resultData
-      } else {
-        console.error(`no ${originCollection.toUpperCase()} data available in fireStore`)
-        return null
-      }
-    },
-
-    // NOTE fireSetDefaultFromFireStore: userデータがfireStoreに存在しなかった場合の初期化関数 ---------------------------------------------------------------------------
-    async fireSetDefaultFromFireStore<T>(
-      originCollection: 'fct' | 'dri',
-      newId: string, // 初期化データ保存用のID
-      userId: string, // 利用中のユーザーID
-      setData: (data: any) => void, // piniaを更新するための関数指定
-      myCurrentDataSet: myVal.CurrentDataSet // currentDataSetの値（これを更新して保存する）
-    ) {
-      // まずはoriginal Fctをコピーして複製
-      const copiedData = await fireFunc.fireDuplicateDocument(
-        originCollection,
-        this.copyDataFromOrigin[originCollection],
-        originCollection,
-        newId,
-        `data not found. Downloading default data from fireStore...`
-      )
-      // console.log(copiedData)
-      if (copiedData) {
-        // コピーしたデータ（driItemWithNote）の一部を修正して、firesotre, piniaに保存、currentDataSetの修正
-        // まずはデータ準備
-        const resultData = {
-          data: copiedData.data.data,
-          user: userId,
-          [originCollection]: newId,
-          note: ''
-        }
-        const resCurr = {
-          ...myCurrentDataSet,
-          user: userId,
-          [originCollection]: newId
-        }
-
-        // console.error(`resCurr:  ${originCollection}`)
-        // console.error(resCurr)
-        // console.error(resultData)
-        // fireStoreに保存
-        await fireFunc.fireSetTyped<T>(originCollection, newId, resultData as T)
-
-        // piniaに保存
-        setData(copiedData.data.data) // piniaに保存(修正してなくて良い)
-
-        // currentDataSetに保存
-        // this.setCurrentDataset(resCurr as myVal.CurrentDataSet) // currentDataSetの更新
-        this.updateStateValue('currentDataSet', JSON.parse(JSON.stringify(resCurr))) // currentDataSetの更新
-        await fireFunc.fireSetMergeTyped<myVal.CurrentDataSet>(
-          // fireStoreに保存--currentDataSet
-          'currentDataSet',
-          myCurrentDataSet.currentDataSet,
-          resCurr as myVal.CurrentDataSet,
-          'copying data...'
-        )
-
-        Notify.create({
-          position: 'top-right',
-          message: `${originCollection} initialized with default value`,
-          timeout: 3000
-        })
-
-        return true
-      } else {
-        console.error(`no ${originCollection.toUpperCase()} data available in fireStore`)
-        return false
-      }
     }
   }
 })
