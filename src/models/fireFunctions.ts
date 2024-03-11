@@ -15,6 +15,7 @@ import {
   getDoc,
   getDocs,
   deleteDoc,
+  updateDoc,
   query,
   where,
   QueryDocumentSnapshot,
@@ -312,6 +313,7 @@ export class fireFunc {
   static async fireGetTyped<T>(collectionId: string, docId: string): Promise<T | null> {
     const converter = this.getTypeConverter<T>(collectionId)
     const docRef = doc(db, collectionId, docId).withConverter(converter)
+    console.warn(`docId = ${docId}`)
 
     try {
       splash(true)
@@ -371,6 +373,17 @@ export class fireFunc {
       return { flag: false, value: error }
       console.log(error)
     }
+  }
+
+  static async fireUpdateTyped<T>(
+    collectionId: string,
+    docId: string,
+    val: T,
+    convereterId: string
+  ) {
+    const converter = this.getTypeConverter<T>(convereterId)
+    const documentRef = doc(db, collectionId, docId).withConverter(converter)
+    await updateDoc(documentRef, val as T)
   }
 
   static async fireSetMergeTyped<T>(collectionId: string, docId: string, val: T, message?: string) {
