@@ -6,6 +6,7 @@ import * as myVal from '@/models/myTypes'
 import { fireFunc } from '@/models/fireFunctions'
 import FakerFunc from '@/models/fakerFunc'
 import { Dialog, Notify } from 'quasar'
+import { fakerFA } from '@faker-js/faker'
 
 export const useAuthState = defineStore('auth', {
   state: () => ({
@@ -18,26 +19,6 @@ export const useAuthState = defineStore('auth', {
     }
   }
 })
-
-// interface PiniaState {
-//   // 現在利用しているユーザーの情報
-//   appUser: myVal.AppUser
-//   // ユーザーが取り組んでいるプロジェクトの情報
-//   projectInfo: myVal.ProjectInfo | myVal.ProjectInfoBlank
-//   fct: myVal.FctItems | null
-//   dri: myVal.DriItems | null
-//   // プロジェクトで対象とする家庭の情報
-//   house: myVal.Houses | myVal.HousesBlank
-//   // 各家庭での食事調査結果
-//   menu: myVal.Menu | myVal.MenuItemsBlank | null
-//   // デフォルトで使うデータベース名
-//   currentDataSet: myVal.CurrentDataSet | myVal.CurrentDataSetBlank
-//   // loading時のsplash画面表示
-//   loading: boolean
-//   copyDataFromOrigin: { fct: string; dri: string }
-//   isUpdate: boolean
-//   modifiedStates: string[]
-// }
 
 // Define a type for the acceptable types of state values
 type StateValue = string | number | boolean | object | null // Add more as needed
@@ -225,6 +206,7 @@ export const useProjectData = defineStore('prjData', {
       try {
         const res = await fireFunc.fireGetTyped<myVal.PiniaState>('user', userId)
         if (res) {
+          console.log('fireGetUserData: fetch success')
           this.appUser = res.appUser
           this.projectInfo = res.projectInfo
           this.fct = res.fct
@@ -237,16 +219,42 @@ export const useProjectData = defineStore('prjData', {
           this.isUpdate = res.isUpdate
           this.modifiedStates = res.modifiedStates
         } else {
+          console.log('fireGetUserData: fetch fail')
+          const newFctId = FakerFunc.uuid()
+          const newDriId = FakerFunc.uuid()
+
+          // オリジナルのFCTをコピーして複製
+          const newFct = (await this.fireGetDefaultFromFireStore<myVal.FctItems>(
+            'fct',
+            'user',
+            newFctId,
+            userId
+          )) as myVal.FctItemsWithNote
+
+          // オリジナルのDRIをコピーして複製
+          const newDri = (await this.fireGetDefaultFromFireStore<myVal.FctItems>(
+            'dri',
+            'user',
+            newDriId,
+            userId
+          )) as myVal.DriItemsWithNote
+
+          // オリジナルが見つからなければエラーを出して終了
+          if (!newFct || !newDri) {
+            throw new Error('no original data for fct/dri')
+          }
+
           this.appUser = { ...myVal.appUserDefault, user: userId }
           this.projectInfo = { ...myVal.projectInfoDefault, user: userId }
-          this.fct = null
-          this.dri = null
+          this.fct = newFct
+          this.dri = newDri
           this.house = myVal.housesDefault
           this.menu = myVal.menuesDefault
           this.currentDataSet = myVal.currentDataSetDefault
           this.loading = false
           this.modifiedStates = []
         }
+        console.log(res)
       } catch (error) {
         throw new Error('error')
       }
@@ -255,6 +263,7 @@ export const useProjectData = defineStore('prjData', {
 
     // NOTE fireGetAllData: ログイン状態が変わるたびに初期化
     async fireGetAllData(userId: string) {
+      console.error('ここから入る')
       this.updateStateValue('appUser', { ...this.appUser, user: userId })
       const defaultFamilyId: string = FakerFunc.uuid()
       const defaultFctId = FakerFunc.uuid()
@@ -595,6 +604,45 @@ export const useProjectData = defineStore('prjData', {
         message: `${collectionName} initialized with default value`,
         timeout: 3000
       })
+    },
+
+    // NOTE fireGetDefaultFromFireStore: userデータがfireStoreに存在しなかった場合の初期化関数 ---------------------------------------------------------------------------
+    async fireGetDefaultFromFireStore<T>(
+      originCollection: 'fct' | 'dri',
+      destCollection: string,
+      newId: string, // 初期化データ保存用のID
+      userId: string // 利用中のユーザーID
+    ) {
+      // まずはoriginal Fctをコピーして複製
+      const copiedData = await fireFunc.fireDuplicateDocument(
+        originCollection,
+        this.copyDataFromOrigin[originCollection],
+        destCollection,
+        newId,
+        `data not found. Downloading default data from fireStore...`
+      )
+      // console.log(copiedData)
+      if (copiedData) {
+        // コピーしたデータ（driItemWithNote）の一部を修正して、firesotre, piniaに保存、currentDataSetの修正
+        // まずはデータ準備
+        const resultData = {
+          data: copiedData.data.data,
+          user: userId,
+          [originCollection]: newId,
+          note: ''
+        }
+
+        Notify.create({
+          position: 'top-right',
+          message: `${originCollection} initialized with default value`,
+          timeout: 3000
+        })
+
+        return resultData
+      } else {
+        console.error(`no ${originCollection.toUpperCase()} data available in fireStore`)
+        return null
+      }
     },
 
     // NOTE fireSetDefaultFromFireStore: userデータがfireStoreに存在しなかった場合の初期化関数 ---------------------------------------------------------------------------

@@ -37,7 +37,7 @@ auth.onAuthStateChanged(async (user: User | null) => {
     authState.setLoginState(true)
     // projectData.setUserId(user.uid) // keep uid in pinia
     projectData.updateStateValue('appUser', { ...projectData.appUser, user: user.uid }) // keep uid in pinia
-    await projectData.fireGetAllData(user.uid) // download user data
+    await projectData.fireGetUserData(user.uid) // download user data
   } else {
     //    isLoggedIn.value = false // if we do not
     authState.setLoginState(false)
