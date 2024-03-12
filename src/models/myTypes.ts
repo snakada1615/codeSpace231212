@@ -447,22 +447,6 @@ export const nutrientLabels: nutrientLabel[] = [
   { value: 'Fat', label: 'Fat' }
 ]
 
-// export const MenuItemZod = FctRowItemZod.extend({
-//   user: z.string(),
-//   projectInfo: z.string(),
-//   KeyFamily: z.string(),
-//   menuItemId: z.string(),
-//   Date: z.number()
-// })
-
-// export const MenuItemZod_v = FctRowItemZod.extend({
-//   user: z.string(),
-//   projectInfo: z.string(),
-//   KeyFamily: z.string().min(3).max(200),
-//   menuItemId: z.string(),
-//   Date: z.number()
-// })
-
 export const MenuItemsZod = z.array(FctRowItemZod)
 
 export const MenuZod = z.object({
@@ -495,21 +479,6 @@ export type MenuItems = z.infer<typeof MenuItemsZod>
 
 export type Menu = z.infer<typeof MenuZod>
 
-// export type MenuItemsBlank = (typeof menuItemDefault)[]
-
-// export type MenuBlank = typeof menuDefault
-
-// export type Menues = z.infer<typeof MenuesZod>
-
-// export const menuItemDefault = {
-//   ...fctRowItemDefault,
-//   menuItemId: '',
-//   KeyFamily: '',
-//   projectInfo: '',
-//   user: '',
-//   Date: Date.now()
-// }
-
 export const menuDefault = {
   data: [fctRowItemDefault],
   user: '',
@@ -532,12 +501,6 @@ export const menuesDefault = [
   }
 ]
 
-// export interface Menu {
-//   projectInfo: string
-//   userId: string
-//   items: Array<MenuItem>
-// }
-
 export const commonMenus: string[] = [
   '1st meal',
   '2nd meal',
@@ -550,20 +513,9 @@ export const commonMenus: string[] = [
 
 export type AllProjectData = AppUser | Houses | Menu
 
-export type collectionNameType =
-  | 'fct'
-  | 'dri'
-  | 'user'
-  | 'currentDataSet'
-  | 'projectInfo'
-  | 'house'
-  | 'menu'
-
-export type fireDocNames = 'fct' | 'dri' | 'currentDataSet' | 'user'
-
 export const PiniaStateZod = z.object({
   // 現在利用しているユーザーの情報
-  appUser: AppUserZod,
+  appUser: AppUserZod.nullable(),
   // ユーザーが取り組んでいるプロジェクトの情報
   projectInfo: ProjectInfoZod,
   fct: FctItemsWithNoteZod.nullable(),

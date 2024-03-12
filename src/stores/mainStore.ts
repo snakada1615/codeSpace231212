@@ -149,7 +149,9 @@ export const useProjectData = defineStore('prjData', {
       console.log('updates...')
       console.log(updates)
 
-      await fireFunc.fireUpdateTyped(collectionName, docId, updates, 'piniaStatePartial')
+      if (updates) {
+        await fireFunc.fireUpdateTyped(collectionName, docId, updates, 'piniaStatePartial')
+      }
       // Your Firestore document reference, now with a converter applied
       // const documentRef = doc(collectionName, docId).withConverter(yourStoreConverter)
       // await updateDoc(documentRef, updates)
