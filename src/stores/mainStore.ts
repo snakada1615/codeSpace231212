@@ -40,7 +40,7 @@ export const useProjectData = defineStore('prjData', {
       dri: '5139dec2-f340-46bd-aed4-57670991bab7'
     },
     isUpdate: false,
-    modifiedStates: []
+    modifiedStates: [] as Array<keyof myVal.PiniaState>
   }),
 
   getters: {
@@ -122,16 +122,20 @@ export const useProjectData = defineStore('prjData', {
   },
   actions: {
     // Function to update state value and record the change
-    // NOTE updateStateValue: storeに値をセット（fireUpdateStateValueを組み合わせて使う）
+    // TODO anyを取り除きたい
     updateStateValue<K extends keyof myVal.PiniaState>(fieldName: K, value: myVal.PiniaState[K]) {
-      // Since this refers to the store instance, we cast it to StateKeys & this
-      // const currentStateValue = (this as StateKeys & typeof this)[fieldName]
-      if (typeof this[fieldName] === typeof value && this[fieldName] !== value) {
+      // Assuming this is typed to have the same structure as PiniaState
+      const currentStateValue = this[fieldName]
+
+      // Use a type guard to check for the equality and only assign if different
+      if (currentStateValue !== value) {
+        // Directly assign the value since we've asserted they are the same type
         ;(this as any)[fieldName] = value
 
-        // 更新した要素めいが配列に蓄積される
+        // Record the modification if not already recorded
         if (!this.modifiedStates.includes(fieldName)) {
-          this.modifiedStates.push(fieldName)
+          this.modifiedStates = [fieldName, ...this.modifiedStates]
+          console.log(this.modifiedStates)
         }
       }
     },
@@ -150,7 +154,7 @@ export const useProjectData = defineStore('prjData', {
       console.log('updates...')
       console.log(updates)
 
-      if (updates) {
+      if (Object.keys(updates).length > 0) {
         await fireFunc.fireUpdateTyped(
           collectionName,
           docId,
@@ -173,12 +177,8 @@ export const useProjectData = defineStore('prjData', {
     // NOTE fireResetData: userIdに紐づいたデータの削除、初期化
     async fireResetData(userId: string) {
       try {
-        await fireFunc.fireDeleteQueryDoc('currentDataSet', 'user', userId)
         await fireFunc.fireDeleteQueryDoc('dri', 'user', userId)
         await fireFunc.fireDeleteQueryDoc('fct', 'user', userId)
-        await fireFunc.fireDeleteQueryDoc('projectInfo', 'user', userId)
-        await fireFunc.fireDeleteQueryDoc('menu', 'user', userId)
-        await fireFunc.fireDeleteQueryDoc('house', 'user', userId)
         await fireFunc.fireDeleteQueryDoc('user', 'user', userId)
         console.log('all data cleared')
         console.log('initialize all data for ' + userId)
@@ -201,10 +201,10 @@ export const useProjectData = defineStore('prjData', {
           this.house = res.house
           this.menu = res.menu
           this.currentDataSet = res.currentDataSet
-          this.loading = res.loading
-          this.copyDataFromOrigin = res.copyDataFromOrigin
-          this.isUpdate = res.isUpdate
-          this.modifiedStates = res.modifiedStates
+          // this.loading = res.loading
+          // this.copyDataFromOrigin = res.copyDataFromOrigin
+          // this.isUpdate = res.isUpdate
+          // this.modifiedStates = res.modifiedStates
         } else {
           console.log('fireGetUserData: fetch fail')
 
@@ -230,7 +230,6 @@ export const useProjectData = defineStore('prjData', {
           this.loading = false
 
           // 初期値をfireStoreにセットする
-          console.log(this.appUser)
           this.modifiedStates = [
             'appUser',
             'fct',
@@ -240,8 +239,6 @@ export const useProjectData = defineStore('prjData', {
             'currentDataSet',
             'copyDataFromOrigin'
           ]
-          console.error('ここから行きます')
-          console.log(this.appUser)
           await this.fireUpdateStateValue('user', userId)
         }
       } catch (error) {

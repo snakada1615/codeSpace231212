@@ -18,7 +18,7 @@ const appUserStore = computed({
 
 <template>
   <div>
-    <q-card v-if="appUserStore.userId">
+    <q-card v-if="appUserStore.user">
       <userInfo v-model:app-user="appUserStore" />
     </q-card>
     <p v-else>you don't have userId. please start from login again</p>

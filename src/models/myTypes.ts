@@ -536,7 +536,7 @@ export type PiniaItemList = z.infer<typeof PiniaItemListZod>
 
 export const PiniaStateZod = z.object({
   // 現在利用しているユーザーの情報
-  appUser: AppUserZod.nullable(),
+  appUser: AppUserZod,
   // ユーザーが取り組んでいるプロジェクトの情報
   projectInfo: ProjectInfoZod,
   fct: FctItemsWithNoteZod.nullable(),

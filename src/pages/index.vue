@@ -3,7 +3,7 @@
   <div>
     <q-card>
       <q-icon name="flag" />
-      <div>halo/ {{ projectData.appUser.user }}</div>
+      <div>halo/ {{ projectData.modifiedStates }}</div>
       <q-btn label="データ初期化" @click="onClick" />
       <q-btn label="notify" @click="$q.notify({ message: 'はろー', position: 'top-right' })" />
       <q-btn
