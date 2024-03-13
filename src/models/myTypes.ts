@@ -511,7 +511,28 @@ export const commonMenus: string[] = [
   '3rd snack'
 ]
 
-export type AllProjectData = AppUser | Houses | Menu
+// export type AllProjectData = AppUser | Houses | Menu
+
+export const PiniaItemZod = z.union([
+  z.literal('fct'),
+  z.literal('dri'),
+  z.literal('appUser'),
+  z.literal('projectInfo'),
+  z.literal('house'),
+  z.literal('menu'),
+  z.literal('loading'),
+  z.literal('isUpdate'),
+  z.literal('modifiedStates'),
+  z.literal('copyDataFromOrigin'),
+  z.literal('currentDataSet')
+  // Add other collection mappings here...
+])
+
+export const PiniaItemListZod = z.array(PiniaItemZod)
+
+export type PiniaItem = z.infer<typeof PiniaItemZod>
+
+export type PiniaItemList = z.infer<typeof PiniaItemListZod>
 
 export const PiniaStateZod = z.object({
   // 現在利用しているユーザーの情報
@@ -530,7 +551,7 @@ export const PiniaStateZod = z.object({
   loading: z.boolean(),
   copyDataFromOrigin: z.object({ fct: z.string(), dri: z.string() }),
   isUpdate: z.boolean(),
-  modifiedStates: z.string().array()
+  modifiedStates: PiniaItemListZod
 })
 
 export const PiniaState_partialZod = PiniaStateZod.partial()
@@ -538,6 +559,8 @@ export const PiniaState_partialZod = PiniaStateZod.partial()
 export type PiniaState = z.infer<typeof PiniaStateZod>
 
 export type PiniaState_partial = z.infer<typeof PiniaState_partialZod>
+
+export type PiniaKeys = keyof PiniaState
 
 export const PiniaStateDefault = {
   // 現在利用しているユーザーの情報

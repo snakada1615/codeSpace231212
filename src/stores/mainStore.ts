@@ -19,7 +19,7 @@ export const useAuthState = defineStore('auth', {
 })
 
 // Define a type for the acceptable types of state values
-type StateValue = string | number | boolean | object | null // Add more as needed
+// type StateValue = string | number | boolean | object | null // Add more as needed
 
 export const useProjectData = defineStore('prjData', {
   state: (): myVal.PiniaState => ({
@@ -130,8 +130,8 @@ export const useProjectData = defineStore('prjData', {
         ;(this as any)[fieldName] = value
 
         // 更新した要素めいが配列に蓄積される
-        if (!this.modifiedStates.includes(fieldName as string)) {
-          this.modifiedStates.push(fieldName as string)
+        if (!this.modifiedStates.includes(fieldName)) {
+          this.modifiedStates.push(fieldName)
         }
       }
     },
@@ -140,17 +140,23 @@ export const useProjectData = defineStore('prjData', {
     async fireUpdateStateValue(collectionName: string, docId: string) {
       // Ensure updates object respects the state structure
       const updates: Partial<Record<keyof myVal.PiniaState, StateValue>> = {}
+      // const updates: myVal.PiniaState_partial = {}
 
       for (const fieldName of this.modifiedStates) {
-        const res = this[fieldName as keyof myVal.PiniaState]
-        updates[fieldName as keyof myVal.PiniaState] = res
+        const res = this[fieldName]
+        updates[fieldName] = res
       }
 
       console.log('updates...')
       console.log(updates)
 
       if (updates) {
-        await fireFunc.fireUpdateTyped(collectionName, docId, updates, 'piniaStatePartial')
+        await fireFunc.fireUpdateTyped(
+          collectionName,
+          docId,
+          updates as myVal.PiniaState_partial,
+          'piniaStatePartial'
+        )
       }
       // Your Firestore document reference, now with a converter applied
       // const documentRef = doc(collectionName, docId).withConverter(yourStoreConverter)
