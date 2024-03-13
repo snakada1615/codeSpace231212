@@ -19,7 +19,7 @@ export const useAuthState = defineStore('auth', {
 })
 
 // Define a type for the acceptable types of state values
-// type StateValue = string | number | boolean | object | null // Add more as needed
+type StateValue = string | number | boolean | object | null // Add more as needed
 
 export const useProjectData = defineStore('prjData', {
   state: (): myVal.PiniaState => ({

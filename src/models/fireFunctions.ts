@@ -187,6 +187,7 @@ export class fireFunc {
     }
   }
 
+  // TODO 要修正（AllProjectDataの使い方）
   static async fireGetQuery(collectionId: string, key: string, val: string) {
     splash(true)
     const colRef: CollectionReference = collection(db, collectionId)

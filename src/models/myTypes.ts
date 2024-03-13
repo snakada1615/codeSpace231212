@@ -511,7 +511,7 @@ export const commonMenus: string[] = [
   '3rd snack'
 ]
 
-// export type AllProjectData = AppUser | Houses | Menu
+export type AllProjectData = AppUser | Houses | Menu
 
 export const PiniaItemZod = z.union([
   z.literal('fct'),
