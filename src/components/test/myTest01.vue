@@ -9,7 +9,7 @@ function newError() {
 import useCounterStore from '@/stores/counter'
 const counterStore = useCounterStore()
 
-const myAppUser = ref(myVal.appUserDefault)
+const myUser = ref(myVal.userDefault)
 </script>
 
 <template>
@@ -18,5 +18,5 @@ const myAppUser = ref(myVal.appUserDefault)
   <p>Count: {{ counterStore.count }}</p>
   <p>Doubled Count: {{ counterStore.doubleCount }}</p>
   <button @click="counterStore.countUp()">Count up!</button>
-  <UserInfo :app-user="myAppUser" />
+  <UserInfo :user="myUser" />
 </template>

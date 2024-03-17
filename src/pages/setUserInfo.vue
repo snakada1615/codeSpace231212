@@ -5,21 +5,21 @@ import userInfo from '../components/atoms/UserInfo.vue'
 import { useProjectData } from '../stores/mainStore'
 const projectData = useProjectData()
 
-const appUserStore = computed({
+const userStore = computed({
   get() {
-    return projectData.appUser
+    return projectData.user
   },
   set(val) {
     console.log('set')
-    projectData.updateStateValue('appUser', val)
+    projectData.updateStateValue('user', val)
   }
 })
 </script>
 
 <template>
   <div>
-    <q-card v-if="appUserStore.user">
-      <userInfo v-model:app-user="appUserStore" />
+    <q-card v-if="userStore.user">
+      <userInfo v-model:user="userStore" />
     </q-card>
     <p v-else>you don't have userId. please start from login again</p>
   </div>

@@ -21,6 +21,6 @@ import { JsonTreeView } from 'json-tree-view-vue3'
 import 'json-tree-view-vue3/dist/style.css'
 const projectData = useProjectData()
 function onClick() {
-  projectData.fireResetData(projectData.appUser.user)
+  projectData.fireResetData(projectData.user.user)
 }
 </script>

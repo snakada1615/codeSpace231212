@@ -36,13 +36,13 @@ auth.onAuthStateChanged(async (user: User | null) => {
     //    isLoggedIn.value = true // if we have a user
     authState.setLoginState(true)
     // projectData.setUserId(user.uid) // keep uid in pinia
-    projectData.updateStateValue('appUser', { ...projectData.appUser, user: user.uid }) // keep uid in pinia
+    projectData.updateStateValue('user', { ...projectData.user, user: user.uid }) // keep uid in pinia
     await projectData.fireGetUserData(user.uid) // download user data
   } else {
     //    isLoggedIn.value = false // if we do not
     authState.setLoginState(false)
     // projectData.setUserId('') // delete uid in pinia
-    projectData.updateStateValue('appUser', { ...projectData.appUser, user: '' }) // keep uid in pinia
+    projectData.updateStateValue('user', { ...projectData.user, user: '' }) // keep uid in pinia
   }
 })
 

@@ -101,7 +101,7 @@ function modeChange() {
 function addNewHouse() {
   const res: myVal.House = {
     ...myVal.houseDefault,
-    user: myProjectData.appUser.user,
+    user: myProjectData.user.user,
     projectInfo: myProjectData.projectInfo.projectInfo,
     locationId: newLocation.value,
     house: FakerFunc.uuid(),
@@ -109,7 +109,7 @@ function addNewHouse() {
   }
   console.log(myVal.houseDefault)
   console.log(res)
-  let resArray = [...myProjectData.house]
+  let resArray = myProjectData.house ? [...myProjectData.house] : []
   resArray.push(res)
   myProjectData.updateStateValue('house', resArray)
   addNewFlag.value = false

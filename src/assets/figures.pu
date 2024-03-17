@@ -31,12 +31,12 @@ if uid then
    -->"set DRI in store"
  endif
 
- --> "fetch appUser using userId"
- if "AppUser exists" then
-   -->[true] "set appUser in store"
+ --> "fetch user using userId"
+ if "User exists" then
+   -->[true] "set user in store"
  else 
-   -->[false] "get defaultValue of appUser"
-   -->"set appUser in store"  
+   -->[false] "get defaultValue of user"
+   -->"set user in store"  
  endif
 
  --> "check currentProject"

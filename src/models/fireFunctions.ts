@@ -59,7 +59,7 @@ interface ConverterMap {
   [key: string]: FirestoreDataConverter<any>
   fct: FirestoreDataConverter<myVal.FctItemsWithNote>
   dri: FirestoreDataConverter<myVal.DriItemsWithNote>
-  user: FirestoreDataConverter<myVal.AppUser>
+  user: FirestoreDataConverter<myVal.User>
   projectInfo: FirestoreDataConverter<myVal.ProjectInfo>
   house: FirestoreDataConverter<myVal.House>
   menu: FirestoreDataConverter<myVal.Menu>
@@ -107,7 +107,7 @@ export class fireFunc {
   // Create type guards using their respective Zod schemas
   private static isFctItem = this.createIsOfTypeT<myVal.FctItemsWithNote>(myVal.FctItemsWithNoteZod)
   private static isDriItem = this.createIsOfTypeT<myVal.DriItemsWithNote>(myVal.DriItemsWithNoteZod)
-  private static isAppUser = this.createIsOfTypeT<myVal.AppUser>(myVal.AppUserZod)
+  private static isUser = this.createIsOfTypeT<myVal.User>(myVal.UserZod)
   private static isProjectInfo = this.createIsOfTypeT<myVal.ProjectInfo>(myVal.ProjectInfoZod)
   private static isHouse = this.createIsOfTypeT<myVal.House>(myVal.HouseZod)
   private static isMenu = this.createIsOfTypeT<myVal.Menu>(myVal.MenuZod)
@@ -121,7 +121,7 @@ export class fireFunc {
   // Then use these type guards within your converter instantiation
   private static fctItemConverter = this.converter<myVal.FctItemsWithNote>(this.isFctItem)
   private static driItemConverter = this.converter<myVal.DriItemsWithNote>(this.isDriItem)
-  private static appUserConverter = this.converter<myVal.AppUser>(this.isAppUser)
+  private static userConverter = this.converter<myVal.User>(this.isUser)
   private static ProjectInfoConverter = this.converter<myVal.ProjectInfo>(this.isProjectInfo)
   private static houseConverter = this.converter<myVal.House>(this.isHouse)
   private static menuConverter = this.converter<myVal.Menu>(this.isMenu)
@@ -135,7 +135,7 @@ export class fireFunc {
   private static converters: ConverterMap = {
     fct: this.fctItemConverter,
     dri: this.driItemConverter,
-    user: this.appUserConverter,
+    user: this.userConverter,
     projectInfo: this.ProjectInfoConverter,
     house: this.houseConverter,
     menu: this.menuConverter,
@@ -320,7 +320,6 @@ export class fireFunc {
   ): Promise<myVal.ConverterTypeMap[K] | null> {
     const converter = this.getTypeConverter(collectionId)
     const docRef = doc(db, collectionId, docId).withConverter(converter)
-    console.warn(`docId = ${docId}`)
 
     try {
       splash(true)
@@ -381,8 +380,8 @@ export class fireFunc {
       return { flag: true, value: docRef.id }
     } catch (error) {
       splash(false)
-      return { flag: false, value: error }
       console.log(error)
+      return { flag: false, value: error }
     }
   }
 
@@ -406,7 +405,7 @@ export class fireFunc {
   }
 
   static async fireUpdateTyped<K extends keyof myVal.ConverterTypeMap>(
-    collectionId: string,
+    collectionId: K,
     docId: string,
     val: myVal.ConverterTypeMap[K],
     convereterId: K

@@ -38,7 +38,7 @@ const projInfo = useProjectData()
           <q-item clickable v-close-popup>
             <q-item-section @click="logOut()">logOut</q-item-section>
           </q-item>
-          <q-item>user: {{ projInfo.appUser.userId }}</q-item>
+          <q-item>user: {{ projInfo.user.user }}</q-item>
           <!-- Add more items here -->
         </q-list>
       </q-menu>

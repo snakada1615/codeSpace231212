@@ -24,7 +24,7 @@ type StateValue = string | number | boolean | object | null // Add more as neede
 export const useProjectData = defineStore('prjData', {
   state: (): myVal.PiniaState => ({
     // 現在利用しているユーザーの情報
-    appUser: myVal.appUserDefault,
+    user: myVal.userDefault,
     // ユーザーが取り組んでいるプロジェクトの情報
     projectInfo: myVal.projectInfoDefault,
     fct: null,
@@ -45,14 +45,13 @@ export const useProjectData = defineStore('prjData', {
 
   getters: {
     stateUserId: (state) => {
-      if (state.appUser && typeof state.appUser === 'object') {
-        return !!state.appUser.user || false
+      if (state.user && typeof state.user === 'object') {
+        return !!state.user.user || false
       }
       return false
-      // state.appUser.state.appUser.userId? true:false
     },
     stateUserInfo(state) {
-      const result = myVal.AppUserZod.safeParse(state.appUser)
+      const result = myVal.UserZod.safeParse(state.user)
       if (result.success) {
         return true // Or some validation logic that returns a boolean
       } else {
@@ -135,41 +134,36 @@ export const useProjectData = defineStore('prjData', {
         // Record the modification if not already recorded
         if (!this.modifiedStates.includes(fieldName)) {
           this.modifiedStates = [fieldName, ...this.modifiedStates]
-          console.log(this.modifiedStates)
         }
       }
     },
 
     // TODO fireUpdateStateValue: fireStoreに値をセットしてmodifiedStatesをクリア
-    async fireUpdateStateValue(collectionName: string, docId: string) {
+    async fireUpdateStateValue(
+      collectionName: keyof myVal.ConverterTypeMap,
+      docId: string,
+      options?: { new?: boolean }
+    ) {
       // Ensure updates object respects the state structure
       const updates: Partial<Record<keyof myVal.PiniaState, StateValue>> = {}
       // const updates: myVal.PiniaState_partial = {}
 
       for (const fieldName of this.modifiedStates) {
-        const res = this[fieldName]
-        updates[fieldName] = res
+        updates[fieldName] = this[fieldName]
       }
-
-      console.log('updates...')
-      console.log(updates)
 
       if (Object.keys(updates).length > 0) {
-        await fireFunc.fireUpdateTyped(
-          collectionName,
-          docId,
-          updates as myVal.PiniaState_partial,
-          'piniaStatePartial'
-        )
+        if (options?.new) {
+          await fireFunc.fireSetTyped(collectionName, docId, updates as myVal.PiniaState_partial)
+        } else {
+          await fireFunc.fireUpdateTyped(
+            collectionName,
+            docId,
+            updates as myVal.PiniaState_partial,
+            'piniaStatePartial'
+          )
+        }
       }
-      // Your Firestore document reference, now with a converter applied
-      // const documentRef = doc(collectionName, docId).withConverter(yourStoreConverter)
-      // await updateDoc(documentRef, updates)
-      // await fireFunc.fireSetMergeTyped<myVal.PiniaState_partial>(
-      //   collectionName,
-      //   docId,
-      //   updates as myVal.PiniaState_partial
-      // )
 
       this.modifiedStates = []
     },
@@ -194,7 +188,7 @@ export const useProjectData = defineStore('prjData', {
         const res = await fireFunc.fireGetTyped('user', userId)
         if (res) {
           console.log('fireGetUserData: fetch success')
-          this.appUser = res.appUser
+          this.user = res.user
           this.projectInfo = res.projectInfo
           this.fct = res.fct
           this.dri = res.dri
@@ -219,8 +213,8 @@ export const useProjectData = defineStore('prjData', {
             throw new Error('no original data for fct/dri')
           }
 
-          const myAppUser = { ...myVal.appUserDefault, user: userId }
-          this.appUser = myAppUser
+          const myUser = { ...myVal.userDefault, user: userId }
+          this.user = myUser
           this.projectInfo = { ...myVal.projectInfoDefault, user: userId }
           this.fct = newFct
           this.dri = newDri
@@ -231,7 +225,7 @@ export const useProjectData = defineStore('prjData', {
 
           // 初期値をfireStoreにセットする
           this.modifiedStates = [
-            'appUser',
+            'user',
             'fct',
             'dri',
             'house',
@@ -239,7 +233,8 @@ export const useProjectData = defineStore('prjData', {
             'currentDataSet',
             'copyDataFromOrigin'
           ]
-          await this.fireUpdateStateValue('user', userId)
+          // 初期値のセットなので、new:true
+          await this.fireUpdateStateValue('piniaStatePartial', userId, { new: true })
         }
       } catch (error) {
         throw new Error('error')

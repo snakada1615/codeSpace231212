@@ -17,7 +17,7 @@ export const diversityStateDefault = {
 }
 
 export enum dataSetNames {
-  'appUser',
+  'user',
   'projectInfos',
   'fct',
   'dri',
@@ -80,7 +80,7 @@ export const currentDataSetDefault = {
 export type CurrentDataSetBlank = typeof currentDataSetDefault
 
 // 現在のユーザー情報
-export const AppUserZod = z.object({
+export const UserZod = z.object({
   user: z.string(),
   name: z.string(),
   job: z.string(),
@@ -90,7 +90,7 @@ export const AppUserZod = z.object({
   town: z.string().optional()
 })
 
-export const AppUserZod_v = z.object({
+export const UserZod_v = z.object({
   user: z.string(),
   name: z.string().min(3).max(200),
   job: z.string().min(3).max(200),
@@ -100,11 +100,11 @@ export const AppUserZod_v = z.object({
   town: z.string().min(3).max(200).optional()
 })
 
-export type AppUser = z.infer<typeof AppUserZod>
+export type User = z.infer<typeof UserZod>
 
-export type AppUser_v = z.infer<typeof AppUserZod_v>
+export type User_v = z.infer<typeof UserZod_v>
 
-export const appUserDefault = {
+export const userDefault = {
   user: '',
   name: '',
   job: '',
@@ -511,12 +511,12 @@ export const commonMenus: string[] = [
   '3rd snack'
 ]
 
-export type AllProjectData = AppUser | Houses | Menu
+export type AllProjectData = User | Houses | Menu
 
 export const PiniaItemZod = z.union([
   z.literal('fct'),
   z.literal('dri'),
-  z.literal('appUser'),
+  z.literal('user'),
   z.literal('projectInfo'),
   z.literal('house'),
   z.literal('menu'),
@@ -536,7 +536,7 @@ export type PiniaItemList = z.infer<typeof PiniaItemListZod>
 
 export const PiniaStateZod = z.object({
   // 現在利用しているユーザーの情報
-  appUser: AppUserZod,
+  user: UserZod,
   // ユーザーが取り組んでいるプロジェクトの情報
   projectInfo: ProjectInfoZod,
   fct: FctItemsWithNoteZod.nullable(),
@@ -564,7 +564,7 @@ export type PiniaKeys = keyof PiniaState
 
 export const PiniaStateDefault = {
   // 現在利用しているユーザーの情報
-  appUser: appUserDefault,
+  user: userDefault,
   // ユーザーが取り組んでいるプロジェクトの情報
   projectInfo: projectInfoDefault,
   fct: null,

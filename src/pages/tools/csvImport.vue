@@ -111,10 +111,11 @@ function saveCsv(): void {
   if (refKey.value.label === 'DRI') {
     // driの更新
     const myId = fakerFunc.uuid()
+    projectStore.updateStateValue('dri', typedCsv.value)
     projectStore.setDri(typedCsv.value as myVal.DriItems)
     projectStore.fireSetDri(myId, {
       note: '',
-      userId: projectStore.appUser.user,
+      userId: projectStore.user.user,
       data: typedCsv.value as myVal.DriItems,
       driId: myId
     })
@@ -126,7 +127,7 @@ function saveCsv(): void {
     }
 
     projectStore.setCurrentDataset(currentData)
-    projectStore.fireSetCurrentDataset(projectStore.appUser.user, currentData)
+    projectStore.fireSetCurrentDataset(projectStore.user.user, currentData)
   } else {
     // fctの更新
     const myId = fakerFunc.uuid()
@@ -135,7 +136,7 @@ function saveCsv(): void {
     projectStore.setFct(typedCsv.value as myVal.FctItems)
     projectStore.fireSetFct(myId, {
       note: '',
-      userId: projectStore.appUser.user,
+      userId: projectStore.user.user,
       data: typedCsv.value as myVal.FctItems,
       fctId: myId
     })
@@ -146,7 +147,7 @@ function saveCsv(): void {
       fct: myId
     }
     projectStore.setCurrentDataset(currentData)
-    projectStore.fireSetCurrentDataset(projectStore.appUser.user, currentData)
+    projectStore.fireSetCurrentDataset(projectStore.user.user, currentData)
   }
 }
 

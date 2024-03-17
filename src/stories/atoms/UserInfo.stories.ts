@@ -16,7 +16,7 @@ const myArgTypes: ArgTypes = {
   // ... define other arg types as necessary ...
 }
 
-const appUser = myVal.appUserDefault
+const user = myVal.userDefault
 
 const meta: Meta<typeof userInfo> = {
   title: 'app/atoms/userInfo',
@@ -39,6 +39,6 @@ export const First: Story = {
     }
   }),
   args: {
-    appUser
+    user
   }
 }

@@ -5,22 +5,22 @@ import { computed, defineEmits, type PropType } from 'vue'
 // import { ref } from 'vue'
 
 const props = defineProps({
-  appUser: {
-    type: Object as PropType<myVal.AppUser>,
+  user: {
+    type: Object as PropType<myVal.User>,
     required: true
   }
 })
 
 const emits = defineEmits<{
-  (e: 'update:appUser', value: myVal.AppUser): void
+  (e: 'update:user', value: myVal.User): void
 }>()
 
-const appUserComp = computed({
+const userComp = computed({
   get() {
-    return props.appUser
+    return props.user
   },
-  set(val: myVal.AppUser_v) {
-    emits('update:appUser', val)
+  set(val: myVal.User_v) {
+    emits('update:user', val)
   }
 })
 
@@ -28,7 +28,7 @@ function isValidValue(
   val: number | string | null,
   key: 'name' | 'job' | 'title' | 'country' | 'region' | 'town'
 ): boolean | string {
-  const result = myVal.AppUserZod_v.shape[key].safeParse(val)
+  const result = myVal.UserZod_v.shape[key].safeParse(val)
   if (result.success) {
     return true // Or some validation logic that returns a boolean
   } else {
@@ -44,7 +44,7 @@ function isValidValue(
       dense
       filled
       class="q-my-sm"
-      v-model="appUserComp.name"
+      v-model="userComp.name"
       label="* Name"
       lazy-rules
       :rules="[(v) => isValidValue(v, 'name')]"
@@ -53,7 +53,7 @@ function isValidValue(
       dense
       filled
       class="q-my-sm"
-      v-model="appUserComp.job"
+      v-model="userComp.job"
       label="Job"
       lazy-rules
       :rules="[(v) => isValidValue(v, 'job')]"
@@ -62,7 +62,7 @@ function isValidValue(
       dense
       filled
       class="q-my-sm"
-      v-model="appUserComp.title"
+      v-model="userComp.title"
       label="Title"
       lazy-rules
       :rules="[(v) => isValidValue(v, 'title')]"
@@ -71,7 +71,7 @@ function isValidValue(
       dense
       filled
       class="q-my-sm"
-      v-model="appUserComp.country"
+      v-model="userComp.country"
       label="* Country"
       lazy-rules
       :rules="[(v) => isValidValue(v, 'country')]"
@@ -80,7 +80,7 @@ function isValidValue(
       dense
       filled
       class="q-my-sm"
-      v-model="appUserComp.region"
+      v-model="userComp.region"
       label="* region"
       lazy-rules
       :rules="[(v) => isValidValue(v, 'region')]"
@@ -89,7 +89,7 @@ function isValidValue(
       dense
       filled
       class="q-my-sm"
-      v-model="appUserComp.town"
+      v-model="userComp.town"
       label="* town/city"
       lazy-rules
       :rules="[(v) => isValidValue(v, 'town')]"
