@@ -6,6 +6,7 @@ import vue from '@vitejs/plugin-vue'
 import vueJsx from '@vitejs/plugin-vue-jsx'
 import { quasar, transformAssetUrls } from '@quasar/vite-plugin'
 import { VitePWA } from 'vite-plugin-pwa'
+import eslint from 'vite-plugin-eslint'
 
 // https://vitejs.dev/config/
 export default defineConfig({
@@ -17,6 +18,9 @@ export default defineConfig({
       template: { transformAssetUrls }
     }),
     vueJsx(),
+
+    eslint(),
+
     // @quasar/plugin-vite options list:
     // https://github.com/quasarframework/quasar/blob/dev/vite-plugin/index.d.ts
     quasar({

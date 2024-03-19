@@ -17,7 +17,7 @@ const props = defineProps({
     required: true
   },
   commonMenus: {
-    type: Array<string>,
+    type: Array as PropType<string[]>,
     required: true
   }
 })
