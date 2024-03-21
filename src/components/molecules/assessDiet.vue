@@ -16,7 +16,7 @@ const props = defineProps({
   },
 
   menu: {
-    type: Object as PropType<myVal.Menu | []>,
+    type: Object as PropType<myVal.Menu>,
     required: true
   }
 })
@@ -26,7 +26,7 @@ const emits = defineEmits<{
   (e: 'addMenuItem', value: myVal.MenuItem): void
 }>()
 
-const myMenu = computed<myVal.Menu>(() => {
+const myMenu = computed(() => {
   return props.menu
 })
 

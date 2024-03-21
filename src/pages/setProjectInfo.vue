@@ -11,7 +11,7 @@ const projectInfoStore: WritableComputedRef<myVal.ProjectInfo> = computed({
     return myProjectData.projectInfo
   },
   set(val) {
-    myProjectData.setProjectInfo(val)
+    myProjectData.updateStateValue('projectInfo', val)
   }
 })
 

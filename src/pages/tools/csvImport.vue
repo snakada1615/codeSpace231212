@@ -51,6 +51,7 @@ import { useProjectData } from '../../stores/mainStore'
 const projectStore = useProjectData()
 import fakerFunc from '../../models/fakerFunc'
 import { Dialog } from 'quasar'
+import { fireFunc } from '@/models/fireFunctions'
 
 const isFiletypeCorrect = ref(false)
 
@@ -111,43 +112,21 @@ function saveCsv(): void {
   if (refKey.value.label === 'DRI') {
     // driの更新
     const myId = fakerFunc.uuid()
-    projectStore.updateStateValue('dri', typedCsv.value)
-    projectStore.setDri(typedCsv.value as myVal.DriItems)
-    projectStore.fireSetDri(myId, {
+    fireFunc.fireSetTyped('dri', myId, {
       note: '',
-      userId: projectStore.user.user,
+      user: projectStore.user.user,
       data: typedCsv.value as myVal.DriItems,
-      driId: myId
-    })
-
-    // currentDataSetの更新
-    const currentData: myVal.CurrentDataSet = {
-      ...projectStore.currentDataSet,
       dri: myId
-    }
-
-    projectStore.setCurrentDataset(currentData)
-    projectStore.fireSetCurrentDataset(projectStore.user.user, currentData)
+    })
   } else {
     // fctの更新
     const myId = fakerFunc.uuid()
-    console.log(typedCsv.value)
-
-    projectStore.setFct(typedCsv.value as myVal.FctItems)
-    projectStore.fireSetFct(myId, {
+    fireFunc.fireSetTyped('dri', myId, {
       note: '',
-      userId: projectStore.user.user,
-      data: typedCsv.value as myVal.FctItems,
-      fctId: myId
+      user: projectStore.user.user,
+      data: typedCsv.value as myVal.DriItems,
+      dri: myId
     })
-
-    // currentDataSetの更新
-    const currentData: myVal.CurrentDataSet = {
-      ...projectStore.currentDataSet,
-      fct: myId
-    }
-    projectStore.setCurrentDataset(currentData)
-    projectStore.fireSetCurrentDataset(projectStore.user.user, currentData)
   }
 }
 

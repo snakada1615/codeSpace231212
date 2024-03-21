@@ -10,7 +10,11 @@ import FakerFunc from '@/models/fakerFunc'
 const myProjectData = useProjectData()
 
 // interface housesInfoType extends Array<houseInfoType> {}
+// housesの情報をリストに変換(ユーザーがhousesから編集対象のhouseを選択するため)
 const housesInfo = computed(() => {
+  if (!myProjectData.house) {
+    return []
+  }
   return myProjectData.house.map((item, index) => {
     return {
       label: item.familyName,
@@ -19,43 +23,46 @@ const housesInfo = computed(() => {
   })
 })
 
-const currentHouse: WritableComputedRef<myVal.House> = computed({
-  get() {
-    return myProjectData.house[selectedHouse.value.value]
+// houseの情報を編集するためのcomputed props
+const currentHouse: WritableComputedRef<myVal.House | null> = computed({
+  get(): myVal.House | null {
+    if (!myProjectData.house) {
+      return null
+    } else {
+      return myProjectData.house[selectedHouse.value.value]
+    }
   },
-  set(val: myVal.House) {
-    myProjectData.updateStateValue(
-      'house',
-      myProjectData.house.map((item) => {
-        if (val.house === item.house) {
-          return val
-        }
-        return item
-      })
-    )
+  set(val: myVal.House | null) {
+    if (!val || !myProjectData.house) {
+      return
+    } else {
+      myProjectData.updateStateValue(
+        'house',
+        myProjectData.house.map((item) => {
+          if (val.house === item.house) {
+            return val
+          }
+          return item
+        })
+      )
+    }
   }
 })
 
+// ユーザーが現在選択しているhouseの指標
 const selectedHouse = ref({
   label: 'select family',
   value: -1
 })
 
+// 編集モードと追加モードのフラグ
 const addNewFlag = ref(false)
 
 const newFamilyName = ref('')
 
 const newLocation = ref('')
 
-function changeCurrentHouse(val: typeof selectedHouse) {
-  const res = val.value.value > 0 ? currentHouse.value.house : ''
-  const current = myProjectData.currentDataSet
-  myProjectData.updateStateValue('currentDataSet', {
-    ...current,
-    house: res
-  })
-}
-
+// バリデーション
 function isValidValue(
   val: number | string | null,
   key: 'locationId' | 'familyName'
@@ -75,6 +82,7 @@ function isValidValue(
   }
 }
 
+// バリデーション
 const stateFamilyName = computed(() => {
   if (isValidValue(newFamilyName.value, 'familyName') === true) {
     return true
@@ -82,6 +90,7 @@ const stateFamilyName = computed(() => {
   return false
 })
 
+// バリデーション
 const stateLocation = computed(() => {
   if (isValidValue(newLocation.value, 'locationId') === true) {
     return true
@@ -89,6 +98,7 @@ const stateLocation = computed(() => {
   return false
 })
 
+// 追加モード/更新モードの切り替え
 function modeChange() {
   selectedHouse.value = {
     label: 'select family',
@@ -98,6 +108,20 @@ function modeChange() {
   newFamilyName.value = ''
 }
 
+// houseの値を更新
+function changeCurrentHouse(val: typeof selectedHouse) {
+  const res = val.value.value > 0 ? currentHouse.value?.house : null
+  if (!res) {
+    return
+  }
+  const current = myProjectData.currentDataSet
+  myProjectData.updateStateValue('currentDataSet', {
+    ...current,
+    house: res
+  })
+}
+
+// 新規追加
 function addNewHouse() {
   const res: myVal.House = {
     ...myVal.houseDefault,

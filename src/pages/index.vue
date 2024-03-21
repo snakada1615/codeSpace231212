@@ -18,7 +18,9 @@
 <script setup lang="ts">
 import { useProjectData } from '../stores/mainStore'
 import { JsonTreeView } from 'json-tree-view-vue3'
+import { useQuasar } from 'quasar'
 import 'json-tree-view-vue3/dist/style.css'
+const $q = useQuasar()
 const projectData = useProjectData()
 function onClick() {
   projectData.fireResetData(projectData.user.user)

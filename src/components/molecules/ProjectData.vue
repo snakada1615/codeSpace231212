@@ -79,10 +79,7 @@ const numberRules = computed(() => {
   return totalFamilySize.value > 0
 })
 
-function isValidValue(
-  val: number | string | null,
-  key: 'projectName' | 'projectId' | 'locationId' | 'location' | 'targetPopulation'
-): boolean | string {
+function isValidValue(val: number | string | null, key: keyof myVal.ProjectInfo): boolean | string {
   const result = myVal.ProjectInfoZod.shape[key].safeParse(val)
   if (result.success) {
     return true // Or some validation logic that returns a boolean

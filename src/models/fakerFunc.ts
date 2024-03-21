@@ -111,25 +111,15 @@ export default class FakerFunc {
     const food = this.createFct(myVal.sampleFood)
     const menu = faker.helpers.arrayElement(myVal.commonMenus)
     return {
-      user: uid(),
-      projectInfo: uid(),
       ...food,
-      menuItemId: faker.string.uuid(),
-      KeyFamily: faker.person.firstName(),
-      Date: faker.date.past(),
-      MenuName: menu,
+      Weight: faker.number.float({ min: 0, max: 50, precision: 0.1 }),
       NutrientValue: faker.number.float({ min: 0, max: 200, precision: 0.1 }),
-      Star: faker.datatype.boolean(),
-      Weight: faker.number.float({ min: 0, max: 50, precision: 0.1 })
+      MenuName: menu,
+      Star: faker.datatype.boolean()
     }
   }
 
   static createMenu(): myVal.Menu {
-    const myMenu: myVal.Menu = Array(10)
-      .fill('0')
-      .map(() => {
-        return this.createMenuItem()
-      })
-    return myMenu
+    return myVal.menuDefault
   }
 }

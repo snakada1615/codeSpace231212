@@ -8,11 +8,22 @@
     "playwright.config.*",
     "typed-router.d.ts"
   ],
+  // "compilerOptions": {
+  //   "composite": true,
+  //   "noEmit": true,
+  //   "module": "NodeNext",
+  //   "moduleResolution": "NodeNext",
+  //   "types": ["node"]
+  // }
   "compilerOptions": {
     "composite": true,
     "noEmit": true,
-    "module": "ESNext",
+    "module": "es2020",
     "moduleResolution": "Bundler",
-    "types": ["node"]
-  }
+    "types": ["node", "unplugin-vue-router/client"],
+    "target": "ES2020", // or another target depending on the Node.js version you're using
+    "esModuleInterop": true,
+    "forceConsistentCasingInFileNames": true
+  },
+  "exclude": ["node_modules", "**/*.spec.ts"]
 }

@@ -121,7 +121,7 @@ export const useProjectData = defineStore('prjData', {
   },
   actions: {
     // Function to update state value and record the change
-    // TODO anyを取り除きたい
+    // TODO this as anyを取り除きたい
     updateStateValue<K extends keyof myVal.PiniaState>(fieldName: K, value: myVal.PiniaState[K]) {
       // Assuming this is typed to have the same structure as PiniaState
       const currentStateValue = this[fieldName]

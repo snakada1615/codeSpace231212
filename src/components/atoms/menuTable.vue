@@ -5,7 +5,7 @@ import type { QTableProps } from 'quasar'
 
 const props = defineProps({
   menu: {
-    type: Object as PropType<myVal.Menu | []>,
+    type: Object as PropType<myVal.Menu>,
     required: true
   }
 })
@@ -70,8 +70,16 @@ const columnsMenuItem: QTableProps['columns'] = [
   }
 ]
 
-const rowsMenuItem: ComputedRef<myVal.Menu> = computed(() => {
-  return props.menu
+const rowsMenuItem: ComputedRef = computed(() => {
+  return {
+    MenuName: props.menu.menu,
+    FctName: props.menu.data[0].FctName,
+    Weight: props.menu.data[0].Weight,
+    En: props.menu.data[0].En,
+    Pr: props.menu.data[0].Pr,
+    Va: props.menu.data[0].Va,
+    Fe: props.menu.data[0].Fe
+  }
 })
 </script>
 
