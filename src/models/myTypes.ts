@@ -1,4 +1,4 @@
-import z from 'zod'
+import { z } from 'zod'
 
 export const DiversityZod = z.object({
   name: z.string().min(3).max(40),
@@ -518,7 +518,7 @@ export const PiniaItemZod = z.union([
   z.literal('dri'),
   z.literal('user'),
   z.literal('projectInfo'),
-  z.literal('house'),
+  z.literal('houses'),
   z.literal('menu'),
   z.literal('loading'),
   z.literal('isUpdate'),
@@ -542,7 +542,7 @@ export const PiniaStateZod = z.object({
   fct: FctItemsWithNoteZod.nullable(),
   dri: DriItemsWithNoteZod.nullable(),
   // プロジェクトで対象とする家庭の情報
-  house: HousesZod.nullable(),
+  houses: HousesZod.nullable(),
   // 各家庭での食事調査結果
   menu: MenuesZod.nullable(),
   // デフォルトで使うデータベース名

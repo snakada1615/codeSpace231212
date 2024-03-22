@@ -2,10 +2,12 @@
 import type { Meta, StoryObj } from '@storybook/vue3'
 import { action } from '@storybook/addon-actions'
 import myButton from 'src/components/test/myButtons.vue'
+import { fn } from '@storybook/test'
 
 const meta: Meta<typeof myButton> = {
   title: 'test/myButton',
-  component: myButton
+  component: myButton,
+  args: { onClick: fn() }
 }
 
 export default meta
@@ -21,7 +23,7 @@ export const Primary: Story = {
     components: { myButton },
     setup() {
       return {
-        onClick: action('clicked')
+        onClick: action('clicked-me')
       }
     },
     template: '<myButton @click="onClick" />'

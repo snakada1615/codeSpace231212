@@ -30,7 +30,7 @@ export const useProjectData = defineStore('prjData', {
     fct: null,
     dri: null,
     // プロジェクトで対象とする家庭の情報
-    house: myVal.housesDefault,
+    houses: myVal.housesDefault,
     // 各家庭での食事調査結果
     menu: null,
     currentDataSet: myVal.currentDataSetDefault,
@@ -82,13 +82,13 @@ export const useProjectData = defineStore('prjData', {
     },
 
     houseSizes: (state) => {
-      if (!state.house) {
+      if (!state.houses) {
         return 0
       }
-      if (!state.house[0]) {
+      if (!state.houses[0]) {
         return 0
       }
-      return state.house.map((house) =>
+      return state.houses.map((house) =>
         house.familyMembers.reduce((total, current) => (total += current.count), 0)
       )
     },
@@ -102,7 +102,7 @@ export const useProjectData = defineStore('prjData', {
       }
 
       // Ensure all houses meet the conditions
-      const result = myVal.HousesZod.safeParse(state.house)
+      const result = myVal.HousesZod.safeParse(state.houses)
       if (result.success) {
         return true // Or some validation logic that returns a boolean
       } else {
@@ -192,7 +192,7 @@ export const useProjectData = defineStore('prjData', {
           this.projectInfo = res.projectInfo
           this.fct = res.fct
           this.dri = res.dri
-          this.house = res.house
+          this.houses = res.houses
           this.menu = res.menu
           this.currentDataSet = res.currentDataSet
           // this.loading = res.loading
@@ -218,7 +218,7 @@ export const useProjectData = defineStore('prjData', {
           this.projectInfo = { ...myVal.projectInfoDefault, user: userId }
           this.fct = newFct
           this.dri = newDri
-          this.house = myVal.housesDefault
+          this.houses = myVal.housesDefault
           this.menu = myVal.menuesDefault
           this.currentDataSet = myVal.currentDataSetDefault
           this.loading = false
@@ -228,7 +228,7 @@ export const useProjectData = defineStore('prjData', {
             'user',
             'fct',
             'dri',
-            'house',
+            'houses',
             'menu',
             'currentDataSet',
             'copyDataFromOrigin'

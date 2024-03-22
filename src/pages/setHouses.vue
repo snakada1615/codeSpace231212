@@ -7,15 +7,15 @@ import { ref } from 'vue'
 import { JsonTreeView } from 'json-tree-view-vue3'
 import FakerFunc from '@/models/fakerFunc'
 
-const myProjectData = useProjectData()
+const myApp = useProjectData()
 
 // interface housesInfoType extends Array<houseInfoType> {}
 // housesの情報をリストに変換(ユーザーがhousesから編集対象のhouseを選択するため)
 const housesInfo = computed(() => {
-  if (!myProjectData.house) {
+  if (!myApp.houses) {
     return []
   }
-  return myProjectData.house.map((item, index) => {
+  return myApp.houses.map((item, index) => {
     return {
       label: item.familyName,
       value: index
@@ -26,19 +26,20 @@ const housesInfo = computed(() => {
 // houseの情報を編集するためのcomputed props
 const currentHouse: WritableComputedRef<myVal.House | null> = computed({
   get(): myVal.House | null {
-    if (!myProjectData.house) {
+    if (!myApp.houses) {
       return null
     } else {
-      return myProjectData.house[selectedHouse.value.value]
+      return myApp.houses[selectedHouse.value.value]
     }
   },
   set(val: myVal.House | null) {
-    if (!val || !myProjectData.house) {
+    if (!val || !myApp.houses) {
       return
     } else {
-      myProjectData.updateStateValue(
-        'house',
-        myProjectData.house.map((item) => {
+      console.warn('hoi (^^)')
+      myApp.updateStateValue(
+        'houses',
+        myApp.houses.map((item) => {
           if (val.house === item.house) {
             return val
           }
@@ -108,34 +109,46 @@ function modeChange() {
   newFamilyName.value = ''
 }
 
-// houseの値を更新
-function changeCurrentHouse(val: typeof selectedHouse) {
-  const res = val.value.value > 0 ? currentHouse.value?.house : null
-  if (!res) {
-    return
-  }
-  const current = myProjectData.currentDataSet
-  myProjectData.updateStateValue('currentDataSet', {
-    ...current,
-    house: res
-  })
-}
+// housesの値を更新
+// function changeCurrentHouse(val: typeof selectedHouse) {
+//   const res = val.value.value > 0 ? currentHouse.value?.house : null
+//   if (!res) {
+//     return
+//   }
+//   // const current = myApp.currentDataSet
+//   // myApp.updateStateValue('currentDataSet', {
+//   //   ...current,
+//   //   house: res
+//   // })
+//   // let resArray = myApp.houses ? [...myApp.houses] : []
+//   // resArray.push(res)
+//   const resArray = myApp.houses?.map((item) => {
+//     if (item.familyName === currentHouse.value?.familyName) {
+//       return res
+//     }
+//     return item
+//   })
+//   if (!resArray || resArray.length === 0) {
+//     return
+//   } else {
+//     myApp.updateStateValue('houses', resArray)
+//   }
+// }
 
 // 新規追加
 function addNewHouse() {
   const res: myVal.House = {
     ...myVal.houseDefault,
-    user: myProjectData.user.user,
-    projectInfo: myProjectData.projectInfo.projectInfo,
+    user: myApp.user.user,
+    projectInfo: myApp.projectInfo.projectInfo,
     locationId: newLocation.value,
     house: FakerFunc.uuid(),
     familyName: newFamilyName.value
   }
-  console.log(myVal.houseDefault)
-  console.log(res)
-  let resArray = myProjectData.house ? [...myProjectData.house] : []
+
+  let resArray = myApp.houses ? [...myApp.houses] : []
   resArray.push(res)
-  myProjectData.updateStateValue('house', resArray)
+  myApp.updateStateValue('houses', resArray)
   addNewFlag.value = false
   selectedHouse.value = {
     label: newFamilyName.value,
@@ -159,7 +172,6 @@ function addNewHouse() {
       label="current Family"
       style="max-width: 350px"
       filled
-      @update:model-value="changeCurrentHouse"
     />
     <div v-else>
       <div class="row">
@@ -207,7 +219,5 @@ function addNewHouse() {
       v-model:house="currentHouse"
       :currentHouseNames="housesInfo.map((item) => item.label)"
     />
-    {{ currentHouse }}
-    <JsonTreeView :json="JSON.stringify(myProjectData.house)" :maxDepth="4" />
   </q-card>
 </template>

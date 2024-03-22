@@ -26,23 +26,33 @@ const emits = defineEmits<{
   (e: 'update:house', value: myVal.House): void
 }>()
 
-let elemIdKey: 'familyName' | 'locationId'
-interface HouseIndexed extends myVal.House {
-  [key: string]: any
-}
+let elemIdKey: 'familyName' | 'locationId' | null
+// interface HouseIndexed extends myVal.House {
+//   [key: string]: any
+// }
 
-function updateHouse(val: string | number | null, elemId: typeof elemIdKey) {
+function updateHouse<K extends keyof myVal.House>(value: myVal.House[K], fieldName: K) {
   // Clone the current houseComputed.value
-  let res: HouseIndexed = { ...houseComputed.value }
+  let res = { ...houseComputed.value }
 
-  // Assign the new value to the field represented by elemId if it exists.
-  if (Object.keys(res).includes(elemId)) {
-    res[elemId] = (typeof val === 'number' ? val.toString() : val) || ''
-  }
+  res[fieldName] = value
 
   // Emit the updated house object
   emits('update:house', res)
 }
+
+// function updateHouse(val: string | number | null, elemId: typeof elemIdKey) {
+//   // Clone the current houseComputed.value
+//   let res: HouseIndexed = { ...houseComputed.value }
+
+//   // Assign the new value to the field represented by elemId if it exists.
+//   if (Object.keys(res).includes(elemId)) {
+//     res[elemId] = (typeof val === 'number' ? val.toString() : val) || ''
+//   }
+
+//   // Emit the updated house object
+//   emits('update:house', res)
+// }
 
 function countWord(parent: String[], child: string) {
   let count = 0
@@ -76,7 +86,9 @@ function isValidValue(
       <div class="col">
         <q-input
           :model-value="houseComputed.locationId"
-          @update:model-value="(newValue) => updateHouse(newValue, 'locationId')"
+          @update:model-value="
+            (newValue) => updateHouse(newValue ? String(newValue) : '', 'locationId')
+          "
           label="location"
           class="q-px-sm"
           filled
@@ -91,7 +103,9 @@ function isValidValue(
       <div class="col">
         <q-input
           :model-value="houseComputed.familyName"
-          @update:model-value="(newValue) => updateHouse(newValue, 'familyName')"
+          @update:model-value="
+            (newValue) => updateHouse(newValue ? String(newValue) : '', 'familyName')
+          "
           label="family name"
           filled
           dense
@@ -103,6 +117,9 @@ function isValidValue(
         </q-input>
       </div>
     </div>
-    <DriSelect v-model:family-members="houseComputed.familyMembers" />
+    <DriSelect
+      v-model:family-members="houseComputed.familyMembers"
+      @update:familyMembers="(newValue) => updateHouse(newValue, 'familyMembers')"
+    />
   </q-card>
 </template>
