@@ -89,7 +89,7 @@ export default class FakerFunc {
     return {
       user: faker.string.uuid(),
       projectInfo: faker.string.uuid(),
-      locationId: faker.string.uuid(),
+      locationId: faker.location.city(),
       house: faker.string.uuid(),
       familyName: faker.person.firstName(),
       familyMembers: this.createFamilyMembers()
