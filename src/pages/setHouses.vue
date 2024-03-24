@@ -101,6 +101,7 @@ function addNewHouse() {
     // driがセットされていない場合はエラー
     throw new Error('dri data is not set')
   }
+  // familyMemberの初期値設定
   const myDri: myVal.DriItems = myApp.dri.data
   const myFamilyMember = myDri.map((item) => {
     return {
@@ -135,9 +136,9 @@ function addNewHouse() {
     />
 
     <!-- 編集モード -->
-    <!-- 編集モード&&myApp.house!==nullの場合のみ表示 -->
+    <!-- 編集モード&&currentHouse!==nullの場合のみ表示 -->
     <q-select
-      v-if="!addNewFlag && !myApp.houses"
+      v-if="!addNewFlag && !currentHouse"
       :options="housesInfo"
       v-model="selectedHouse"
       label="current Family"

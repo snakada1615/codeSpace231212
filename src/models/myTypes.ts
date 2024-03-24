@@ -579,11 +579,12 @@ export const PiniaStateDefault = {
 export type ConverterTypeMap = {
   fct: FctItemsWithNote
   dri: DriItemsWithNote
-  user: PiniaState
+  user: User
   projectInfo: ProjectInfo
   house: House
   menu: Menu
   currentDataSet: CurrentDataSet
   piniaStatePartial: PiniaState_partial
+  piniaState: PiniaState
   // Add other collection mappings here...
 }

@@ -30,7 +30,7 @@ export const useProjectData = defineStore('prjData', {
     fct: null,
     dri: null,
     // プロジェクトで対象とする家庭の情報
-    houses: myVal.housesDefault,
+    houses: null,
     // 各家庭での食事調査結果
     menu: null,
     currentDataSet: myVal.currentDataSetDefault,
@@ -137,13 +137,13 @@ export const useProjectData = defineStore('prjData', {
     updateStateValue<K extends keyof myVal.PiniaState>(
       fieldName: K,
       value: myVal.PiniaState[K],
-      options?: { silent: boolean }
+      options?: { silent?: boolean; firstLoad?: boolean }
     ) {
       // Assuming this is typed to have the same structure as PiniaState
       const currentStateValue = this[fieldName]
 
-      // Use a type guard to check for the equality and only assign if different
-      if (currentStateValue !== value) {
+      // valueがpiniaよりも新しい値の場合のみ更新する(firstLoadだと全て上書き)
+      if (currentStateValue !== value || options?.firstLoad) {
         // Directly assign the value since we've asserted they are the same type
         ;(this as any)[fieldName] = value
 
@@ -154,7 +154,7 @@ export const useProjectData = defineStore('prjData', {
       }
     },
 
-    // NOTE firebaseの更新
+    // NOTE fireUpdateStateValue: firebaseの更新
     async fireUpdateStateValue<K extends keyof myVal.ConverterTypeMap>(
       collectionName: string,
       docId: string,
@@ -164,7 +164,7 @@ export const useProjectData = defineStore('prjData', {
       await fireFunc.fireSetTyped(collectionName, docId, docType, value)
     },
 
-    // NOTE fireUpdateStateValue: fireStoreに値をセットしてmodifiedStatesをクリア
+    // NOTE fireUpdateAll: fireStoreに値をセットしてmodifiedStatesをクリア
     async fireUpdateAll(
       collectionName: string,
       docId: string
@@ -207,7 +207,7 @@ export const useProjectData = defineStore('prjData', {
     // NOTE fireGetUserData: userが変わるたびに初期化
     async fireGetUserData(userId: string) {
       try {
-        const res = await fireFunc.fireGetTyped('user', userId, 'user')
+        const res = await fireFunc.fireGetTyped('user', userId, 'piniaState')
         if (res) {
           console.log('fireGetUserData: fetch success')
           this.updateStateValue('user', res.user, { silent: true })
@@ -232,20 +232,22 @@ export const useProjectData = defineStore('prjData', {
           }
 
           const myUser = { ...myVal.userDefault, user: userId }
-          this.updateStateValue('user', myUser)
-          this.updateStateValue('projectInfo', { ...myVal.projectInfoDefault, user: userId })
-          this.updateStateValue('fct', newFct)
-          this.updateStateValue('dri', newDri)
-          this.updateStateValue('houses', null)
-          this.updateStateValue('menu', null)
-          this.updateStateValue('currentDataSet', myVal.currentDataSetDefault)
+          this.updateStateValue('user', myUser, { firstLoad: true })
+          this.updateStateValue(
+            'projectInfo',
+            { ...myVal.projectInfoDefault, user: userId },
+            { firstLoad: true }
+          )
+          this.updateStateValue('fct', newFct, { firstLoad: true })
+          this.updateStateValue('dri', newDri, { firstLoad: true })
+          this.updateStateValue('houses', null, { firstLoad: true })
+          this.updateStateValue('menu', null, { firstLoad: true })
+          this.updateStateValue('currentDataSet', myVal.currentDataSetDefault, { firstLoad: true })
           this.updateStateValue('loading', false, { silent: true })
 
-          console.log(this.user)
-          console.log(this.fct)
-          console.log(this.houses)
           // 初期値のセットなので、new:true
           await this.fireUpdateAll('user', userId)
+          console.log('data have been initialized! for' + userId)
         }
       } catch (error) {
         throw new Error('error')
