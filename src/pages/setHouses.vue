@@ -97,9 +97,20 @@ function modeChange() {
 
 // NOTE function -> 新規追加
 function addNewHouse() {
+  if (!myApp.dri) {
+    // driがセットされていない場合はエラー
+    throw new Error('dri data is not set')
+  }
+  const myDri: myVal.DriItems = myApp.dri.data
+  const myFamilyMember = myDri.map((item) => {
+    return {
+      ...item,
+      count: 0
+    }
+  })
   const res: myVal.House = {
-    ...myVal.houseDefault,
     house: FakerFunc.uuid(),
+    familyMembers: myFamilyMember,
     familyName: newFamilyName.value
   }
 
