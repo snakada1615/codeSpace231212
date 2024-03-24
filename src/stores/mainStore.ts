@@ -4,7 +4,7 @@
 import { defineStore } from 'pinia'
 import * as myVal from '@/models/myTypes'
 import { fireFunc } from '@/models/fireFunctions'
-import { Dialog, Notify } from 'quasar'
+// import { Dialog, Notify } from 'quasar'
 
 export const useAuthState = defineStore('auth', {
   state: () => ({
@@ -120,9 +120,25 @@ export const useProjectData = defineStore('prjData', {
     }
   },
   actions: {
+    // NOTE updateModifiedState
+    updateModifiedState<K extends keyof myVal.PiniaState>(fieldName: K) {
+      if (!this.modifiedStates.includes(fieldName)) {
+        this.modifiedStates = [fieldName, ...this.modifiedStates]
+      }
+    },
+
+    // NOTE clearModifiedState
+    clearModifiedState() {
+      this.modifiedStates = []
+    },
+
     // Function to update state value and record the change
-    // TODO this as anyを取り除きたい
-    updateStateValue<K extends keyof myVal.PiniaState>(fieldName: K, value: myVal.PiniaState[K]) {
+    // TODO updateStateValue - this as anyを取り除きたい
+    updateStateValue<K extends keyof myVal.PiniaState>(
+      fieldName: K,
+      value: myVal.PiniaState[K],
+      options?: { silent: boolean }
+    ) {
       // Assuming this is typed to have the same structure as PiniaState
       const currentStateValue = this[fieldName]
 
@@ -132,17 +148,28 @@ export const useProjectData = defineStore('prjData', {
         ;(this as any)[fieldName] = value
 
         // Record the modification if not already recorded
-        if (!this.modifiedStates.includes(fieldName)) {
-          this.modifiedStates = [fieldName, ...this.modifiedStates]
+        if (!options?.silent) {
+          this.updateModifiedState(fieldName)
         }
       }
     },
 
-    // TODO fireUpdateStateValue: fireStoreに値をセットしてmodifiedStatesをクリア
-    async fireUpdateStateValue(
-      collectionName: keyof myVal.ConverterTypeMap,
+    // NOTE firebaseの更新
+    async fireUpdateStateValue<K extends keyof myVal.ConverterTypeMap>(
+      collectionName: string,
       docId: string,
-      options?: { new?: boolean }
+      docType: K,
+      value: myVal.ConverterTypeMap[K]
+    ) {
+      await fireFunc.fireSetTyped(collectionName, docId, docType, value)
+    },
+
+    // NOTE fireUpdateStateValue: fireStoreに値をセットしてmodifiedStatesをクリア
+    async fireUpdateAll(
+      collectionName: string,
+      docId: string
+      // docType: keyof myVal.ConverterTypeMap,
+      // options?: { new?: boolean }
     ) {
       // Ensure updates object respects the state structure
       const updates: Partial<Record<keyof myVal.PiniaState, StateValue>> = {}
@@ -153,19 +180,14 @@ export const useProjectData = defineStore('prjData', {
       }
 
       if (Object.keys(updates).length > 0) {
-        if (options?.new) {
-          await fireFunc.fireSetTyped(collectionName, docId, updates as myVal.PiniaState_partial)
-        } else {
-          await fireFunc.fireUpdateTyped(
-            collectionName,
-            docId,
-            updates as myVal.PiniaState_partial,
-            'piniaStatePartial'
-          )
-        }
+        await fireFunc.fireSetMergeTyped(
+          'user',
+          docId,
+          'piniaStatePartial',
+          updates as myVal.PiniaState_partial
+        )
+        this.clearModifiedState()
       }
-
-      this.modifiedStates = []
     },
 
     // NOTE fireResetData: userIdに紐づいたデータの削除、初期化
@@ -185,28 +207,24 @@ export const useProjectData = defineStore('prjData', {
     // NOTE fireGetUserData: userが変わるたびに初期化
     async fireGetUserData(userId: string) {
       try {
-        const res = await fireFunc.fireGetTyped('user', userId)
+        const res = await fireFunc.fireGetTyped('user', userId, 'user')
         if (res) {
           console.log('fireGetUserData: fetch success')
-          this.user = res.user
-          this.projectInfo = res.projectInfo
-          this.fct = res.fct
-          this.dri = res.dri
-          this.houses = res.houses
-          this.menu = res.menu
-          this.currentDataSet = res.currentDataSet
-          // this.loading = res.loading
-          // this.copyDataFromOrigin = res.copyDataFromOrigin
-          // this.isUpdate = res.isUpdate
-          // this.modifiedStates = res.modifiedStates
+          this.updateStateValue('user', res.user, { silent: true })
+          this.updateStateValue('projectInfo', res.projectInfo, { silent: true })
+          this.updateStateValue('fct', res.fct, { silent: true })
+          this.updateStateValue('dri', res.dri, { silent: true })
+          this.updateStateValue('houses', res.houses, { silent: true })
+          this.updateStateValue('menu', res.menu, { silent: true })
+          this.updateStateValue('currentDataSet', res.currentDataSet, { silent: true })
         } else {
           console.log('fireGetUserData: fetch fail')
 
           // オリジナルのFCTをコピーして複製
-          const newFct = await fireFunc.fireGetTyped('fct', this.copyDataFromOrigin['fct'])
+          const newFct = await fireFunc.fireGetTyped('fct', this.copyDataFromOrigin['fct'], 'fct')
 
           // オリジナルのDRIをコピーして複製
-          const newDri = await fireFunc.fireGetTyped('dri', this.copyDataFromOrigin['dri'])
+          const newDri = await fireFunc.fireGetTyped('dri', this.copyDataFromOrigin['dri'], 'dri')
 
           // オリジナルが見つからなければエラーを出して終了
           if (!newFct || !newDri) {
@@ -214,27 +232,20 @@ export const useProjectData = defineStore('prjData', {
           }
 
           const myUser = { ...myVal.userDefault, user: userId }
-          this.user = myUser
-          this.projectInfo = { ...myVal.projectInfoDefault, user: userId }
-          this.fct = newFct
-          this.dri = newDri
-          this.houses = myVal.housesDefault
-          this.menu = myVal.menuesDefault
-          this.currentDataSet = myVal.currentDataSetDefault
-          this.loading = false
+          this.updateStateValue('user', myUser)
+          this.updateStateValue('projectInfo', { ...myVal.projectInfoDefault, user: userId })
+          this.updateStateValue('fct', newFct)
+          this.updateStateValue('dri', newDri)
+          this.updateStateValue('houses', null)
+          this.updateStateValue('menu', null)
+          this.updateStateValue('currentDataSet', myVal.currentDataSetDefault)
+          this.updateStateValue('loading', false, { silent: true })
 
-          // 初期値をfireStoreにセットする
-          this.modifiedStates = [
-            'user',
-            'fct',
-            'dri',
-            'houses',
-            'menu',
-            'currentDataSet',
-            'copyDataFromOrigin'
-          ]
+          console.log(this.user)
+          console.log(this.fct)
+          console.log(this.houses)
           // 初期値のセットなので、new:true
-          await this.fireUpdateStateValue('piniaStatePartial', userId, { new: true })
+          await this.fireUpdateAll('user', userId)
         }
       } catch (error) {
         throw new Error('error')

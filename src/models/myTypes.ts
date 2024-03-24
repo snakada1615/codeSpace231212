@@ -219,18 +219,12 @@ export type ProjectInfos = z.infer<typeof ProjectInfosZod>
 export type ProjectInfoBlank = typeof projectInfoDefault
 
 export const HouseZod = z.object({
-  projectInfo: z.string(),
-  user: z.string(),
-  locationId: z.string(),
   house: z.string(),
   familyName: z.string(),
   familyMembers: FamilyMembersZod
 })
 
 export const HouseZod_v = z.object({
-  projectInfo: z.string(),
-  user: z.string(),
-  locationId: z.string().min(3).max(200),
   house: z.string(),
   familyName: z.string().min(3).max(200),
   familyMembers: FamilyMembersZod
@@ -247,9 +241,6 @@ export type HouseBlank = typeof houseDefault
 export type HousesBlank = HouseBlank[]
 
 export const houseDefault = {
-  projectInfo: '',
-  user: '',
-  locationId: '',
   house: '',
   familyName: 'family01',
   familyMembers: familyMembersDefault

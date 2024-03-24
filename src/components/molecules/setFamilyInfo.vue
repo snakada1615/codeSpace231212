@@ -26,11 +26,6 @@ const emits = defineEmits<{
   (e: 'update:house', value: myVal.House): void
 }>()
 
-let elemIdKey: 'familyName' | 'locationId' | null
-// interface HouseIndexed extends myVal.House {
-//   [key: string]: any
-// }
-
 function updateHouse<K extends keyof myVal.House>(value: myVal.House[K], fieldName: K) {
   // Clone the current houseComputed.value
   let res = { ...houseComputed.value }
@@ -64,10 +59,7 @@ function countWord(parent: String[], child: string) {
   return count
 }
 
-function isValidValue(
-  val: number | string | null,
-  key: 'locationId' | 'familyName'
-): boolean | string {
+function isValidValue(val: number | string | null, key: 'familyName'): boolean | string {
   const result = myVal.HouseZod.shape[key].safeParse(val)
   if (result.success) {
     if (key === 'familyName' && countWord(props.currentHouseNames, String(val) || '') > 1) {
@@ -83,23 +75,6 @@ function isValidValue(
 <template>
   <q-card class="q-pt-md">
     <div class="row">
-      <div class="col">
-        <q-input
-          :model-value="houseComputed.locationId"
-          @update:model-value="
-            (newValue) => updateHouse(newValue ? String(newValue) : '', 'locationId')
-          "
-          label="location"
-          class="q-px-sm"
-          filled
-          dense
-          :rules="[(v) => isValidValue(v, 'locationId')]"
-        >
-          <template v-slot:prepend>
-            <q-icon name="flag" />
-          </template>
-        </q-input>
-      </div>
       <div class="col">
         <q-input
           :model-value="houseComputed.familyName"

@@ -315,10 +315,11 @@ export class fireFunc {
   }
 
   static async fireGetTyped<K extends keyof myVal.ConverterTypeMap>(
-    collectionId: K,
-    docId: string
+    collectionId: string,
+    docId: string,
+    docType: K
   ): Promise<myVal.ConverterTypeMap[K] | null> {
-    const converter = this.getTypeConverter(collectionId)
+    const converter = this.getTypeConverter(docType)
     const docRef = doc(db, collectionId, docId).withConverter(converter)
 
     try {
@@ -338,16 +339,17 @@ export class fireFunc {
   }
 
   static async fireGetQueryTyped<K extends keyof myVal.ConverterTypeMap>(
-    collectionId: K,
+    collectionId: string,
     key: string,
     val: string,
-    message?: string
+    docType: K,
+    options?: { message: string }
   ): Promise<myVal.ConverterTypeMap[K][] | null> {
-    const converter = this.getTypeConverter(collectionId)
+    const converter = this.getTypeConverter(docType)
     const colRef: CollectionReference = collection(db, collectionId)
     const q = query(colRef, where(key, '==', val)).withConverter(converter)
     try {
-      splash(true, message || 'downloading data ' + collectionId + '...')
+      splash(true, options?.message || 'downloading data ' + collectionId + '...')
       const snapshot = await getDocs(q)
       splash(false)
       const res: Array<myVal.ConverterTypeMap[K]> = []
@@ -367,11 +369,12 @@ export class fireFunc {
   }
 
   static async fireSetTyped<K extends keyof myVal.ConverterTypeMap>(
-    collectionId: K,
+    collectionId: string,
     docId: string,
+    docType: K,
     val: myVal.ConverterTypeMap[K]
   ) {
-    const converter = this.getTypeConverter(collectionId)
+    const converter = this.getTypeConverter(docType)
     const docRef: DocumentReference = doc(db, collectionId, docId).withConverter(converter)
     try {
       splash(true)
@@ -386,13 +389,14 @@ export class fireFunc {
   }
 
   static async fireSetMergeTyped<K extends keyof myVal.ConverterTypeMap>(
-    collectionId: K,
+    collectionId: string,
     docId: string,
+    docType: K,
     val: myVal.ConverterTypeMap[K],
     message?: string
   ) {
     splash(true, message || `uploading ${collectionId} data to fireStore...`)
-    const converter = this.getTypeConverter(collectionId)
+    const converter = this.getTypeConverter(docType)
     const docRef: DocumentReference = doc(db, collectionId, docId).withConverter(converter)
     try {
       await setDoc(docRef, val, { merge: true })
@@ -405,12 +409,12 @@ export class fireFunc {
   }
 
   static async fireUpdateTyped<K extends keyof myVal.ConverterTypeMap>(
-    collectionId: K,
+    collectionId: string,
     docId: string,
-    val: myVal.ConverterTypeMap[K],
-    convereterId: K
+    docType: K,
+    val: myVal.ConverterTypeMap[K]
   ) {
-    const converter = this.getTypeConverter(convereterId)
+    const converter = this.getTypeConverter(docType)
     const documentRef = doc(db, collectionId, docId).withConverter(converter)
     try {
       await updateDoc(documentRef, val)
@@ -420,15 +424,16 @@ export class fireFunc {
   }
 
   static async fireSetQueryMergeTyped<K extends keyof myVal.ConverterTypeMap>(
-    collectionId: K,
+    collectionId: string,
     key: string,
     keyVal: string,
+    docType: K,
     val: myVal.ConverterTypeMap[K],
     message?: string,
     newId?: string
   ) {
     splash(true, message || `uploading ${collectionId} data to fireStore...`)
-    const converter = this.getTypeConverter(collectionId)
+    const converter = this.getTypeConverter(docType)
     const colRef: CollectionReference = collection(db, collectionId)
     const q = query(colRef, where(key, '==', keyVal)).withConverter(converter)
     try {

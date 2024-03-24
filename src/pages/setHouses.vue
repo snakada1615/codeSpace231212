@@ -4,14 +4,14 @@ import setFamilyInfo from '@/components/molecules/setFamilyInfo.vue'
 import { useProjectData } from '../stores/mainStore'
 import * as myVal from '../models/myTypes'
 import { ref } from 'vue'
-import { JsonTreeView } from 'json-tree-view-vue3'
 import FakerFunc from '@/models/fakerFunc'
 
 const myApp = useProjectData()
 
-// interface housesInfoType extends Array<houseInfoType> {}
-// housesの情報をリストに変換(ユーザーがhousesから編集対象のhouseを選択するため)
+// NOTE computed -> housesの情報(リストボックス用)
+// 初期値としてnullを受け取り、適正な値を代入して返す。適正な値が入らない限り次の画面には進めない
 const housesInfo = computed(() => {
+  // houses=nullなら空Arrayを返す
   if (!myApp.houses) {
     return []
   }
@@ -23,7 +23,7 @@ const housesInfo = computed(() => {
   })
 })
 
-// houseの情報を編集するためのcomputed props
+// NOTE computed -> houseの情報(selectedHouseが変わるたびにhouseを切り替え、更新時はpinia関数呼び出し)
 const currentHouse: WritableComputedRef<myVal.House | null> = computed({
   get(): myVal.House | null {
     if (!myApp.houses) {
@@ -36,7 +36,6 @@ const currentHouse: WritableComputedRef<myVal.House | null> = computed({
     if (!val || !myApp.houses) {
       return
     } else {
-      console.warn('hoi (^^)')
       myApp.updateStateValue(
         'houses',
         myApp.houses.map((item) => {
@@ -50,24 +49,20 @@ const currentHouse: WritableComputedRef<myVal.House | null> = computed({
   }
 })
 
-// ユーザーが現在選択しているhouseの指標
+// NOTE ref -> ユーザーが現在選択しているhouseのindex
 const selectedHouse = ref({
   label: 'select family',
   value: -1
 })
 
-// 編集モードと追加モードのフラグ
+// NOTE ref -> 編集モードと追加モードのフラグ
 const addNewFlag = ref(false)
 
+// NOTE ref -> 新規追加用の家族名
 const newFamilyName = ref('')
 
-const newLocation = ref('')
-
 // バリデーション
-function isValidValue(
-  val: number | string | null,
-  key: 'locationId' | 'familyName'
-): boolean | string {
+function isValidValue(val: number | string | null, key: 'familyName'): boolean | string {
   const result = myVal.HouseZod.shape[key].safeParse(val)
   if (result.success) {
     if (
@@ -91,57 +86,19 @@ const stateFamilyName = computed(() => {
   return false
 })
 
-// バリデーション
-const stateLocation = computed(() => {
-  if (isValidValue(newLocation.value, 'locationId') === true) {
-    return true
-  }
-  return false
-})
-
-// 追加モード/更新モードの切り替え
+// NOTE function -> 追加モード/更新モードの切り替え
 function modeChange() {
   selectedHouse.value = {
     label: 'select family',
     value: -1
   }
-  newLocation.value = ''
   newFamilyName.value = ''
 }
 
-// housesの値を更新
-// function changeCurrentHouse(val: typeof selectedHouse) {
-//   const res = val.value.value > 0 ? currentHouse.value?.house : null
-//   if (!res) {
-//     return
-//   }
-//   // const current = myApp.currentDataSet
-//   // myApp.updateStateValue('currentDataSet', {
-//   //   ...current,
-//   //   house: res
-//   // })
-//   // let resArray = myApp.houses ? [...myApp.houses] : []
-//   // resArray.push(res)
-//   const resArray = myApp.houses?.map((item) => {
-//     if (item.familyName === currentHouse.value?.familyName) {
-//       return res
-//     }
-//     return item
-//   })
-//   if (!resArray || resArray.length === 0) {
-//     return
-//   } else {
-//     myApp.updateStateValue('houses', resArray)
-//   }
-// }
-
-// 新規追加
+// NOTE function -> 新規追加
 function addNewHouse() {
   const res: myVal.House = {
     ...myVal.houseDefault,
-    user: myApp.user.user,
-    projectInfo: myApp.projectInfo.projectInfo,
-    locationId: newLocation.value,
     house: FakerFunc.uuid(),
     familyName: newFamilyName.value
   }
@@ -165,30 +122,21 @@ function addNewHouse() {
       label="Add new family"
       @update:model-value="modeChange"
     />
+
+    <!-- 編集モード -->
+    <!-- 編集モード&&myApp.house!==nullの場合のみ表示 -->
     <q-select
-      v-if="!addNewFlag"
+      v-if="!addNewFlag && !myApp.houses"
       :options="housesInfo"
       v-model="selectedHouse"
       label="current Family"
       style="max-width: 350px"
       filled
     />
+
+    <!-- 追加モード -->
     <div v-else>
       <div class="row">
-        <div class="col">
-          <q-input
-            v-model:model-value="newLocation"
-            label="new location"
-            class="q-px-sm"
-            filled
-            dense
-            :rules="[(v) => isValidValue(v, 'locationId')]"
-          >
-            <template v-slot:prepend>
-              <q-icon name="flag" />
-            </template>
-          </q-input>
-        </div>
         <div class="col">
           <q-input
             v-model:model-value="newFamilyName"
@@ -209,7 +157,7 @@ function addNewHouse() {
             class="q-ml-md"
             color="green"
             @click="addNewHouse"
-            :disable="!stateFamilyName || !stateLocation"
+            :disable="!stateFamilyName"
           />
         </div>
       </div>

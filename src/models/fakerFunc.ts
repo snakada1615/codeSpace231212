@@ -1,7 +1,6 @@
 import { faker } from '@faker-js/faker'
 // 全てのintefaceを読み込む
 import * as myVal from './myTypes'
-import { uid } from 'quasar'
 
 export default class FakerFunc {
   static createFct(foodGroups: typeof myVal.sampleFood): myVal.FctItem {
@@ -87,9 +86,6 @@ export default class FakerFunc {
 
   static createHouse(): myVal.House {
     return {
-      user: faker.string.uuid(),
-      projectInfo: faker.string.uuid(),
-      locationId: faker.location.city(),
       house: faker.string.uuid(),
       familyName: faker.person.firstName(),
       familyMembers: this.createFamilyMembers()

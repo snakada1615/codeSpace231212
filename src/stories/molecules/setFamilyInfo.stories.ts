@@ -10,7 +10,7 @@ const familyAll = FakerFunc.createHouse()
 
 // Metadata for your Storybook
 const meta: Meta<typeof setFamilyInfo> = {
-  title: 'app/molecules/setFamilyInfo2',
+  title: 'app/molecules/setFamilyInfo',
   component: setFamilyInfo,
   args: {
     updateFamilyAll: fn() // Use fn() here if it's needed
