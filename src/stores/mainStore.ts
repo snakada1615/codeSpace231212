@@ -39,11 +39,13 @@ export const useProjectData = defineStore('prjData', {
       fct: '08e5ee1f-8321-4cc3-8b9f-00619a262931',
       dri: '5139dec2-f340-46bd-aed4-57670991bab7'
     },
-    isUpdate: false,
     modifiedStates: [] as Array<keyof myVal.PiniaState>
   }),
 
   getters: {
+    isUpdate(state) {
+      return state.modifiedStates.length > 0
+    },
     stateUserId: (state) => {
       if (state.user && typeof state.user === 'object') {
         return !!state.user.user || false
@@ -213,10 +215,12 @@ export const useProjectData = defineStore('prjData', {
           this.updateStateValue('user', res.user, { silent: true })
           this.updateStateValue('projectInfo', res.projectInfo, { silent: true })
           this.updateStateValue('fct', res.fct, { silent: true })
-          this.updateStateValue('dri', res.dri, { silent: true }) 
+          this.updateStateValue('dri', res.dri, { silent: true })
           this.updateStateValue('houses', res.houses, { silent: true })
           this.updateStateValue('menu', res.menu, { silent: true })
           this.updateStateValue('currentDataSet', res.currentDataSet, { silent: true })
+
+          this.clearModifiedState() // なぜこれが必要かは不明
         } else {
           console.log('fireGetUserData: fetch fail')
 

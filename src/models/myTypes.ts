@@ -512,7 +512,6 @@ export const PiniaItemZod = z.union([
   z.literal('houses'),
   z.literal('menu'),
   z.literal('loading'),
-  z.literal('isUpdate'),
   z.literal('modifiedStates'),
   z.literal('copyDataFromOrigin'),
   z.literal('currentDataSet')
@@ -541,7 +540,6 @@ export const PiniaStateZod = z.object({
   // loading時のsplash画面表示
   loading: z.boolean(),
   copyDataFromOrigin: z.object({ fct: z.string(), dri: z.string() }),
-  isUpdate: z.boolean(),
   modifiedStates: PiniaItemListZod
 })
 
@@ -557,9 +555,7 @@ export const PiniaStateForFireZod = z.object({
   // 各家庭での食事調査結果
   menu: MenuesZod.nullable(),
   // デフォルトで使うデータベース名
-  currentDataSet: CurrentDataSetZod,
-  // loading時のsplash画面表示
-  loading: z.boolean(),
+  currentDataSet: CurrentDataSetZod
 })
 
 export const PiniaState_partialZod = PiniaStateZod.partial()
@@ -591,7 +587,6 @@ export const PiniaStateDefault = {
     fct: '08e5ee1f-8321-4cc3-8b9f-00619a262931',
     dri: '5139dec2-f340-46bd-aed4-57670991bab7'
   },
-  isUpdate: false,
   modifiedStates: []
 }
 

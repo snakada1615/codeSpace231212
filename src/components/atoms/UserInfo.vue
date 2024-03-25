@@ -20,6 +20,8 @@ const userComp = computed({
     return props.user
   },
   set(val: myVal.User_v) {
+    console.log('now userComp modified')
+    console.log(val)
     emits('update:user', val)
   }
 })

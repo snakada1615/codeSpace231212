@@ -112,7 +112,7 @@ function saveCsv(): void {
   if (refKey.value.label === 'DRI') {
     // driの更新
     const myId = fakerFunc.uuid()
-    fireFunc.fireSetTyped('dri', myId, {
+    fireFunc.fireSetTyped('dri', myId, 'dri', {
       note: '',
       user: projectStore.user.user,
       data: typedCsv.value as myVal.DriItems,
@@ -121,11 +121,11 @@ function saveCsv(): void {
   } else {
     // fctの更新
     const myId = fakerFunc.uuid()
-    fireFunc.fireSetTyped('dri', myId, {
+    fireFunc.fireSetTyped('FCT', myId, 'fct', {
       note: '',
       user: projectStore.user.user,
-      data: typedCsv.value as myVal.DriItems,
-      dri: myId
+      data: typedCsv.value as myVal.FctItems,
+      fct: myId
     })
   }
 }
