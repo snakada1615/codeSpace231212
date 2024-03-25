@@ -545,9 +545,28 @@ export const PiniaStateZod = z.object({
   modifiedStates: PiniaItemListZod
 })
 
+export const PiniaStateForFireZod = z.object({
+  // 現在利用しているユーザーの情報
+  user: UserZod,
+  // ユーザーが取り組んでいるプロジェクトの情報
+  projectInfo: ProjectInfoZod,
+  fct: FctItemsWithNoteZod.nullable(),
+  dri: DriItemsWithNoteZod.nullable(),
+  // プロジェクトで対象とする家庭の情報
+  houses: HousesZod.nullable(),
+  // 各家庭での食事調査結果
+  menu: MenuesZod.nullable(),
+  // デフォルトで使うデータベース名
+  currentDataSet: CurrentDataSetZod,
+  // loading時のsplash画面表示
+  loading: z.boolean(),
+})
+
 export const PiniaState_partialZod = PiniaStateZod.partial()
 
 export type PiniaState = z.infer<typeof PiniaStateZod>
+
+export type PiniaStateForFire = z.infer<typeof PiniaStateForFireZod>
 
 export type PiniaState_partial = z.infer<typeof PiniaState_partialZod>
 
@@ -586,5 +605,6 @@ export type ConverterTypeMap = {
   currentDataSet: CurrentDataSet
   piniaStatePartial: PiniaState_partial
   piniaState: PiniaState
+  piniaStateForFire: PiniaStateForFire
   // Add other collection mappings here...
 }

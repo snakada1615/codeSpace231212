@@ -207,13 +207,13 @@ export const useProjectData = defineStore('prjData', {
     // NOTE fireGetUserData: userが変わるたびに初期化
     async fireGetUserData(userId: string) {
       try {
-        const res = await fireFunc.fireGetTyped('user', userId, 'piniaState')
+        const res = await fireFunc.fireGetTyped('user', userId, 'piniaStateForFire')
         if (res) {
           console.log('fireGetUserData: fetch success')
           this.updateStateValue('user', res.user, { silent: true })
           this.updateStateValue('projectInfo', res.projectInfo, { silent: true })
           this.updateStateValue('fct', res.fct, { silent: true })
-          this.updateStateValue('dri', res.dri, { silent: true })
+          this.updateStateValue('dri', res.dri, { silent: true }) 
           this.updateStateValue('houses', res.houses, { silent: true })
           this.updateStateValue('menu', res.menu, { silent: true })
           this.updateStateValue('currentDataSet', res.currentDataSet, { silent: true })

@@ -17,6 +17,7 @@
   },
   "dependencies": {
     "@quasar/extras": "^1.16.9",
+    "@vitest/utils": "^1.4.0",
     "@vue/runtime-dom": "^3.4.21",
     "firebase": "^10.7.1",
     "json-tree-view-vue3": "^1.0.1",

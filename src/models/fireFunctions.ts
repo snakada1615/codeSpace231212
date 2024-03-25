@@ -118,6 +118,7 @@ export class fireFunc {
     myVal.PiniaState_partialZod
   )
   private static isPiniaState = this.createIsOfTypeT<myVal.PiniaState>(myVal.PiniaStateZod)
+  private static isPiniaStateForFire = this.createIsOfTypeT<myVal.PiniaStateForFire>(myVal.PiniaStateForFireZod)
 
   // Then use these type guards within your converter instantiation
   private static fctItemConverter = this.converter<myVal.FctItemsWithNote>(this.isFctItem)
@@ -133,6 +134,7 @@ export class fireFunc {
     this.isPiniaStatePartial
   )
   private static piniaStateConverter = this.converter<myVal.PiniaState>(this.isPiniaState)
+  private static piniaStateForFireConverter = this.converter<myVal.PiniaStateForFire>(this.isPiniaStateForFire)
 
   private static converters: ConverterMap = {
     fct: this.fctItemConverter,
@@ -143,7 +145,8 @@ export class fireFunc {
     menu: this.menuConverter,
     currentDataSet: this.currentDataSetConverter,
     piniaStatePartial: this.piniaStatePartialConverter,
-    piniaState: this.piniaStateConverter
+    piniaState: this.piniaStateConverter,
+    piniaStateForFire: this.piniaStateForFireConverter
     // More converters can be added here
   }
 
