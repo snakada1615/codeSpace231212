@@ -10,7 +10,6 @@ const userStore = computed({
     return projectData.user
   },
   set(val) {
-    console.log('set')
     projectData.updateStateValue('user', val)
   }
 })

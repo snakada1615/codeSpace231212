@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import * as myVal from '@/models/myTypes'
 import { computed, defineEmits, type PropType } from 'vue'
+import { z } from 'zod'
 // import { useProjectData } from '@/stores/mainStore'
 // import { ref } from 'vue'
 
@@ -26,6 +27,78 @@ const userComp = computed({
   }
 })
 
+const myName = computed({
+  get() {
+    return props.user.name
+  },
+  set(val: z.infer<typeof myVal.UserZod_v.shape.name>) {
+    emits('update:user', {
+      ...props.user,
+      name: val
+    })
+  }
+})
+
+const myJob = computed({
+  get() {
+    return props.user.job
+  },
+  set(val: z.infer<typeof myVal.UserZod_v.shape.job>) {
+    emits('update:user', {
+      ...props.user,
+      job: val
+    })
+  }
+})
+
+const myTitle = computed({
+  get() {
+    return props.user.title
+  },
+  set(val: z.infer<typeof myVal.UserZod_v.shape.title>) {
+    emits('update:user', {
+      ...props.user,
+      title: val
+    })
+  }
+})
+
+const myCountry = computed({
+  get() {
+    return props.user.country
+  },
+  set(val: z.infer<typeof myVal.UserZod_v.shape.country>) {
+    emits('update:user', {
+      ...props.user,
+      country: val
+    })
+  }
+})
+
+const myRegion = computed({
+  get() {
+    return props.user.region
+  },
+  set(val: z.infer<typeof myVal.UserZod_v.shape.region>) {
+    emits('update:user', {
+      ...props.user,
+      region: val
+    })
+  }
+})
+
+const myTown = computed({
+  get() {
+    return props.user.town
+  },
+  set(val: z.infer<typeof myVal.UserZod_v.shape.town>) {
+    emits('update:user', {
+      ...props.user,
+      town: val
+    })
+  }
+})
+
 function isValidValue(
   val: number | string | null,
   key: 'name' | 'job' | 'title' | 'country' | 'region' | 'town'
@@ -34,7 +107,6 @@ function isValidValue(
   if (result.success) {
     return true // Or some validation logic that returns a boolean
   } else {
-    console.log(result.error.errors)
     return result.error.errors.map((e) => e.message).join(', ')
   }
 }
@@ -46,7 +118,7 @@ function isValidValue(
       dense
       filled
       class="q-my-sm"
-      v-model="userComp.name"
+      v-model="myName"
       label="* Name"
       lazy-rules
       :rules="[(v) => isValidValue(v, 'name')]"
@@ -55,7 +127,7 @@ function isValidValue(
       dense
       filled
       class="q-my-sm"
-      v-model="userComp.job"
+      v-model="myJob"
       label="Job"
       lazy-rules
       :rules="[(v) => isValidValue(v, 'job')]"
@@ -64,7 +136,7 @@ function isValidValue(
       dense
       filled
       class="q-my-sm"
-      v-model="userComp.title"
+      v-model="myTitle"
       label="Title"
       lazy-rules
       :rules="[(v) => isValidValue(v, 'title')]"
@@ -73,7 +145,7 @@ function isValidValue(
       dense
       filled
       class="q-my-sm"
-      v-model="userComp.country"
+      v-model="myCountry"
       label="* Country"
       lazy-rules
       :rules="[(v) => isValidValue(v, 'country')]"
@@ -82,7 +154,7 @@ function isValidValue(
       dense
       filled
       class="q-my-sm"
-      v-model="userComp.region"
+      v-model="myRegion"
       label="* region"
       lazy-rules
       :rules="[(v) => isValidValue(v, 'region')]"
@@ -91,11 +163,10 @@ function isValidValue(
       dense
       filled
       class="q-my-sm"
-      v-model="userComp.town"
+      v-model="myTown"
       label="* town/city"
       lazy-rules
       :rules="[(v) => isValidValue(v, 'town')]"
     />
-    <q-btn class="q-ma-sm" label="Save it" dense />
   </q-card>
 </template>

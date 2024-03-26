@@ -25,7 +25,12 @@ const projInfo = useProjectData()
       IFNA Nutrient App
     </q-toolbar-title>
 
-    <q-btn flat round :disabled="!projInfo.isUpdate">
+    <q-btn
+      flat
+      round
+      :disabled="!projInfo.isUpdate"
+      @click="projInfo.fireUpdateAll('user', projInfo.user.user)"
+    >
       <q-icon name="save_as" :color="projInfo.isUpdate ? 'red' : 'white'" />
     </q-btn>
 
