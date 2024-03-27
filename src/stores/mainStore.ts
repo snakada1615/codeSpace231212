@@ -43,16 +43,16 @@ export const useProjectData = defineStore('prjData', {
   }),
 
   getters: {
-    isUpdate(state) {
+    isUpdate(state: myVal.PiniaState): boolean {
       return state.modifiedStates.length > 0
     },
-    stateUserId: (state) => {
+    stateUserId(state: myVal.PiniaState): boolean {
       if (state.user && typeof state.user === 'object') {
         return !!state.user.user || false
       }
       return false
     },
-    stateUserInfo(state) {
+    stateUserInfo(state: myVal.PiniaState): boolean | string {
       const result = myVal.UserZod.safeParse(state.user)
       if (result.success) {
         return true // Or some validation logic that returns a boolean
@@ -61,7 +61,7 @@ export const useProjectData = defineStore('prjData', {
       }
     },
 
-    stateProjectInfo(state) {
+    stateProjectInfo(state: myVal.PiniaState): boolean | string {
       const result = myVal.ProjectInfoZod.safeParse(state.projectInfo)
       if (result.success) {
         return true // Or some validation logic that returns a boolean
@@ -70,7 +70,7 @@ export const useProjectData = defineStore('prjData', {
       }
     },
 
-    targetPopulationTotal: (state) => {
+    targetPopulationTotal(state: myVal.PiniaState): number {
       if (!state.projectInfo) {
         return 0
       }
@@ -83,23 +83,28 @@ export const useProjectData = defineStore('prjData', {
       )
     },
 
-    houseSizes: (state) => {
+    houseSizes(state: myVal.PiniaState): number {
       if (!state.houses) {
         return 0
       }
       if (!state.houses[0]) {
         return 0
       }
-      return state.houses.map((house) =>
-        house.familyMembers.reduce((total, current) => (total += current.count), 0)
-      )
+      return state.houses.reduce((total, house) => {
+        const subTotal = house.familyMembers.reduce((sum, familyMember) => {
+          sum += familyMember.count
+          return sum
+        }, 0)
+        total += subTotal
+        return total
+      }, 0)
     },
 
-    stateHouses(state) {
+    stateHouses(state: myVal.PiniaState): boolean | string {
       const myHouseSize = this.houseSizes
 
       // Check if houseSizes is not an array or is empty, return false early.
-      if (!Array.isArray(myHouseSize) || !myHouseSize.length) {
+      if (myHouseSize === 0) {
         return 'no house registered'
       }
 
@@ -112,7 +117,7 @@ export const useProjectData = defineStore('prjData', {
       }
     },
 
-    stateMenu(state) {
+    stateMenu(state: myVal.PiniaState): boolean | string {
       const result = myVal.MenuItemsZod.safeParse(state.menu)
       if (result.success) {
         return true // Or some validation logic that returns a boolean
@@ -168,7 +173,7 @@ export const useProjectData = defineStore('prjData', {
 
     // NOTE fireUpdateAll: fireStoreに値をセットしてmodifiedStatesをクリア
     async fireUpdateAll(
-      collectionName: string,
+      // collectionName: string,
       docId: string
       // docType: keyof myVal.ConverterTypeMap,
       // options?: { new?: boolean }
@@ -250,7 +255,7 @@ export const useProjectData = defineStore('prjData', {
           this.updateStateValue('loading', false, { silent: true })
 
           // 初期値のセットなので、new:true
-          await this.fireUpdateAll('user', userId)
+          await this.fireUpdateAll(userId)
           console.log('data have been initialized! for' + userId)
         }
       } catch (error) {

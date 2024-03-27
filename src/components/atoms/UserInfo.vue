@@ -16,17 +16,6 @@ const emits = defineEmits<{
   (e: 'update:user', value: myVal.User): void
 }>()
 
-const userComp = computed({
-  get() {
-    return props.user
-  },
-  set(val: myVal.User_v) {
-    console.log('now userComp modified')
-    console.log(val)
-    emits('update:user', val)
-  }
-})
-
 const myName = computed({
   get() {
     return props.user.name

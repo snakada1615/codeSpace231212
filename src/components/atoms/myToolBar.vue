@@ -29,7 +29,7 @@ const projInfo = useProjectData()
       flat
       round
       :disabled="!projInfo.isUpdate"
-      @click="projInfo.fireUpdateAll('user', projInfo.user.user)"
+      @click="projInfo.fireUpdateAll(projInfo.user.user)"
     >
       <q-icon name="save_as" :color="projInfo.isUpdate ? 'red' : 'white'" />
     </q-btn>
